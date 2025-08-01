@@ -16,11 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->restrictOnDelete();
             $table->date('start');
             $table->date('end');
-            $table->bigInteger('unilevel')->default(0);
-            $table->bigInteger('left_binary')->default(0);
-            $table->bigInteger('right_binary')->default(0);
+            $table->decimal('personal')->default(0);
+            $table->decimal('unilevel', 10, 2)->default(0);
+            $table->decimal('left_binary', 10, 2)->default(0);
+            $table->decimal('right_binary', 10, 2)->default(0);
             $table->timestamps();
-            $table->unique(['start', 'end']);
+            $table->unique(['user_id', 'start', 'end']);
             $table->index('user_id');
             $table->index('start');
             $table->index('end');

@@ -184,7 +184,7 @@ class OrdersManagement extends Component
             ->when($this->selectedStatus !== '', function ($query) {
                 return $query->where('status', $this->selectedStatus);
             })
-            ->orderBy('created_at', 'asc') // Del más antiguo al más nuevo
+            ->orderBy('id', 'desc') // Del más antiguo al más nuevo
             ->with(['user', 'country', 'department', 'city']) // Eager loading para optimizar
             ->paginate(10);
 

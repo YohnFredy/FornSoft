@@ -50,14 +50,14 @@ if (isset($__slots)) unset($__slots);
                 <div class=" col-span-6 md:col-span-1">
                     <?php if (isset($component)) { $__componentOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input','data' => ['type' => 'number','label' => 'Precio publico:','for' => 'public_price','wire:model.blur' => 'public_price','step' => '0.01','min' => '0','required' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input','data' => ['type' => 'number','label' => 'Precio publico:','for' => 'final_price','wire:model.blur' => 'final_price','step' => '0.01','min' => '0','required' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['type' => 'number','label' => 'Precio publico:','for' => 'public_price','wire:model.blur' => 'public_price','step' => '0.01','min' => '0','required' => true]); ?>
+<?php $component->withAttributes(['type' => 'number','label' => 'Precio publico:','for' => 'final_price','wire:model.blur' => 'final_price','step' => '0.01','min' => '0','required' => true]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc2fcfa88dc54fee60e0757a7e0572df1)): ?>
@@ -94,14 +94,14 @@ if (isset($__slots)) unset($__slots);
                 <div class=" col-span-6 md:col-span-1">
                     <?php if (isset($component)) { $__componentOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input','data' => ['type' => 'number','label' => 'Precio sin iva','for' => 'price','wire:model.live' => 'price','step' => '0.01','min' => '0','disabled' => true,'required' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input','data' => ['type' => 'number','label' => 'Precio sin iva','for' => 'price','wire:model.blur' => 'price','step' => '0.01','min' => '0','required' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['type' => 'number','label' => 'Precio sin iva','for' => 'price','wire:model.live' => 'price','step' => '0.01','min' => '0','disabled' => true,'required' => true]); ?>
+<?php $component->withAttributes(['type' => 'number','label' => 'Precio sin iva','for' => 'price','wire:model.blur' => 'price','step' => '0.01','min' => '0','required' => true]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc2fcfa88dc54fee60e0757a7e0572df1)): ?>

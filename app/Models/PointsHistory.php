@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PointsHistory extends Model
 {
-    protected $fillable = ['user_id', 'start_date', 'end_date', 'unilevel_points', 'points_left', 'points_right'];
+    protected $fillable = ['user_id', 'start', 'end', 'personal', 'unilevel', 'left_binary', 'right_binary'];
 }

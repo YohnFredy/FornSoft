@@ -178,7 +178,7 @@
                             </th>
                             <td class="px-6 py-4 whitespace-nowrap"><?php echo e($product->name); ?></td>
                             <td class="px-6 py-4 "><?php echo Str::limit($product->description, 40); ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?php echo e($product->price); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap">$<?php echo e(number_format($product->final_price, 0)); ?></td>
 
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <!--[if BLOCK]><![endif]--><?php if($product->is_active): ?>

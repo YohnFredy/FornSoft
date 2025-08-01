@@ -37,7 +37,7 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars); ?>
 
 <?php if ($expandable && $heading): ?>
-    <ui-disclosure <?php echo e($attributes->class('group/disclosure')); ?> <?php if($expanded === true): ?> open <?php endif; ?> data-flux-navlist-group>
+    <ui-disclosure <?php echo e($attributes->class('group/disclosure')); ?> <?php if($expanded === false): ?> open <?php endif; ?> data-flux-navlist-group>
         <button type="button" class="w-full h-10 lg:h-8 flex items-center group/disclosure-button mb-[2px] rounded-lg hover:bg-zinc-800/5 dark:hover:bg-white/[7%] text-zinc-500 hover:text-zinc-800 dark:text-white/80 dark:hover:text-white">
             <div class="pl-3 pr-4">
                 <?php if (isset($component)) { $__componentOriginal298ff21bbc41cebb188cbb18c6c11bc0 = $component; } ?>

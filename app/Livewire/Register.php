@@ -10,17 +10,18 @@ use App\Models\Department;
 use App\Models\Unilevel;
 use App\Models\UnilevelTotal;
 use App\Models\User;
-use App\Models\UserData;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use PhpParser\Node\Expr\Cast\String_;
+use Illuminate\Support\Facades\Log;
+
+
 
 class Register extends Component
 {
@@ -31,6 +32,8 @@ class Register extends Component
     public $sex, $birthdate, $phone, $country_id, $department_id, $city_id, $address, $terms = false;
     public $countries = [], $departments = [], $cities = [];
     public $selectedCountry = '', $selectedDepartment = '', $selectedCity = '',  $city = '';
+
+    public $recaptcha_token = '';
 
     public bool $confirmingRegistration = false;
 
@@ -97,45 +100,86 @@ class Register extends Component
     {
         $this->reset('city_id');
     }
+    private function validateRecaptcha()
+    {
+        if (empty($this->recaptcha_token)) {
+            return false;
+        }
+        try {
+            $response = Http::asForm()->timeout(15)->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => config('services.recaptcha.secret'),
+                'response' => $this->recaptcha_token,
+                'remoteip' => request()->ip()
+            ]);
 
-    public function save()
+            $result = $response->json();
+
+            // Verificar que la respuesta sea exitosa y el score sea aceptable
+            return $result['success'] &&
+                isset($result['score']) &&
+                $result['score'] >= 0.5 && // Score mínimo para registro
+                $result['action'] === 'user_register'; // Acción específica para registro
+
+        } catch (\Exception $e) {
+            // Log del error para debugging
+            Log::error('reCAPTCHA validation error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function save() //
     {
         $this->validate();
+        // Validar reCAPTCHA
+        if (!$this->validateRecaptcha()) {
+            session()->flash('captcha', '⚠️ No se pudo verificar tu envío mediante reCAPTCHA. Esto puede ocurrir si tu conexión es inestable o si Google no pudo confirmar la seguridad del envío. Por favor, intenta nuevamente recargando la página.');
+            return;
+        }
 
         try {
-            DB::transaction(function () {
+            DB::transaction(function () { // 
+                // La creación del usuario y sus datos se encapsulan en un solo método para más limpieza
+                $user = $this->createUserWithDataAndLogConsent();
 
-                $user = $this->createUserWithData();
+                // El resto de la lógica de negocio MLM
                 $sponsor = User::where('username', $this->sponsor)->firstOrFail();
-
                 $this->processBinaryStructure($user->id, $sponsor->id);
                 $this->processUnilevelStructure($user->id, $sponsor->id);
+
+                // Disparar el evento de registro es una buena práctica
+                event(new Registered($user));
+
+                // Iniciar sesión con el usuario recién creado
+                Auth::login($user);
 
                 $this->confirmingRegistration = true;
             }, 5); // 5 intentos en caso de deadlock
 
         } catch (\Exception $e) {
-            logger()->error('Error en registro MLM: ' . $e->getMessage());
-            $this->addError('registration', 'No se pudo completar el registro.');
+            // Un log más detallado para debugging
+            logger()->error('Error en el proceso de registro MLM', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $this->all() // Cuidado con datos sensibles en logs
+            ]);
+            $this->addError('registration', 'Ocurrió un error inesperado al procesar tu registro. Por favor, intenta de nuevo.');
         }
     }
 
-    private function createUserWithData()
+    private function createUserWithDataAndLogConsent()
     {
-
+        // 1. Crear el usuario principal
         $user = User::create([
-            'username' => $this->username,
+            'username' => $this->username, // Es buena práctica guardar usernames en minúsculas
             'name' => $this->name,
             'last_name' => $this->last_name,
-            'last_name' => $this->last_name,
             'dni' => $this->dni,
-            'email' => $this->email,
+            'email' => $this->email, // Y también los emails
             'password' => Hash::make($this->password),
         ]);
 
-        // Crear datos del usuario
-        UserData::create([
-            'user_id' => $user->id,
+        // 2. Crear los datos adicionales del usuario
+        $user->userData()->create([ // Asumiendo que tienes una relación `userData()` en el modelo User
             'sex' => $this->sex,
             'birthdate' => $this->birthdate,
             'phone' => $this->phone,
@@ -146,7 +190,16 @@ class Register extends Component
             'address' => $this->address,
         ]);
 
-        Auth::login($user);
+        // 3. Crear el registro de consentimiento (La parte clave)
+        $user->consentLogs()->create([
+            'contract_version_accepted'       => config('legal.contract_version'),
+            'privacy_policy_version_accepted' => config('legal.privacy_version'),
+            'accepted_at'                     => now(),
+            'ip_address'                      => request()->ip(),
+            'user_agent'                      => request()->userAgent(),
+            'checkbox_text'                   => config('legal.checkbox_text'), // <--- Mucho mejor así
+        ]);
+
         return $user;
     }
 

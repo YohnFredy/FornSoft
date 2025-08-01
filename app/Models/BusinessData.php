@@ -11,14 +11,33 @@ class BusinessData extends Model
     use HasFactory;
 
     protected $fillable = [
-        'business_id', // ¡Asegúrate de que coincida con tu migración!
+        'business_id',
+        'store_type',
         'phone',
+        'whatsapp',
+        'website_url',
         'email',
-        'country_id',
-        'department_id',
-        'city_id',
+        'description',
+        'country',
+        'department',
         'city',
         'address',
+        'latitude',
+        'longitude',
+        'facebook_url',
+        'instagram_url',
+        'linkedin_url',
+        'youtube_url',
+        'tiktok_url',
+        'x_url',
+        'promo_video_url',
+        'additional_videos',
+        'custom_links',
+    ];
+
+     protected $casts = [
+        'additional_videos' => 'array',
+        'custom_links' => 'array',
     ];
 
     public function business(): BelongsTo

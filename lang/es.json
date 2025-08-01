@@ -1,4 +1,7 @@
 {
+    "online": "Virtual",
+    "physical": "Físico al público",
+    "hybrid": "Físico y virtual",
     "(and :count more error)": "(y :count error más)",
     "(and :count more errors)": "(y :count error más)|(y :count errores más)|(y :count errores más)",
     "A decryption key is required.": "Se requiere una clave de descifrado.",

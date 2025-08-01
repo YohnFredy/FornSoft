@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -19,7 +18,7 @@ class ProductForm extends Component
 
     public ?Product $product;
 
-    public $name = '', $description = '', $price = 0, $public_price = 0, $tax_percent = 19, $commission_income = 0, $pts_base = 0, $pts_bonus = 0, $pts_dist = 0, $maximum_discount = 0, $specifications = '', $information = '', $is_physical = 1, $stock = 0, $allow_backorder = 1, $category_id = '', $brand_id = null, $is_active = 1;
+    public $name = '', $description = '', $price = 0, $final_price = 0, $tax_percent = 19, $commission_income = 0, $pts_base = 0, $pts_bonus = 0, $pts_dist = 0, $maximum_discount = 0, $specifications = '', $information = '', $is_physical = 1, $stock = 0, $allow_backorder = 1, $category_id = '', $brand_id = null, $is_active = 1;
 
 
     public $newImages = [],  $images = [];
@@ -32,6 +31,7 @@ class ProductForm extends Component
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'numeric|min:0|max:9999999.99',
+            'tax_percent' => 'numeric|min:0|max:99',
             'commission_income' => 'numeric|min:0|max:999999.99',
             'pts_base' => 'numeric|min:0|max:999999.99',
             'pts_bonus' => 'numeric|min:0|max:999999.99',
@@ -56,24 +56,40 @@ class ProductForm extends Component
         return $value === '' ? 0 : $value;
     }
 
-    public function updatedPublicPrice($valor)
+
+    public function updatedFinalPrice($valor)
     {
         // Aseguramos que los valores sean válidos
-        $this->tax_percent = $this->getValidValue($this->tax_percent);
-        $valor = $this->getValidValue($valor);
+        $this->final_price = $this->getValidValue($valor);
+        $tax_percent = $this->getValidValue($this->tax_percent);
 
         // Cálculo de precio
-        $this->price = $valor / (1 + ($this->tax_percent / 100));
+        $this->price = round($this->final_price / (1 + ($tax_percent / 100)), 2);
+        $this->final_price = round(($this->price * $tax_percent / 100) + $this->price, 2);
     }
 
     public function updatedTaxPercent($valor)
     {
         // Aseguramos que los valores sean válidos
-        $this->public_price = $this->getValidValue($this->public_price);
         $valor = $this->getValidValue($valor);
+        $this->final_price = $this->getValidValue($this->final_price);
+        
 
         // Cálculo de precio
-        $this->price = $this->public_price / (1 + ($valor / 100));
+        $this->price = round($this->final_price / (1 + ($valor / 100)), 2);
+        $this->final_price = round(($this->price *  $valor / 100) + $this->price, 2);
+    }
+
+    public function updatedPrice($valor)
+    {
+        // Aseguramos que los valores sean válidos
+        $this->price = $this->getValidValue($valor);
+        $tax_percent = $this->getValidValue($this->tax_percent);
+
+
+        // Cálculo de precio
+
+        $this->final_price = round(($this->price *  $tax_percent / 100) + $this->price, 2);
     }
 
 
@@ -88,6 +104,8 @@ class ProductForm extends Component
             $this->loadProductData();
             $this->loadCategoryData();
             $this->isEditMode = true;
+
+            $this->final_price = round($this->final_price, 2);
         } else {
             $this->maximum_discount = 0;
         }
@@ -133,7 +151,7 @@ class ProductForm extends Component
     public function updateDatos($precioPublico, $ivaPorcentaje, $pts_base, $bonoInicioPorcentaje, $pts_bono, $descuentoPorcentaje, $pts_dist)
     {
 
-        $this->public_price = $precioPublico;
+        $this->final_price = $precioPublico;
         $this->tax_percent = $ivaPorcentaje;
         $this->commission_income = $bonoInicioPorcentaje;
         $this->pts_base = $pts_base;
@@ -141,13 +159,7 @@ class ProductForm extends Component
         $this->pts_dist = $pts_dist;
         $this->maximum_discount = $descuentoPorcentaje;
 
-
-        // Aseguramos que los valores sean válidos
-        $this->tax_percent = $this->getValidValue($this->tax_percent);
-        $valor = $this->getValidValue($this->public_price);
-
-        // Cálculo de precio
-        $this->price = $valor / (1 + ($this->tax_percent / 100));
+        $this->updatedFinalPrice($this->final_price);
     }
 
 

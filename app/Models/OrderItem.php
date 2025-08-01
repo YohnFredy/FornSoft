@@ -12,33 +12,27 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'name',
-        'final_price',
+        'unit_price',
         'pts',
         'quantity',
         'discount',
         'tax_percent',
         'tax_amount',
-        'subtotal',
-        'total',
+        'unit_sales_price',
         'totalPts',
     ];
 
     protected $casts = [
 
-        'final_price' => 'decimal:2',
+        'unit_price' => 'decimal:2',
         'pts' => 'decimal:2',
         'quantity' => 'integer',
         'discount' => 'decimal:2',
         'tax_percent' => 'decimal:2',
         'tax_amount' => 'decimal:2',
-        'subtotal' => 'decimal:2',
-        'total' => 'decimal:2',
+        'unit_sales_price' => 'decimal:2',
         'totalPts' => 'decimal:2',
     ];
-
-    protected $appends = ['total'];
-
-
 
     public function order()
     {

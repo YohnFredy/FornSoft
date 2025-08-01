@@ -81,62 +81,155 @@
             </div>
         </div>
 
-        <!-- Payment Summary -->
-        <div class="sm:bg-white rounded-lg sm:p-6 sm:border sm:border-neutral-200 sm:shadow-md text-center">
-            <div class="flex flex-col md:flex-row md:justify-between md:items-start">
-                {{-- Imagen en la mitad en pantallas grandes --}}
-                <div class="w-full md:w-1/2 flex justify-center md:justify-start mb-4 md:mb-0">
-                    <img src="https://www.agenciatravelfest.com/wp-content/uploads/2022/10/logos-medios-de-pago.jpg"
-                        class="w-full h-24 object-contain rounded-md" alt="Métodos de Pago">
-                </div>
 
-                {{-- Detalles de la orden --}}
-                <div class="w-full md:w-1/2 md:pl-6">
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">Subtotal productos:</span>
-                        <span>${{ number_format($order->subtotal, 0) }}</span>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="sm:bg-white sm:rounded-lg pt-8  sm:p-6 sm:shadow-md sm:border sm:border-neutral-200">
+        <h2 class="text-lg font-semibold text-primary uppercase flex items-center gap-2 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2" />
+                <line x1="2" x2="22" y1="10" y2="10" />
+            </svg>
+            Resumen de Pedido
+        </h2>
+        <div class="overflow-x-auto  sm:mx-0 rounded-lg border border-neutral-200">
+            <table class="w-full  text-sm text-left rtl:text-right text-neutral-600">
+                <thead class="text-xs bg-primary text-white uppercase">
+
+                    <tr>
+                        <th scope="col" class="px-4 sm:px-6 py-3">Producto</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Cant</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Precio unitario.</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Pts unitario</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Descuento</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Iva</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">%</th>
+                        <th scope="col" class="px-2 sm:px-6 py-3 text-center">Precio unitario venta</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    @foreach ($order->items as $item)
+                        <tr class="border-b border-neutral-200 hover:bg-neutral-50">
+                            <th scope="row"
+                                class="flex items-center px-4 sm:px-6 py-3 font-medium text-neutral-900 whitespace-nowrap">
+                                @if ($item->product->latestImage)
+                                    <img src="{{ asset('storage/' . $item->product->latestImage->path) }}"
+                                        alt="{{ $item->product->name }}" class="w-10 h-10 rounded-md object-cover">
+                                @else
+                                    <img src="{{ asset('images/default.png') }}" alt="{{ $item->product->name }}"
+                                        class="w-10 h-10 rounded-md object-cover">
+                                @endif
+                                <div class="ps-3 max-w-[180px] sm:max-w-none">
+                                    <div class="text-xs sm:text-sm font-semibold truncate">{{ $item->name }}
+                                    </div>
+                                </div>
+                            </th>
+                            <td class="px-2 sm:px-6 py-3 text-center">{{ $item->quantity }}</td>
+                            <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->unit_price) }}
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 text-center">{{ formatear_precio($item->pts) }}</td>
+                            <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->discount) }}
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->tax_amount) }}
+                            </td>
+
+                            <td class="px-2 sm:px-6 py-3 text-center">{{ formatear_precio($item->tax_percent) }}
+                            </td>
+                            <td class="px-2 sm:px-6 py-3 text-center">
+                                ${{ formatear_precio($item->unit_sales_price) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class=" sm:flex justify-end">
+            <div class="mt-4 sm:w-1/2">
+
+                <!-- Order Summary Card -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <!-- Order Details -->
+                    <div class="px-2 sm:px-6 py-1">
+                        <ul class="space-y-1">
+                            <!-- Subtotal -->
+                            <li class="flex justify-between items-center py-1">
+                                <span class="text-sm text-gray-600">Subtotal</span>
+                                <span class="text-sm font-medium text-gray-900">
+                                    ${{ formatear_precio($order->subtotal) }}
+                                </span>
+                            </li>
+
+                            <!-- Descuento -->
+                            @if ($order->discount > 0)
+                                <li class="flex justify-between items-center py-1">
+                                    <span class="text-sm text-gray-600">Descuento</span>
+                                    <span class="text-sm font-medium text-premium">
+                                        -${{ formatear_precio($order->discount) }}
+                                    </span>
+                                </li>
+                            @endif
+
+
+                            <!-- Total Bruto -->
+                            <li class="flex justify-between items-center py-1 border-t border-gray-100 pt-3">
+                                <span class="text-sm font-medium text-gray-700">Total Bruto</span>
+                                <span class="text-sm font-semibold text-gray-900">
+                                    ${{ formatear_precio($order->subtotal - $order->discount) }}
+                                </span>
+                            </li>
+
+                            <!-- Impuestos -->
+                            @if ($order->tax_amount > 0)
+                                <li class="bg-gray-50 -mx-6 px-6 py-1">
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">IVA</span>
+                                            <span class="text-sm text-gray-700">
+                                                ${{ formatear_precio($order->tax_amount) }}
+                                            </span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Otros impuestos</span>
+                                            <span class="text-sm text-gray-700">$0</span>
+                                        </div>
+                                        <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+                                            <span class="text-sm font-medium text-gray-700">Total impuestos</span>
+                                            <span class="text-sm font-semibold text-gray-900">
+                                                ${{ formatear_precio($order->tax_amount) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endif
+                        </ul>
                     </div>
 
-                    @if ($order->discount > 0)
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="font-semibold">Descuento:</span>
-                            <span class="text-red-600">- ${{ number_format($order->discount, 0) }}</span>
+                    <!-- Total Final -->
+                    <div class="bg-primary/5 border-t border-primary/20 px-2 sm:px-6 py-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold text-gray-900">Total a pagar</span>
+                            <span class="font-bold text-primary">
+                                ${{ formatear_precio($order->total) }}
+                            </span>
                         </div>
 
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="font-semibold">Subtotal descuento:</span>
-                            <span>${{ number_format($order->subtotal - $order->discount, 0) }}</span>
-                        </div>
-                    @endif
-
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">Subtotal (Sin IVA):</span>
-                        <span>${{ number_format($order->taxable_amount, 0) }}</span>
-                    </div>
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">IVA:</span>
-                        <span>${{ number_format($order->tax_amount, 0) }}</span>
-                    </div>
-
-                    @if ($order->shipping_cost > 0)
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="font-semibold">Envío:</span>
-                            <span>${{ number_format($order->shipping_cost, 0) }}</span>
-                        </div>
-                    @endif
-
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">Total a Pagar:</span>
-                        <span class="text-black font-bold text-lg">${{ number_format($order->total, 0) }}</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm text-primary mt-1 border-t pt-2">
-                        <span>Puntos Acumulados:</span>
-                        <span>{{ $order->total_pts }} pts</span>
+                        @if (isset($order->total_pts) && $order->total_pts > 0)
+                            <div class="mt-2 text-center">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-premium/5 text-premium">
+                                    ⭐ Total {{ formatear_precio($order->total_pts) }} puntos
+                                </span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 

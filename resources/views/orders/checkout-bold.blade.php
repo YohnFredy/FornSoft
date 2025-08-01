@@ -155,9 +155,13 @@
                         <tr>
                             <th scope="col" class="px-4 sm:px-6 py-3">Producto</th>
                             <th scope="col" class="px-2 sm:px-6 py-3 text-center">Cant</th>
-                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Prec. Unit.</th>
-                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Pts. Unit.</th>
-                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Subtotal</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Precio unitario.</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Pts unitario</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Descuento</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Iva</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">%</th>
+                            <th scope="col" class="px-2 sm:px-6 py-3 text-center">Precio unitario venta</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -182,13 +186,18 @@
                                     </div>
                                 </th>
                                 <td class="px-2 sm:px-6 py-3 text-center">{{ $item->quantity }}</td>
-                                <td class="px-2 sm:px-6 py-3 text-center">${{ number_format($item->final_price, 0) }}
+                                <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->unit_price) }}
                                 </td>
-                                <td class="px-2 sm:px-6 py-3 text-center">{{ number_format($item->pts, 2) }}</td>
-                                <td class="px-2 sm:px-6 py-3 text-center">
-                                    ${{ number_format($item->final_price * $item->quantity, 0) }}
+                                <td class="px-2 sm:px-6 py-3 text-center">{{ formatear_precio($item->pts) }}</td>
+                                <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->discount) }}
+                                </td>
+                                <td class="px-2 sm:px-6 py-3 text-center">${{ formatear_precio($item->tax_amount) }}
                                 </td>
 
+                                <td class="px-2 sm:px-6 py-3 text-center">{{ formatear_precio($item->tax_percent) }}
+                                </td>
+                                <td class="px-2 sm:px-6 py-3 text-center">
+                                    ${{ formatear_precio($item->unit_sales_price) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -197,103 +206,157 @@
 
             <div class=" sm:flex justify-end">
                 <div class="mt-4 sm:w-1/2">
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">Subtotal productos:</span>
-                        <span>${{ number_format($subtotal, 0) }}</span>
-                    </div>
 
-                    @if ($order->discount > 0)
-                        <div class="flex justify-between items-center border-t pt-2 ">
-                            <span class="font-semibold">Descuento:</span>
-                            <span class="text-danger">- ${{ number_format($order->discount, 0) }}</span>
+                    <!-- Order Summary Card -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <!-- Order Details -->
+                        <div class="px-2 sm:px-6 py-1">
+                            <ul class="space-y-1">
+                                <!-- Subtotal -->
+                                <li class="flex justify-between items-center py-1">
+                                    <span class="text-sm text-gray-600">Subtotal</span>
+                                    <span class="text-sm font-medium text-gray-900">
+                                        ${{ formatear_precio($order->subtotal) }}
+                                    </span>
+                                </li>
+
+                                <!-- Descuento -->
+                                @if ($order->discount > 0)
+                                    <li class="flex justify-between items-center py-1">
+                                        <span class="text-sm text-gray-600">Descuento</span>
+                                        <span class="text-sm font-medium text-premium">
+                                            -${{ formatear_precio($order->discount) }}
+                                        </span>
+                                    </li>
+                                @endif
+
+
+                                <!-- Total Bruto -->
+                                <li class="flex justify-between items-center py-1 border-t border-gray-100 pt-3">
+                                    <span class="text-sm font-medium text-gray-700">Total Bruto</span>
+                                    <span class="text-sm font-semibold text-gray-900">
+                                        ${{ formatear_precio($order->subtotal - $order->discount) }}
+                                    </span>
+                                </li>
+
+                                <!-- Impuestos -->
+                                @if ($order->tax_amount > 0)
+                                    <li class="bg-gray-50 -mx-6 px-6 py-1">
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-sm text-gray-600">IVA</span>
+                                                <span class="text-sm text-gray-700">
+                                                    ${{ formatear_precio($order->tax_amount) }}
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-sm text-gray-600">Otros impuestos</span>
+                                                <span class="text-sm text-gray-700">$0</span>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                <span class="text-sm font-medium text-gray-700">Total impuestos</span>
+                                                <span class="text-sm font-semibold text-gray-900">
+                                                    ${{ formatear_precio($order->tax_amount) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endif
+                            </ul>
                         </div>
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="font-semibold"> Subtotal descuento:</span>
-                            <span>${{ number_format($subtotal - $order->discount, 0) }}</span>
+
+                        <!-- Total Final -->
+                        <div class="bg-primary/5 border-t border-primary/20 px-2 sm:px-6 py-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-900">Total a pagar</span>
+                                <span class="font-bold text-primary">
+                                    ${{ formatear_precio($order->total) }}
+                                </span>
+                            </div>
+
+                            @if (isset($order->total_pts) && $order->total_pts > 0)
+                                <div class="mt-2 text-center">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-premium/5 text-premium">
+                                        ⭐ Ganarás {{ formatear_precio($order->total_pts) }} puntos
+                                    </span>
+                                </div>
+                            @endif
                         </div>
-                    @endif
-
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold"> Subtotal (Sin IVA):</span>
-                        <span>${{ number_format($order->taxable_amount, 0) }}</span>
-                    </div>
-
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold"> IVA:</span>
-                        <span>${{ number_format($order->tax_amount, 0) }}</span>
-                    </div>
-
-                    @if ($order->shipping_cost > 0)
-                        <div class="flex justify-between items-center border-t pt-2">
-                            <span class="font-semibold">Envío:</span>
-                            <span>${{ number_format($order->shipping_cost, 0) }}</span>
-                        </div>
-                    @endif
-
-                    <div class="flex justify-between items-center border-t pt-2">
-                        <span class="font-semibold">Total a Pagar:</span>
-                        <span class="">${{ number_format($order->total, 0) }}</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm text-primary mt-1 border-t pt-2">
-                        <span>Puntos Acumulados:</span>
-                        <span>{{ $order->total_pts }} pts</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="space-y-6 border-t-2 pt-8 sm:border-t-0 sm:pt-0">
-            <!-- Payment Methods -->
+            <!-- Métodos de Pago -->
             <div class="sm:bg-white rounded-lg sm:p-6 sm:shadow-md sm:border sm:border-neutral-200">
                 <h2 class="text-lg sm:text-xl font-semibold text-primary uppercase mb-4">Métodos de Pago</h2>
 
-                <div class="space-y-5">
+                <div class="space-y-6">
                     <!-- Transferencia Bancaria -->
                     <div class="bg-neutral-50 p-4 sm:p-5 rounded-md border border-neutral-300">
-                        <h3 class="font-semibold text-primary text-base sm:text-lg mb-2">Pago por Transferencia
+                        <h3 class="font-semibold text-primary text-base sm:text-lg mb-3">Pago por Transferencia
                             Bancaria</h3>
 
-                        <div class="text-neutral-600 sm:text-base leading-relaxed">
-                            <p class=" mb-2">
-                                La orden ha sido generada exitosamente.
-                            </p>
+                        <div class="text-neutral-700 sm:text-base leading-relaxed space-y-3">
+                            <p>La orden ha sido generada exitosamente.</p>
 
-                            <strong>Tienes dos opciones para realizar el pago:</strong>
-
-                            <ul class="list-disc ml-4 md:ml-8  mb-2">
-                                <li>
-                                    A través de nuestra pasarela de pagos (ver más abajo).
-                                </li>
-                                <li>
-                                    Mediante transferencia bancaria a través de Nequi, Bancolombia, Daviplata u otros
-                                    medios
-                                    disponibles.
-                                </li>
+                            <p><strong>Opciones de pago disponibles:</strong></p>
+                            <ul class="list-disc space-y-1 ml-10 text-primary">
+                                <li>Pasarela de pagos (ver más abajo).</li>
+                                <li>Transferencia bancaria directa.</li>
                             </ul>
 
-                            <p class=" mb-1">
-                                Si eliges pagar por transferencia, puedes hacerlo directamente a nuestra cuenta Nequi
-                                asociada al número
-                                <strong class="underline whitespace-nowrap">(+57) 314 520-78-14</strong>.
-                            </p>
-                            <p>
-                                Este número también es nuestro contacto de WhatsApp, así que por favor escríbenos allí
-                                para
-                                confirmar tu pago y enviarnos el comprobante.
+                            <p>Si prefieres realizar una transferencia bancaria, puedes hacerlo a la siguiente
+                                cuenta:
                             </p>
 
+                            <div class="bg-white border border-primary rounded-md p-4 text-sm sm:text-base space-y-2">
+
+                                <p>
+                                    <i class="fas fa-university text-primary mr-2"></i>
+                                    <strong>Entidad:</strong> Bancolombia
+                                </p>
+                                <p>
+                                    <i class="fas fa-wallet text-primary mr-2"></i>
+                                    <strong>Tipo de cuenta:</strong> Ahorros
+                                </p>
+                                <p>
+                                    <i class="fas fa-hashtag text-primary mr-2"></i>
+                                    <strong>Número de cuenta:</strong>
+                                    <span class="font-mono whitespace-nowrap">808-000157-69</span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-user-tie text-primary mr-2"></i>
+                                    <strong>Titular:</strong> FORNUVI S.A.S.
+                                </p>
+                                <p>
+                                    <i class="fas fa-id-card text-primary mr-2"></i>
+                                    <strong>NIT:</strong> 901953881
+                                </p>
+                            </div>
+
+                            <p class="pt-2">
+                                Una vez realices el pago, por favor envía el comprobante o pantallazo al siguiente
+                                número de WhatsApp:
+                                <strong class="underline text-primary">(+57) 314 520 7814</strong>. Estaremos
+                                atentos
+                                para validar y procesar tu pedido.
+                            </p>
                         </div>
                     </div>
 
                     <!-- Pasarela de Pago -->
                     <div class="bg-neutral-50 p-4 sm:p-5 rounded-md border border-neutral-300">
-                        <h3 class="font-semibold text-primary text-base sm:text-lg mb-2">Pago con Pasarela Bold</h3>
-                        <p class="text-neutral-600 sm:text-base leading-relaxed">
-                            Haga clic en el botón a continuación para proceder con el pago a través de nuestra pasarela
-                            segura.
+                        <h3 class="font-semibold text-primary text-base sm:text-lg mb-3">Pago con Pasarela Bold
+                        </h3>
+                        <p class="text-neutral-700 sm:text-base leading-relaxed">
+                            También puedes realizar tu pago de forma segura en línea a través de nuestra pasarela de
+                            pagos.
                         </p>
                         <div class="mt-4">
-                            <!-- Botón personalizado -->
                             <x-button-dynamic id="custom-button-payment">
                                 🔒 Pago 100% seguro con Bold
                             </x-button-dynamic>
@@ -302,6 +365,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
@@ -340,6 +404,8 @@
                     description: "{{ $boldCheckoutConfig['description'] }}",
                     redirectionUrl: "{{ $boldCheckoutConfig['redirectionUrl'] }}",
                     expirationDate: "{{ $boldCheckoutConfig['expiration-date'] }}",
+                    dataTax: "{{ $boldCheckoutConfig['tax'] }}",
+                    /* dataTax: {!! $boldCheckoutConfig['tax'] !!}, */
                 });
 
                 const customButton = document.getElementById('custom-button-payment');

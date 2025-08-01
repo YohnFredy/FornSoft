@@ -124,7 +124,7 @@ class ProductListing extends Component
             'newest' => ['created_at', 'desc']
         ];
 
-        $sortColumn = $sortOptions[$this->sortBy] ?? ['created_at', 'desc'];
+        $sortColumn = $sortOptions[$this->sortBy] ?? ['pts_base', 'desc'];
         $productsQuery->orderBy(...$sortColumn);
 
         // Paginación

@@ -12,11 +12,7 @@
 
     <div class="bg-white overflow-hidden shadow-lg shadow-ink border border-neutral-300 rounded-lg">
         <div class="p-6 sm:p-8 bg-white">
-            
-
                 @livewire('admin.products.product-form')
-
-           
         </div>
     </div>
 </x-layouts.admin>

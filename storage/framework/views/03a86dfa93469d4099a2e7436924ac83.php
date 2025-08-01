@@ -40,13 +40,13 @@ unset($__defined_vars); ?>
 
 <div class="relative mb-5">
     <!--[if BLOCK]><![endif]--><?php if($label): ?>
-        <label for="<?php echo e($for); ?>" class="block mb-2 text-sm font-medium text-primary "><?php echo e($label); ?></label>
+        <label for="<?php echo e($for); ?>" class="block mb-2 text-sm font-medium text-primary"><?php echo e($label); ?></label>
     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
     <select id="<?php echo e($for); ?>" name="<?php echo e($for); ?>"
         <?php echo e($attributes->merge([
             'class' => 'block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg 
-                            focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
+                                    focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
         ])); ?>>
         <option value=""><?php echo e($placeholder); ?></option>
 
@@ -67,16 +67,16 @@ unset($__defined_vars); ?>
                 clip-rule="evenodd" />
         </svg>
     </div>
-</div>
 
-<!--[if BLOCK]><![endif]--><?php $__errorArgs = [$for];
+    <!--[if BLOCK]><![endif]--><?php $__errorArgs = [$for];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-    <p class="text-sm text-danger"><?php echo e($message); ?></p>
-<?php unset($message);
+        <p class="text-sm text-danger"><?php echo e($message); ?></p>
+    <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+</div>
 <?php /**PATH C:\Users\Fredy\Herd\fornuvi\resources\views/components/select.blade.php ENDPATH**/ ?>

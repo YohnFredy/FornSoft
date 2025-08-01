@@ -1,37 +1,83 @@
 @php
 
     $groups = [
-        'platform' => [
-            [
-                'name' => 'Dashboard',
-                'icon' => 'home',
-                'route' => 'admin.index',
-                'routeIs' => 'admin.index',
+        [
+            'heading' => 'Plataforma',
+            'expandable' => false,
+            'items' => [
+                [
+                    'name' => 'Dashboard',
+                    'icon' => 'home',
+                    'route' => 'admin.index',
+                    'routeIs' => 'admin.index',
+                ],
+                [
+                    'name' => 'Usuarios',
+                    'icon' => 'user',
+                    'route' => 'admin.users.index',
+                    'routeIs' => 'admin.users.index',
+                ],
+                [
+                    'name' => 'Categoria',
+                    'icon' => 'tag',
+                    'route' => 'admin.categories.index',
+                    'routeIs' => 'admin.categories.*',
+                ],
+                [
+                    'name' => 'Producto',
+                    'icon' => 'shopping-cart',
+                    'route' => 'admin.products.index',
+                    'routeIs' => 'admin.products.*',
+                ],
+                [
+                    'name' => 'Generar',
+                    'icon' => 'calculator',
+                    'route' => 'admin.products.index',
+                    'routeIs' => 'admin.products.*',
+                ],
             ],
-            [
-                'name' => 'Categoria',
-                'icon' => 'tag',
-                'route' => 'admin.categories.index',
-                'routeIs' => 'admin.categories.*',
-            ],
-            [
-                'name' => 'Producto',
-                'icon' => 'shopping-cart',
-                'route' => 'admin.products.index',
-                'routeIs' => 'admin.products.*',
-            ],
-            
         ],
-
-        'Tienda' => [
-            /* [
-                'name' => 'Home',
-                'icon' => 'home',
-                'route' => 'home',
-            ], */
+        [
+            'heading' => 'Mis Favoritos',
+            'expandable' => true,
+            'items' => [
+                [
+                    'name' => 'Producto',
+                    'icon' => 'shopping-cart',
+                    'route' => 'admin.products.index',
+                    'routeIs' => 'admin.products.*',
+                ],
+                
+            ],
+        ],
+        [
+            'heading' => 'Tienda',
+            'expandable' => false,
+            'items' => [
+                [
+                    'type' => 'route',
+                    'name' => 'Home',
+                    'icon' => 'home',
+                    'route' => 'home',
+                    'routeIs' => 'home',
+                ],
+                [
+                    'type' => 'route',
+                    'name' => 'Productos',
+                    'icon' => 'shopping-cart',
+                    'route' => 'products.index',
+                    'routeIs' => 'products*',
+                ],
+                [
+                    'type' => 'route',
+                    'name' => 'Oficina',
+                    'icon' => 'building-office-2',
+                    'route' => 'dashboard',
+                    'routeIs' => 'dashboard',
+                ],
+            ],
         ],
     ];
-
 @endphp
 
 
@@ -46,20 +92,37 @@
     <flux:sidebar sticky stashable class=" shadow-lg bg-zinc-50  shadow-ink">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
+        <a href="{{ route('admin.index') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
             <x-app-logo />
         </a>
 
         <flux:navlist variant="outline">
-            @foreach ($groups as $group => $links)
-                <flux:navlist.group :heading="$group" class="grid">
-                    @foreach ($links as $link)
-                        <flux:navlist.item :icon="$link['icon']" :href="route($link['route'])"
-                            :current="request()->routeIs($link['routeIs'])" wire:navigate>
-                            {{ __($link['name']) }}
-                        </flux:navlist.item>
-                    @endforeach
-                </flux:navlist.group>
+            @foreach ($groups as $group)
+                @php
+                    $heading = $group['heading'];
+                    $expandable = $group['expandable'] ?? false;
+                    $items = $group['items'];
+                @endphp
+
+                @if ($expandable)
+                    <flux:navlist.group expandable :heading="$heading">
+                        @foreach ($items as $item)
+                            <flux:navlist.item :icon="$item['icon']" :href="route($item['route'])"
+                                :current="request()->routeIs($item['routeIs'])" wire:navigate>
+                                {{ __($item['name']) }}
+                            </flux:navlist.item>
+                        @endforeach
+                    </flux:navlist.group>
+                @else
+                    <flux:navlist.group :heading="$heading" class="grid">
+                        @foreach ($items as $item)
+                            <flux:navlist.item :icon="$item['icon']" :href="route($item['route'])"
+                                :current="request()->routeIs($item['routeIs'])" wire:navigate>
+                                {{ __($item['name']) }}
+                            </flux:navlist.item>
+                        @endforeach
+                    </flux:navlist.group>
+                @endif
             @endforeach
         </flux:navlist>
 
@@ -158,7 +221,7 @@
 
     @fluxScripts
 
-   
+
 </body>
 
 </html>

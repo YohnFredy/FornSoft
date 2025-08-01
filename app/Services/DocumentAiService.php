@@ -172,11 +172,6 @@ class DocumentAiService
 
     // ... (mapExtractedData y __destruct)
 
-  
-
-
-
-
     public function mapExtractedData(array $ocrResponse): array
     {
         $entities = $ocrResponse['entities'] ?? [];

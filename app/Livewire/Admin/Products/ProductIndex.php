@@ -43,7 +43,7 @@ class ProductIndex extends Component
             }
         }
 
-        $products = $products->paginate(5);
+        $products = $products->orderBy('id', 'desc')->paginate(5);
 
         return view('livewire.admin.products.product-index', [
             'products' => $products

@@ -7,19 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'merchant_id',
-        'invoice_number_ocr',
-        'total_amount_ocr',
-        'invoice_date_ocr',
-        'currency_ocr',
-        'supplier_name_ocr',
-        'supplier_id_number_ocr',
+        'business_data_id',
+        'company_name',
+        'nit',
+        'invoice_number',
+        'total_amount',
+        'pts',
+        'invoice_date',
+        'currency',
         'image_path',
-        'raw_ocr_response',
         'status',
         'review_notes',
     ];
@@ -33,14 +33,4 @@ class Invoice extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class);
-    }
-
-    public function merchantBranch()
-{
-    return $this->belongsTo(MerchantBranch::class);
-}
 }

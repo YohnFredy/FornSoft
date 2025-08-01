@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class Product extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'slug',
@@ -74,8 +74,6 @@ class Product extends Model
         return $this->stock > 0 || $this->allow_backorder;
     }
 
-
-
     public static function boot()
     {
         parent::boot();
@@ -85,12 +83,25 @@ class Product extends Model
         });
     }
 
-    public static function generateSlug($name)
+    /*  public static function generateSlug($name)
     {
         $slug = Str::slug($name);
         $count = static::where('slug', 'LIKE', "{$slug}%")->count();
 
         return $count ? "{$slug}-{$count}" : $slug;
+    } */
+    public static function generateSlug($name)
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $i = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$i}";
+            $i++;
+        }
+
+        return $slug;
     }
 
     public function getRouteKeyName()

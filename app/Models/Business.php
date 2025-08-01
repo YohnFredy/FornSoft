@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Business extends Model
 {
@@ -14,6 +15,10 @@ class Business extends Model
     protected $fillable = [
         'name',
         'nit',
+        'user_id',
+        'percentage',
+        'email',
+        'password',
     ];
 
     public function categories(): BelongsToMany

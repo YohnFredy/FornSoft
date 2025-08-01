@@ -7,13 +7,13 @@
 
 <div class="relative mb-5">
     @if ($label)
-        <label for="{{ $for }}" class="block mb-2 text-sm font-medium text-primary ">{{ $label }}</label>
+        <label for="{{ $for }}" class="block mb-2 text-sm font-medium text-primary">{{ $label }}</label>
     @endif
 
     <select id="{{ $for }}" name="{{ $for }}"
         {{ $attributes->merge([
             'class' => 'block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg 
-                            focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
+                                    focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
         ]) }}>
         <option value="">{{ $placeholder }}</option>
 
@@ -33,8 +33,8 @@
                 clip-rule="evenodd" />
         </svg>
     </div>
-</div>
 
-@error($for)
-    <p class="text-sm text-danger">{{ $message }}</p>
-@enderror
+    @error($for)
+        <p class="text-sm text-danger">{{ $message }}</p>
+    @enderror
+</div>

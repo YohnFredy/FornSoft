@@ -23,219 +23,231 @@
     @endif
 
     <!-- Hero Section -->
-<section id="inicio" class="p-4 sm:p-10 border border-primary/10 bg-primary/5 rounded-lg">
-    <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
-        <div class="space-y-4 sm:space-y-6 text-center md:text-left">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary leading-tight">
-                Bienvenido a Fornuvi
-            </h1>
-            <p class="text-base sm:text-lg md:text-xl text-ink font-light">
-                Calidad, Oportunidad y Crecimiento. Una compañía en el sector de salud y bienestar a través de un
-                sistema global de asociación.
-            </p>
-
-            <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                <a href="#contacto">
-                    <flux:button variant="primary">
-                        Comienza Hoy
-                    </flux:button>
-                </a>
-            </div>
-        </div>
-
-        <!-- Imagen ahora visible en móviles pero más pequeña -->
-        <div class="flex justify-center md:justify-end">
-            <img src="https://us.123rf.com/450wm/zhunsky/zhunsky2304/zhunsky230400043/201771464-globo-en-manos-humanas-concepto-de-conservaci%C3%B3n-ambiental-renderizado-3d.jpg?ver=6"
-                alt="ActivosNetwork Oportunidades"
-                class="w-40 sm:w-56 md:w-full rounded-lg shadow-lg shadow-ink">
-        </div>
-    </div>
-</section>
-
-
-<!-- Nuestra Misión -->
-<section class="py-6 sm:py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-col-reverse md:flex-row items-center gap-8">
-            
-            <!-- Texto -->
-            <div class="md:w-1/2 text-center md:text-left">
-                <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-primary">Nuestra Misión</h2>
-                <p class="text-base sm:text-lg text-ink leading-relaxed mb-4">
-                    En Fornuvi creemos en la excelencia, la innovación y la oportunidad. Nuestra misión es ofrecer
-                    productos de la más alta calidad a través de nuestra tienda online, brindando a nuestros clientes 
-                    una experiencia de compra excepcional con productos naturales, saludables y confiables.
+    <section id="inicio" class="p-4 sm:p-10 border border-primary/10 bg-primary/5 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
+            <div class="space-y-4 sm:space-y-6 text-center md:text-left">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary leading-tight">
+                    Bienvenido a Fornuvi
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl text-ink font-light">
+                    Calidad, Oportunidad y Crecimiento. Una compañía en el sector de salud y bienestar a través de un
+                    sistema global de asociación.
                 </p>
-                <p class="text-base sm:text-lg text-ink leading-relaxed">
-                    Nos especializamos en la comercialización de productos propios y de terceros, asegurando que cumplan 
-                    con los más altos estándares de calidad y competitividad en el mercado.
-                </p>
-                <div class="mt-6 sm:mt-8">
-                    <a href="#" class="text-secondary hover:text-primary font-medium inline-flex items-center group">
-                        Conoce más sobre nosotros
-                        <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
+
+                <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                    <a href="#contacto">
+                        <flux:button variant="primary">
+                            Comienza Hoy
+                        </flux:button>
                     </a>
                 </div>
             </div>
 
-            <!-- Imagen -->
-            <div class="md:w-1/2 flex justify-center">
-                <img src="https://d1ih8jugeo2m5m.cloudfront.net/2024/09/oportunidades_de_negocio.jpg"
-                    alt="Productos naturales Fornuvi" 
-                    class="w-full max-w-xs sm:max-w-sm md:max-w-full rounded-lg shadow-xl">
+            <!-- Imagen ahora visible en móviles pero más pequeña -->
+            <div class="flex justify-center md:justify-end">
+                <img src="https://us.123rf.com/450wm/zhunsky/zhunsky2304/zhunsky230400043/201771464-globo-en-manos-humanas-concepto-de-conservaci%C3%B3n-ambiental-renderizado-3d.jpg?ver=6"
+                    alt="ActivosNetwork Oportunidades" class="w-40 sm:w-56 md:w-full rounded-lg shadow-lg shadow-ink">
             </div>
-
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Tienda en Línea -->
-<section class="py-6 sm:py-16 bg-neutral-50">
-    <div class="container mx-auto px-4">
-        
-        <!-- Encabezado -->
-        <div class="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
-            <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-4">
-                Una Tienda en Línea para Todos
-            </h2>
-            <p class="text-base sm:text-lg text-ink leading-relaxed">
-                Nuestra plataforma ofrece una amplia variedad de productos naturales y de otros nichos 
-                cuidadosamente seleccionados, con la calidad y confianza que mereces.
-            </p>
+
+    <!-- Nuestra Misión -->
+    <section class="py-6 sm:py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col-reverse md:flex-row items-center gap-8">
+
+                <!-- Texto -->
+                <div class="md:w-1/2 text-center md:text-left">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-primary">Nuestra Misión</h2>
+                    <p class="text-base sm:text-lg text-ink leading-relaxed mb-4">
+                        En Fornuvi creemos en la excelencia, la innovación y la oportunidad. Nuestra misión es ofrecer
+                        productos de la más alta calidad a través de nuestra tienda online, brindando a nuestros
+                        clientes
+                        una experiencia de compra excepcional con productos naturales, saludables y confiables.
+                    </p>
+                    <p class="text-base sm:text-lg text-ink leading-relaxed">
+                        Nos especializamos en la comercialización de productos propios y de terceros, asegurando que
+                        cumplan
+                        con los más altos estándares de calidad y competitividad en el mercado.
+                    </p>
+                    <div class="mt-6 sm:mt-8">
+                        <a href="#"
+                            class="text-secondary hover:text-primary font-medium inline-flex items-center group">
+                            Conoce más sobre nosotros
+                            <svg class="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://d1ih8jugeo2m5m.cloudfront.net/2024/09/oportunidades_de_negocio.jpg"
+                        alt="Productos naturales Fornuvi"
+                        class="w-full max-w-xs sm:max-w-sm md:max-w-full rounded-lg shadow-xl">
+                </div>
+
+            </div>
         </div>
+    </section>
 
-        <!-- Tarjetas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            
-            <!-- Tarjeta 1 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                <div class="h-1 bg-primary"></div>
-                <div class="p-6 text-center">
-                    <div class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-leaf text-2xl"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Productos Naturales</h3>
-                    <p class="text-ink mb-4">
-                        Seleccionamos cuidadosamente productos naturales que aportan bienestar y salud para tu vida diaria.
-                    </p>
-                    <a href="#" class="text-secondary hover:text-primary font-medium">Ver productos</a>
-                </div>
-            </div>
+    <!-- Tienda en Línea -->
+    <section class="py-6 sm:py-16 bg-neutral-50">
+        <div class="container mx-auto px-4">
 
-            <!-- Tarjeta 2 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                <div class="h-1 bg-primary"></div>
-                <div class="p-6 text-center">
-                    <div class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-check-circle text-2xl"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Calidad Garantizada</h3>
-                    <p class="text-ink mb-4">
-                        Cada artículo en Fornuvi cumple con nuestros estrictos criterios de calidad y efectividad.
-                    </p>
-                    <a href="#" class="text-secondary hover:text-primary font-medium">Nuestros estándares</a>
-                </div>
-            </div>
-
-            <!-- Tarjeta 3 -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                <div class="h-1 bg-primary"></div>
-                <div class="p-6 text-center">
-                    <div class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-tag text-2xl"></i>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Precios Competitivos</h3>
-                    <p class="text-ink mb-4">
-                        Mantenemos precios accesibles para que puedas disfrutar de productos de primer nivel sin comprometer tu presupuesto.
-                    </p>
-                    <a href="#" class="text-secondary hover:text-primary font-medium">Ver ofertas</a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-</section>
-
-<!-- Programa de Afiliados -->
-<section class="py-6 sm:py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="flex flex-col lg:flex-row-reverse items-center gap-6 sm:gap-12">
-            <div class="w-full lg:w-1/2">
-                <img src="https://www.kupakia.com/wp-content/uploads/2024/07/nuevas-oportunidades-de-negocios.jpg"
-                    alt="Programa de afiliados Fornuvi"
-                    class="rounded-lg shadow-md w-full h-auto max-w-md mx-auto lg:max-w-none" />
-            </div>
-            <div class="w-full lg:w-1/2 text-center lg:text-left max-w-2xl">
-                <h2 class="text-3xl font-bold mb-6 text-primary">Únete como Afiliado y Genera Ingresos</h2>
-                <p class="text-lg mb-5 text-ink leading-relaxed">
-                    Fornuvi no solo es una tienda online, es una oportunidad de crecimiento y desarrollo financiero.
-                    Si buscas una manera de generar ingresos de forma innovadora y rentable, nuestro sistema de
-                    afiliados es para ti.
+            <!-- Encabezado -->
+            <div class="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
+                <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-4">
+                    Una Tienda en Línea para Todos
+                </h2>
+                <p class="text-base sm:text-lg text-ink leading-relaxed">
+                    Nuestra plataforma ofrece una amplia variedad de productos naturales y de otros nichos
+                    cuidadosamente seleccionados, con la calidad y confianza que mereces.
                 </p>
-                <p class="text-lg mb-5 text-ink leading-relaxed">
-                    Al ser parte de nuestra red de afiliados, podrás acceder a múltiples beneficios diseñados para
-                    impulsar tu éxito dentro de la empresa.
+            </div>
+
+            <!-- Tarjetas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+
+                <!-- Tarjeta 1 -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <div class="h-1 bg-primary"></div>
+                    <div class="p-6 text-center">
+                        <div
+                            class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-leaf text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Productos Naturales</h3>
+                        <p class="text-ink mb-4">
+                            Seleccionamos cuidadosamente productos naturales que aportan bienestar y salud para tu vida
+                            diaria.
+                        </p>
+                        <a href="#" class="text-secondary hover:text-primary font-medium">Ver productos</a>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <div class="h-1 bg-primary"></div>
+                    <div class="p-6 text-center">
+                        <div
+                            class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-check-circle text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Calidad Garantizada</h3>
+                        <p class="text-ink mb-4">
+                            Cada artículo en Fornuvi cumple con nuestros estrictos criterios de calidad y efectividad.
+                        </p>
+                        <a href="#" class="text-secondary hover:text-primary font-medium">Nuestros estándares</a>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <div class="h-1 bg-primary"></div>
+                    <div class="p-6 text-center">
+                        <div
+                            class="w-16 h-16 bg-premium/10 text-premium rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-tag text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-semibold text-primary mb-3">Precios Competitivos</h3>
+                        <p class="text-ink mb-4">
+                            Mantenemos precios accesibles para que puedas disfrutar de productos de primer nivel sin
+                            comprometer tu presupuesto.
+                        </p>
+                        <a href="#" class="text-secondary hover:text-primary font-medium">Ver ofertas</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Programa de Afiliados -->
+    <section class="py-6 sm:py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row-reverse items-center gap-6 sm:gap-12">
+                <div class="w-full lg:w-1/2">
+                    <img src="https://www.kupakia.com/wp-content/uploads/2024/07/nuevas-oportunidades-de-negocios.jpg"
+                        alt="Programa de afiliados Fornuvi"
+                        class="rounded-lg shadow-md w-full h-auto max-w-md mx-auto lg:max-w-none" />
+                </div>
+                <div class="w-full lg:w-1/2 text-center lg:text-left max-w-2xl">
+                    <h2 class="text-3xl font-bold mb-6 text-primary">Únete como Afiliado y Genera Ingresos</h2>
+                    <p class="text-lg mb-5 text-ink leading-relaxed">
+                        Fornuvi no solo es una tienda online, es una oportunidad de crecimiento y desarrollo financiero.
+                        Si buscas una manera de generar ingresos de forma innovadora y rentable, nuestro sistema de
+                        afiliados es para ti.
+                    </p>
+                    <p class="text-lg mb-5 text-ink leading-relaxed">
+                        Al ser parte de nuestra red de afiliados, podrás acceder a múltiples beneficios diseñados para
+                        impulsar tu éxito dentro de la empresa.
+                    </p>
+                    <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r mb-6">
+                        <p class="italic text-primary">
+                            "Nuestro programa te brinda la posibilidad de generar ingresos de manera escalonada y
+                            sostenible, dependiendo de tu crecimiento y desempeño."
+                        </p>
+                    </div>
+                    <a href="#"
+                        class="inline-block bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg shadow transition transform hover:translate-y-1">
+                        Conoce el Programa de Afiliados
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bolsa Global -->
+    <section class="py-6 sm:py-16 bg-gradient-to-r from-secondary via-primary to-ink text-white mt-6 sm:mt-0">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
+                <h2 class="text-3xl font-bold mb-4 sm:mb-6">Bolsa Global de Crecimiento</h2>
+                <p class="text-lg sm:text-xl leading-relaxed">
+                    Un aspecto único de nuestro modelo de negocio que recompensa el esfuerzo y el crecimiento.
                 </p>
-                <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r mb-6">
-                    <p class="italic text-primary">
-                        "Nuestro programa te brinda la posibilidad de generar ingresos de manera escalonada y
-                        sostenible, dependiendo de tu crecimiento y desempeño."
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white/10 rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-white/20">
+                    <div class="text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 sm:mb-4">Distribución Mensual</h3>
+                    <p class="text-white/90 text-sm sm:text-base">
+                        Cada mes, un porcentaje de todos los ingresos generados por la compañía se acumula en esta bolsa
+                        y se distribuye entre nuestros afiliados activos.
                     </p>
                 </div>
+
+                <div class="bg-white/10 rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-white/20">
+                    <div class="text-4xl mb-4">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 sm:mb-4">Recompensa al Esfuerzo</h3>
+                    <p class="text-white/90 text-sm sm:text-base">
+                        La asignación de estos fondos se realiza en función del crecimiento individual de cada afiliado,
+                        asegurando que quienes más se esfuerzan reciban mayores recompensas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-8 sm:mt-12 text-center">
                 <a href="#"
-                    class="inline-block bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg shadow transition transform hover:translate-y-1">
-                    Conoce el Programa de Afiliados
+                    class="inline-block bg-white text-primary hover:text-secondary font-semibold py-3 px-6 sm:px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                    Descubre cómo funciona
                 </a>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Bolsa Global -->
-<section class="py-6 sm:py-16 bg-gradient-to-r from-secondary via-primary to-ink text-white mt-6 sm:mt-0">
-    <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto text-center mb-8 sm:mb-12">
-            <h2 class="text-3xl font-bold mb-4 sm:mb-6">Bolsa Global de Crecimiento</h2>
-            <p class="text-lg sm:text-xl leading-relaxed">
-                Un aspecto único de nuestro modelo de negocio que recompensa el esfuerzo y el crecimiento.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div class="bg-white/10 rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-white/20">
-                <div class="text-4xl mb-4">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-3 sm:mb-4">Distribución Mensual</h3>
-                <p class="text-white/90 text-sm sm:text-base">
-                    Cada mes, un porcentaje de todos los ingresos generados por la compañía se acumula en esta bolsa y se distribuye entre nuestros afiliados activos.
-                </p>
-            </div>
-
-            <div class="bg-white/10 rounded-xl p-6 sm:p-8 backdrop-blur-sm border border-white/20">
-                <div class="text-4xl mb-4">
-                    <i class="fas fa-award"></i>
-                </div>
-                <h3 class="text-xl font-semibold mb-3 sm:mb-4">Recompensa al Esfuerzo</h3>
-                <p class="text-white/90 text-sm sm:text-base">
-                    La asignación de estos fondos se realiza en función del crecimiento individual de cada afiliado, asegurando que quienes más se esfuerzan reciban mayores recompensas.
-                </p>
-            </div>
-        </div>
-
-        <div class="mt-8 sm:mt-12 text-center">
-            <a href="#"
-                class="inline-block bg-white text-primary hover:text-secondary font-semibold py-3 px-6 sm:px-8 rounded-full shadow-lg transition transform hover:scale-105">
-                Descubre cómo funciona
-            </a>
-        </div>
-    </div>
-</section>
+    </section>
 
 
 
@@ -244,7 +256,8 @@
     <section class=" py-8 sm:py-16 sm:bg-neutral-50">
         <div class="container mx-auto sm:px-4">
             <div class="max-w-3xl mx-auto">
-                <h2 class="text-3xl font-bold mb-3 sm:mb-8 text-primary text-center">Crecimiento y Rentabilidad para Todos
+                <h2 class="text-3xl font-bold mb-3 sm:mb-8 text-primary text-center">Crecimiento y Rentabilidad para
+                    Todos
                 </h2>
 
                 <div class="sm:bg-white rounded-xl sm:shadow-md sm:p-8 sm:mb-8">
@@ -279,7 +292,8 @@
                 </div>
 
                 <div class="text-center">
-                    <p class="text-xl font-semibold text-primary mt-6 sm:mt-0 mb-6">Fornuvi es más que una empresa: es tu
+                    <p class="text-xl font-semibold text-primary mt-6 sm:mt-0 mb-6">Fornuvi es más que una empresa: es
+                        tu
                         oportunidad para un futuro mejor.</p>
                     <a href="#"
                         class="inline-block bg-primary hover:bg-secondary text-white font-bold py-4 px-8 rounded-lg shadow-lg transition transform hover:translate-y-1">
@@ -314,7 +328,7 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('contacto.store') }}" method="POST">
+                <form id="demo-form" action="{{ route('contacto.store') }}" method="POST">
                     @csrf
                     <div class="grid grid-cols-2 gap-x-3">
                         <div class="col-span-2 sm:col-span-1">
@@ -345,11 +359,13 @@
                                         <option value="Información"
                                             {{ old('interes') == 'Información' ? 'selected' : '' }}>
                                             Información general</option>
-                                        <option value="programa_afiliados" {{ old('interes') == 'programa_afiliados' ? 'selected' : '' }}>
+                                        <option value="programa_afiliados"
+                                            {{ old('interes') == 'programa_afiliados' ? 'selected' : '' }}>
                                             Programa de afiliados
                                         </option>
                                         <option value="Información_producto"
-                                            {{ old('interes') == 'Información_producto' ? 'selected' : '' }}>Información producto
+                                            {{ old('interes') == 'Información_producto' ? 'selected' : '' }}>Información
+                                            producto
                                         </option>
                                         <option value="otros" {{ old('interes') == 'otros' ? 'selected' : '' }}>
                                             Otros
@@ -382,7 +398,9 @@
                             </div>
                         </div>
                     </div>
-                    <flux:button type="submit" variant="primary" class="w-full">
+                    <flux:button type="submit" variant="primary" class="g-recaptcha w-full"
+                        data-sitekey="{{ config('services.recaptcha.key') }}" data-callback='onSubmit'
+                        data-action='submit'>
                         Enviar mensaje
                     </flux:button>
                 </form>
@@ -475,28 +493,38 @@
         </div>
     </section>
 
-     <!-- Back to top button -->
-     <button id="backToTop"
-     class="fixed cursor-pointer bottom-6 right-6 bg-secondary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md shadow-ink  hover:bg-primary transition duration-300"
-     onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-     <i class="fas fa-arrow-up"></i>
- </button>
+    <!-- Back to top button -->
+    <button id="backToTop"
+        class="fixed cursor-pointer bottom-6 right-6 bg-secondary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md shadow-ink  hover:bg-primary transition duration-300"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
- <script>
-     // Mostrar/ocultar botón de volver arriba
-     window.addEventListener('scroll', function() {
-         var backToTopButton = document.getElementById('backToTop');
-         if (window.pageYOffset > 300) {
-             backToTopButton.style.display = 'flex';
-         } else {
-             backToTopButton.style.display = 'none';
-         }
-     });
+    @push('js')
+        <script src="https://www.google.com/recaptcha/api.js"></script>
 
-     // Iniciar con el botón oculto
-     document.addEventListener('DOMContentLoaded', function() {
-         document.getElementById('backToTop').style.display = 'none';
-     });
- </script>
+        <script>
+            function onSubmit(token) {
+                document.getElementById("demo-form").submit();
+            }
+        </script>
+    @endpush
+
+    <script>
+        // Mostrar/ocultar botón de volver arriba
+        window.addEventListener('scroll', function() {
+            var backToTopButton = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        // Iniciar con el botón oculto
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('backToTop').style.display = 'none';
+        });
+    </script>
 
 </x-layouts.app>

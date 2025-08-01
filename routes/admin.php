@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /* Route::resource('category', CategoryController::class)->names('categories'); */
@@ -13,6 +14,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [IndexController::class, 'index'])->middleware(['can:admin.index'])->name('index');
 
     Route::get('factura/{order}', [InvoiceController::class, 'show'])->middleware(['can:admin.factura'])->name('invoice.show');
+
+    Route::resource('user', UserController::class)
+        ->names('users')
+        ->middleware([
+            'index' => 'can:admin.users.index',
+            'create' => 'can:admin.users.create',
+            'store' => 'can:admin.users.create',
+            'show' => 'can:admin.users.show',
+            'edit' => 'can:admin.users.edit',
+            'update' => 'can:admin.users.edit',
+            'destroy' => 'can:admin.users.destroy'
+        ]);
+
 
     Route::resource('category', CategoryController::class)
         ->names('categories')
@@ -38,9 +52,6 @@ Route::middleware(['auth'])->group(function () {
             'update' => 'can:admin.products.edit',
             'destroy' => 'can:admin.products.destroy'
         ]);
-
-
-
 
     // Otras rutas de recursos con permisos...
 });

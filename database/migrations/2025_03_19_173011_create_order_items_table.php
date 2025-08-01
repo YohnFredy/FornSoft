@@ -18,16 +18,14 @@ return new class extends Migration
 
             $table->string('name'); // Nombre del producto al momento de la compra (por si cambia luego)
 
-            $table->decimal('final_price', 10, 2); //Precio con iva
+            $table->decimal('unit_price', 10, 2); //Precio con iva
             $table->decimal('pts', 10, 2)->default(0);
             $table->unsignedInteger('quantity');
             $table->decimal('discount', 10, 2)->default(0); //Descuento total
             $table->decimal('tax_percent', 5, 2)->default(0); //Porcentaje de impuesto aplicado (ej. 19%)
             $table->decimal('tax_amount', 10, 2)->default(0); // Valor del IVA total en este item
-            $table->decimal('subtotal', 10, 2); // prcio sin iva con descuento * quantity
-            $table->decimal('total', 10, 2); // subtotal - discount + tax_amount
+            $table->decimal('unit_sales_price', 10, 2);
             $table->decimal('totalPts', 10, 2)->default(0);
-            
             $table->timestamps();
 
             $table->index('order_id');

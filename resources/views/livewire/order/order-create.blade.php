@@ -5,7 +5,7 @@
         {{-- Datos del envío --}}
         <div class="lg:col-span-2">
             <div class="sm:bg-white rounded-lg sm:shadow-md sm:border border-neutral-200 sm:p-6 mb-6">
-                <h2 class="text-lg font-semibold text-primary mb-4">Datos de entrega</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4 hidden sm:block">Datos de entrega</h2>
 
                 {{-- Nombre y Teléfono --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
@@ -108,75 +108,119 @@
         {{-- Resumen de la orden --}}
         <div class="lg:col-span-1">
             <div class="sticky top-6">
-                <div class="sm:bg-white rounded-lg sm:shadow-md sm:border sm:border-neutral-200 sm:p-6 mb-6">
-                    <h2 class="text-lg font-semibold text-primary mb-4">Resumen de la orden</h2>
-
-                    <ul class="divide-y divide-gray-200">
-                        <li class="flex justify-between py-3">
-                            <span class="text-gray-700">Subtotal: ({{ $this->quantity }})</span>
-                            <span class="font-medium">${{ number_format($this->subTotal, 0, ',', '.') }}</span>
-                        </li>
-
-                        @if ($this->discount > 0)
-                            <li class="flex justify-between py-3">
-                                <span class="text-ink">Descuento:</span>
-                                <span
-                                    class="font-medium text-secondary">-${{ number_format($this->discount, 0, ',', '.') }}</span>
-                            </li>
-
-                            <li class="flex justify-between py-3">
-                                <span class="text-ink">Subtotal descuento:</span>
-                                <span
-                                    class="font-medium">${{ number_format($this->subTotal - $this->discount, 0, ',', '.') }}</span>
-                            </li>
-                        @endif
-
-                        <li class="flex justify-between py-3">
-                            <span class="text-gray-700">Subtotal (sin IVA):</span>
-                            <span class="font-medium">${{ number_format($this->totalWithoutTaxes, 0, ',', '.') }}</span>
-                        </li>
-
-                        <li class="flex justify-between py-3">
-                            <span class="text-gray-700">IVA (19%):</span>
-                            <span class="font-medium">${{ number_format($this->totalTax, 0, ',', '.') }}</span>
-                        </li>
-
-                        @if ($this->shipping_cost > 0)
-                            <li class="flex justify-between py-3">
-                                <span class="text-gray-700">Envío:</span>
-                                <span class="font-medium">${{ number_format($this->shipping_cost, 0, ',', '.') }}</span>
-                            </li>
-                        @endif
-
-                        <li class="flex justify-between py-4">
-                            <span class="font-semibold">Total a pagar:</span>
-                            <span
-                                class="font-bold text-lg text-primary">${{ number_format($this->total, 0, ',', '.') }}</span>
-                        </li>
-
-                        <li class="flex justify-end py-3 font-medium text-danger underline">
-                            <span class="">Total Puntos: </span>
-                            <span class="ml-1"> {{ number_format($this->total_pts, 2, ',', '.') }}</span>
-                        </li>
-                    </ul>
-                </div>
-
-                {{-- Términos y Botón de compra --}}
-                <div class="bg-white rounded-lg shadow-md border border-neutral-200 px-3 py-6 sm:p-6">
-                    <div class="flex items-center">
-                        <flux:checkbox wire:model="terms" required id="terms" class="mt-1" />
-                        <div class="ml-3">
-                            @livewire('purchase-policy-and-conditions')
-                        </div>
+                <div class="col-span-6 md:col-span-2">
+                    <!-- Header -->
+                    <div class="mb-4">
+                        <h2 class="text-lg font-semibold text-primary">Resumen de la orden</h2>
+                        <div class="h-1 w-16 bg-primary rounded-full mt-1"></div>
                     </div>
 
-                    @error('terms')
-                        <p class="text-sm text-danger mt-1">{{ $message }}</p>
-                    @enderror
+                    <!-- Order Summary Card -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <!-- Product Count Header -->
+                        <div class="bg-gray-50 px-2 sm:px-6 py-2 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-600">Productos</span>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                    {{ $totals['quantity'] }} {{ $totals['quantity'] == 1 ? 'artículo' : 'artículos' }}
+                                </span>
+                            </div>
+                        </div>
 
-                    <flux:button variant="primary" wire:click="create_order" class="w-full mt-4">
-                        Continuar con la compra
-                    </flux:button>
+                        <!-- Order Details -->
+                        <div class="px-2 sm:px-6 py-1">
+                            <ul class="space-y-1">
+                                <!-- Subtotal -->
+                                <li class="flex justify-between items-center py-1">
+                                    <span class="text-sm text-gray-600">Subtotal</span>
+                                    <span class="text-sm font-medium text-gray-900">
+                                        ${{ formatear_precio($totals['subtotal']) }}
+                                    </span>
+                                </li>
+
+                                <!-- Descuento -->
+                                @if ($totals['descuento'] > 0)
+                                    <li class="flex justify-between items-center py-1">
+                                        <span class="text-sm text-gray-600">Descuento</span>
+                                        <span class="text-sm font-medium text-premium">
+                                            -${{ formatear_precio($totals['descuento']) }}
+                                        </span>
+                                    </li>
+                                @endif
+
+                                <!-- Total Bruto -->
+                                <li class="flex justify-between items-center py-1 border-t border-gray-100 pt-3">
+                                    <span class="text-sm font-medium text-gray-700">Total Bruto</span>
+                                    <span class="text-sm font-semibold text-gray-900">
+                                        ${{ formatear_precio($totals['total_bruto_factura']) }}
+                                    </span>
+                                </li>
+
+                                <!-- Impuestos -->
+                                @if ($totals['iva'] > 0)
+                                    <li class="bg-gray-50 -mx-6 px-6 py-1">
+                                        <div class="space-y-2">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-sm text-gray-600">IVA</span>
+                                                <span class="text-sm text-gray-700">
+                                                    ${{ formatear_precio($totals['iva']) }}
+                                                </span>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-sm text-gray-600">Otros impuestos</span>
+                                                <span class="text-sm text-gray-700">$0</span>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center pt-2 border-t border-gray-200">
+                                                <span class="text-sm font-medium text-gray-700">Total impuestos</span>
+                                                <span class="text-sm font-semibold text-gray-900">
+                                                    ${{ formatear_precio($totals['iva']) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endif
+                            </ul>
+                        </div>
+
+                        <!-- Total Final -->
+                        <div class="bg-primary/5 border-t border-primary/20 px-2 sm:px-6 py-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-900">Total a pagar</span>
+                                <span class="font-bold text-primary">
+                                    ${{ formatear_precio($totals['total_factura']) }}
+                                </span>
+                            </div>
+
+                            @if (isset($totals['total_pts']) && $totals['total_pts'] > 0)
+                                <div class="mt-2 text-center">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-premium/5 text-premium">
+                                        ⭐ Ganarás {{ formatear_precio($totals['total_pts']) }} puntos
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Términos y Botón de compra --}}
+                        <div class="bg-white rounded-lg shadow-md border border-neutral-200 px-3 py-6 sm:p-6">
+                            <div class="flex items-center">
+                                <flux:checkbox wire:model="terms" required id="terms" class="mt-1" />
+                                <div class="ml-3">
+                                    @livewire('purchase-policy-and-conditions')
+                                </div>
+                            </div>
+
+                            @error('terms')
+                                <p class="text-sm text-danger mt-1">{{ $message }}</p>
+                            @enderror
+
+                            <flux:button variant="primary" wire:click="create_order" class="w-full mt-4">
+                                Continuar con la compra
+                            </flux:button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

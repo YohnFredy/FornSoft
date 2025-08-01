@@ -138,6 +138,7 @@
                             {{ $order->dni ? 'CC: ' . $order->dni : 'Sin identificación registrada' }}</p>
                         <div class="mt-3 text-sm text-gray-600">
                             <p><i class="fas fa-phone mr-2 text-gray-400"></i> {{ $order->phone }}</p>
+                            <p><i class="fas fa-envelope-open mr-2 text-gray-400"></i>{{ $order->email }}</p>
                             <p><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i> {{ $order->address }}
                             </p>
                             <p><i class="fas fa-city mr-2 text-gray-400"></i> {{ $order->addCity }}
@@ -210,34 +211,24 @@
                         <thead class="table-header text-xs uppercase font-semibold text-gray-600 tracking-wider">
                             <tr>
                                 <th class="py-1 px-4 border-b">Descripción</th>
-                                <th class="py-2 px-4 border-b text-center">Cantidad</th>
-                                <th class="py-2 px-4 border-b text-right">Precio Unit.</th>
-                                <th class="py-2 px-4 border-b text-right">Subtotal</th>
+                                <th class="py-1 px-4 border-b text-center">Cantidad</th>
+                                <th class="py-1 px-4 border-b text-right">Precio Unit.</th>
+                                <th class="py-1 px-4 border-b text-right">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm">
                             @foreach ($order->items as $item)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="py-2 px-4 border-b">
+                                    <td class="py-1 px-4 border-b">
                                         <div class="font-medium text-gray-800">{{ $item->name }}</div>
-                                        @if (isset($item->options) && $item->options)
-                                            <div class="text-xs text-gray-500">{{ $item->options }}</div>
-                                        @endif
-                                        @if (isset($item->discount_percent) && $item->discount_percent > 0)
-                                            <div class="text-xs text-danger font-medium">Descuento:
-                                                {{ $item->discount_percent }}%</div>
-                                        @endif
+
                                     </td>
-                                    <td class="py-2 px-4 border-b text-center">{{ $item->quantity }}</td>
-                                    <td class="py-2 px-4 border-b text-right">
-                                        @if (isset($item->original_price) && $item->original_price > $item->price)
-                                            <span class="line-through text-gray-400 text-xs">$
-                                                {{ number_format($item->original_price, 0, ',', '.') }}</span><br>
-                                        @endif
-                                        $ {{ number_format($item->price, 0, ',', '.') }}
+                                    <td class="py-1 px-4 border-b text-center">{{ $item->quantity }}</td>
+                                    <td class="py-1 px-4 border-b text-right">
+                                        $ {{ number_format($item->final_price, 0, ',', '.') }}
                                     </td>
-                                    <td class="py-2 px-4 border-b text-right font-medium">$
-                                        {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</td>
+                                    <td class="py-1 px-4 border-b text-right font-medium">$
+                                        {{ number_format($item->final_price * $item->quantity, 0, ',', '.') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -276,46 +267,65 @@
                             </p>
                         </div>
                     </div>
-
-                    <div>
-                        <div class="signature-line text-center mx-auto">
-                            <p class="text-sm text-gray-600">Firma Autorizada</p>
-                        </div>
-                    </div>
                 </div>
 
                 <div>
                     <h3 class="text-sm uppercase font-semibold text-gray-500 tracking-wider mb-2">Resumen</h3>
                     <div class="border rounded-md p-4">
-                        <div class="flex justify-between py-2">
-                            <span class="text-ink">Subtotal:</span>
+
+
+                        <div class="flex justify-between">
+                            <span class="text-ink">Subtotal productos:</span>
                             <span>$
-                                {{ number_format($order->items->sum(fn($item) => $item->price * $item->quantity), 0, ',', '.') }}</span>
+                                {{ number_format($order->subtotal, 0, ',', '.') }}</span>
                         </div>
+
                         @if (isset($order->discount) && $order->discount > 0)
-                            <div class="flex justify-between py-1">
+                            <div class="flex justify-between border-t border-neutral-200">
                                 <span class="text-gray-600">Descuento:</span>
                                 <span class="text-red-600">- $
                                     {{ number_format($order->discount, 0, ',', '.') }}</span>
                             </div>
+                            <div class="flex justify-between border-t border-neutral-200">
+                                <span class="text-gray-600">Subtotal descuento:</span>
+                                <span class=""> $
+                                    {{ number_format($order->subtotal - $order->discount, 0, ',', '.') }}</span>
+                            </div>
                         @endif
-                        {{-- <div class="flex justify-between py-1">
-                            <span class="text-gray-600">Envío:</span>
-                            <span>$ {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
-                        </div> --}}
-                        <div class="flex justify-between py-1 border-t border-gray-200 mt-2 pt-2">
+
+
+                        @if ($order->tax_amount > 0)
+                            <div class="flex justify-between border-t border-neutral-200">
+                                <span class="text-gray-600">Subtotal (Sin IVA):</span>
+                                <span class=""> $
+                                    {{ number_format($order->taxable_amount, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between border-t border-neutral-200">
+                                <span class="text-gray-600">IVA:</span>
+                                <span class=""> $
+                                    {{ number_format($order->tax_amount, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+
+                        @if ($order->shipping_cost > 0)
+                            <div class="flex justify-between border-t border-neutral-200">
+                                <span class="text-gray-600">Envío:</span>
+                                <span class=""> $
+                                    {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-between py-1 border-t border-gray-400 mt-2 pt-2">
                             <span class="font-semibold text-lg">Total:</span>
                             <span class="font-bold text-xl text-primary">$
                                 {{ number_format($order->total, 0, ',', '.') }}</span>
                         </div>
+
                     </div>
 
                     <div class="mt-4 text-xs text-gray-500 italic">
                         <p>Los precios incluyen IVA (cuando aplique)</p>
-                        <p>Este total corresponde a la suma del valor de los productos más el envío</p>
-                        @if (isset($order->discount) && $order->discount > 0)
-                            <p>El descuento aplicado ha sido descontado del valor total</p>
-                        @endif
+
                     </div>
                 </div>
             </div>

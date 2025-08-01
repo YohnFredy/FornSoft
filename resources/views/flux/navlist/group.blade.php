@@ -5,7 +5,7 @@
 ])
 
 <?php if ($expandable && $heading): ?>
-    <ui-disclosure {{ $attributes->class('group/disclosure') }} @if ($expanded === true) open @endif data-flux-navlist-group>
+    <ui-disclosure {{ $attributes->class('group/disclosure') }} @if ($expanded === false) open @endif data-flux-navlist-group>
         <button type="button" class="w-full h-10 lg:h-8 flex items-center group/disclosure-button mb-[2px] rounded-lg hover:bg-zinc-800/5 dark:hover:bg-white/[7%] text-zinc-500 hover:text-zinc-800 dark:text-white/80 dark:hover:text-white">
             <div class="pl-3 pr-4">
                 <flux:icon.chevron-down class="size-3! hidden group-data-open/disclosure-button:block" />

@@ -2,189 +2,137 @@
 
 namespace App\Livewire;
 
-use App\Models\Business;
 use App\Models\BusinessCategory;
 use App\Models\BusinessData;
 use App\Models\Country;
 use App\Models\Department;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AlliedCompanies extends Component
 {
+    use WithPagination;
+
+    // AÑADIDO: Propiedad para el término de búsqueda
+    public $search = '';
+
+    // Propiedades para los filtros de selección
     public $categories = [];
     public $countries = [];
     public $departments = [];
     public $cities = [];
+    public $storeTypes = [];
 
+    // Propiedades para los valores seleccionados
     public $selectedCategory = '';
     public $selectedCountry = '';
     public $selectedDepartment = '';
     public $selectedCity = '';
-
-    public $businesses = [];
+    public $selectedStoreType = '';
 
     public function mount()
     {
         $this->categories = BusinessCategory::all();
         $this->countries = Country::all();
-        $this->loadBusinesses();
+        $this->storeTypes = [
+            'physical' => 'Tienda Física',
+            'online' => 'Tienda en Línea',
+            'hybrid' => 'Híbrida (Física y en Línea)',
+        ];
     }
 
-    public function updatedSelectedCategory()
+    // MODIFICADO: Se añade 'search' al array para resetear la paginación al buscar
+    public function updating($property)
     {
-        // Solo resetear filtros geográficos si es necesario
-        $this->resetGeographicFilters();
-        $this->loadBusinesses();
-    }
-
-    public function updatedSelectedCountry()
-    {
-        // Resetear departamentos y ciudades
-        $this->reset(['departments', 'selectedDepartment', 'cities', 'selectedCity']);
-        
-        if ($this->selectedCountry) {
-            $this->departments = Department::where('country_id', $this->selectedCountry)->get();
+        if (in_array($property, ['selectedCategory', 'selectedCountry', 'selectedDepartment', 'selectedCity', 'selectedStoreType', 'search'])) {
+            $this->resetPage();
         }
-        
-        $this->loadBusinesses();
     }
 
-    public function updatedSelectedDepartment()
+    public function updatedSelectedCountry($value)
     {
-        // Resetear solo ciudades
-        $this->reset(['cities', 'selectedCity']);
-        
-        if ($this->selectedDepartment) {
+        $this->reset(['selectedDepartment', 'selectedCity', 'departments', 'cities']);
+        if (!empty($value)) {
+            $this->departments = Department::where('country_id', $value)->get();
+        }
+    }
+
+    public function updatedSelectedDepartment($value)
+    {
+        $this->reset(['selectedCity', 'cities']);
+        if (!empty($value)) {
             $this->loadCities();
         }
+    }
+
+    public function loadCities()
+    {
+        if (empty($this->selectedDepartment)) {
+            $this->cities = [];
+            return;
+        }
+        $department = Department::find($this->selectedDepartment);
+        if (!$department) return;
         
-        $this->loadBusinesses();
-    }
-
-    public function updatedSelectedCity()
-    {
-        $this->loadBusinesses();
-    }
-
-    /**
-     * Método principal para cargar businesses con filtros acumulativos
-     */
-    private function loadBusinesses()
-    {
-        $query = Business::with(['data', 'categories']);
-
-        // Aplicar filtro de categoría si está seleccionada
-        if (!empty($this->selectedCategory)) {
-            $query->whereHas('categories', function ($q) {
-                $q->where('business_categories.id', $this->selectedCategory);
+        $countryName = Country::find($this->selectedCountry)->name ?? '';
+        
+        $query = BusinessData::query()
+            ->select('city')->distinct()->whereNotNull('city')->where('city', '!=', '')
+            ->where('department', $department->name)->where('country', $countryName)->orderBy('city');
+        
+        $query->when($this->selectedCategory, function ($q) {
+            $q->whereHas('business.categories', function ($subQ) {
+                $subQ->where('business_category_id', $this->selectedCategory);
             });
-        }
-
-        // Aplicar filtros geográficos si están seleccionados
-        if (!empty($this->selectedCountry) || !empty($this->selectedDepartment) || !empty($this->selectedCity)) {
-            $query->whereHas('data', function ($q) {
-                $this->applyGeographicFilters($q);
-            });
-        }
-
-        $this->businesses = $query->get();
+        });
+        
+        $this->cities = $query->get()->map(fn($item) => (object) ['city' => $item->city]);
     }
 
-    /**
-     * Aplicar filtros geográficos de manera acumulativa
-     */
-    private function applyGeographicFilters($query)
-    {
-        // Filtro por país
-        if (!empty($this->selectedCountry)) {
-            $country = Country::find($this->selectedCountry);
-            if ($country) {
-                $query->where('country', 'like', '%' . $country->name . '%');
-            }
-        }
-
-        // Filtro por departamento (acumulativo)
-        if (!empty($this->selectedDepartment)) {
-            $department = Department::find($this->selectedDepartment);
-            if ($department) {
-                $query->where('department', 'like', '%' . $department->name . '%');
-            }
-        }
-
-        // Filtro por ciudad (acumulativo)
-        if (!empty($this->selectedCity)) {
-            $query->where('city', 'like', '%' . $this->selectedCity . '%');
-        }
-    }
-
-    /**
-     * Cargar ciudades que tienen comercios disponibles según los filtros aplicados
-     */
-    private function loadCities()
-    {
-        if ($this->selectedDepartment) {
-            $department = Department::find($this->selectedDepartment);
-            if ($department) {
-                // Construir query base para businesses según filtros actuales
-                $businessQuery = Business::query();
-                
-                // Aplicar filtro de categoría si está seleccionada
-                if (!empty($this->selectedCategory)) {
-                    $businessQuery->whereHas('categories', function ($q) {
-                        $q->where('business_categories.id', $this->selectedCategory);
-                    });
-                }
-                
-                // Obtener solo las ciudades que tienen comercios con los filtros aplicados
-                $this->cities = BusinessData::whereHas('business', function ($q) use ($businessQuery) {
-                    $q->whereIn('id', $businessQuery->pluck('id'));
-                })
-                ->where('department', $department->name)
-                ->when(!empty($this->selectedCountry), function ($q) {
-                    $country = Country::find($this->selectedCountry);
-                    if ($country) {
-                        $q->where('country', 'like', '%' . $country->name . '%');
-                    }
-                })
-                ->select('city')
-                ->distinct()
-                ->whereNotNull('city')
-                ->where('city', '!=', '')
-                ->orderBy('city')
-                ->get()
-                ->map(function ($item) {
-                    return (object) ['city' => $item->city];
-                });
-            }
-        }
-    }
-    private function resetGeographicFilters()
-    {
-        $this->reset(['selectedCountry', 'departments', 'selectedDepartment', 'cities', 'selectedCity']);
-        $this->countries = Country::all();
-    }
-
-    /**
-     * Limpiar todos los filtros
-     */
+    // MODIFICADO: Se añade 'search' para que el botón de limpiar también lo borre
     public function clearFilters()
     {
         $this->reset([
-            'selectedCategory', 
-            'selectedCountry', 
-            'selectedDepartment', 
-            'selectedCity',
-            'departments',
-            'cities'
+            'selectedCategory', 'selectedCountry', 'selectedDepartment',
+            'selectedCity', 'selectedStoreType', 'departments', 'cities', 'search'
         ]);
-        
-        $this->categories = BusinessCategory::all();
-        $this->countries = Country::all();
-        $this->loadBusinesses();
+        $this->resetPage();
     }
 
     public function render()
     {
-        return view('livewire.allied-companies');
+        $query = BusinessData::with(['business']);
+
+        // AÑADIDO: Lógica del filtro de búsqueda por nombre
+        // Se usa whereHas para filtrar en la tabla relacionada 'business'
+        $query->when($this->search, function ($q) {
+            $q->whereHas('business', function ($subQ) {
+                // Busca coincidencias parciales en el nombre del negocio
+                $subQ->where('name', 'like', '%' . $this->search . '%');
+            });
+        });
+
+        // Filtros existentes
+        $query->when($this->selectedCategory, function ($q) {
+            $q->whereHas('business.categories', function ($subQ) {
+                $subQ->where('business_category_id', $this->selectedCategory);
+            });
+        });
+        $query->when($this->selectedStoreType, fn($q) => $q->where('store_type', $this->selectedStoreType));
+        $query->when($this->selectedCountry, function ($q) {
+            $country = Country::find($this->selectedCountry);
+            if ($country) $q->where('country', $country->name);
+        });
+        $query->when($this->selectedDepartment, function ($q) {
+            $department = Department::find($this->selectedDepartment);
+            if ($department) $q->where('department', $department->name);
+        });
+        $query->when($this->selectedCity, fn($q) => $q->where('city', $this->selectedCity));
+
+        $businessData = $query->paginate(5);
+
+        return view('livewire.allied-companies', [
+            'businessData' => $businessData,
+        ]);
     }
 }

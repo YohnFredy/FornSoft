@@ -27,7 +27,7 @@
         <!-- Cards  -->
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             <!-- Card Ganancias Totales -->
-            <div
+           {{--  <div
                 class="bg-white rounded-xl shadow-lg hover:shadow-xl shadow-ink border border-primary/30 transition-all duration-300 overflow-hidden">
 
                 <div class="p-6">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Card Socios Unilevel -->
             <div

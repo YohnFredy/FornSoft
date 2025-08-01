@@ -8,6 +8,11 @@
                 'route' => 'dashboard',
             ],
             [
+                'name' => 'Comisiones',
+                'icon' => 'currency-dollar',
+                'route' => 'commissions',
+            ],
+            [
                 'name' => 'Binario',
                 'icon' => 'network',
                 'route' => 'binary-tree',
@@ -20,7 +25,7 @@
             [
                 'name' => 'Agregar Factura',
                 'icon' => 'clipboard-document-list',
-                'route' => 'invoice.upload',
+                'route' => 'add-invoice',
             ],
         ],
 
@@ -48,7 +53,7 @@
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('dashboard') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
-            <x-side-app-logo  />
+            <x-side-app-logo />
         </a>
 
         <flux:navlist variant="outline">
@@ -111,7 +116,8 @@
 
     <!-- Mobile User Menu -->
     <flux:header class="lg:hidden bg-white shadow-md shadow-ink">
-         <flux:sidebar.toggle class="lg:hidden bg-danger/3!  text-danger! hover:bg-secondary/5! hover:text-primary" icon="bars-3" inset="left" />
+        <flux:sidebar.toggle class="lg:hidden bg-danger/3!  text-danger! hover:bg-secondary/5! hover:text-primary"
+            icon="bars-3" inset="left" />
 
         <flux:spacer />
 
@@ -140,7 +146,8 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                    <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>{{ __('Settings') }}
+                    </flux:menu.item>
                 </flux:menu.radio.group>
 
                 <flux:menu.separator />
@@ -159,7 +166,7 @@
 
     @fluxScripts
 
-   
+
 </body>
 
 </html>

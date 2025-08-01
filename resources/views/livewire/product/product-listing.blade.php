@@ -226,12 +226,6 @@
                     </div>
                 </flux:modal>
             </div>
-
-
-
-
-
-
             {{-- <span class="text-primary">Mostrando {{ $products->count() }} de {{ $products->total() }}
                     productos</span> --}}
             <!-- Contenido de productos -->
@@ -323,7 +317,9 @@
 
                                         <div class="flex flex-col items-end">
                                             <span class="font-bold text-secondary text-lg">
-                                                ${{ number_format($product->final_price, 0) }}
+                                                <span class="font-bold text-secondary text-lg">
+                                                    ${{ format_price_with_tax($product->price, $product->tax_percent) }}
+                                                </span>
                                             </span>
 
                                             <a href="{{ route('products.show', $product) }}">

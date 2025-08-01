@@ -14,6 +14,11 @@ return [
     |
     */
 
+    'recaptcha' => [
+        'key' => env('RECAPTCHA_KEY'),
+        'secret' => env('RECAPTCHA_SECRET'),
+    ],
+
     'bold' => [
         'api_key' => env('BOLD_API_KEY'),
         'secret_key' => env('BOLD_SECRET_KEY'),

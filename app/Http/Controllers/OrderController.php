@@ -67,8 +67,7 @@ class OrderController extends Controller
         $apiKey = config('services.bold.api_key');
         $secretKey = config('services.bold.secret_key');
         $currency = 'COP';
-        /* $amount = intval($order->total * 100); */
-        $amount = $order->total;
+        $amount = (int) $order->total;
         $orderId = $order->public_order_number;
 
         $boldHashString = "{$orderId}{$amount}{$currency}{$secretKey}";
@@ -77,6 +76,8 @@ class OrderController extends Controller
         // Calcular fecha de expiración (ejemplo: 1 hora después de la solicitud)
         $expirationTimestamp = now()->addHour()->timestamp * 1_000_000_000; // Convertir a nanosegundos
 
+        $tax = $order->tax_amount;
+
         $boldCheckoutConfig = [
             'orderId' => $orderId,
             'currency' => $currency,
@@ -84,16 +85,16 @@ class OrderController extends Controller
             'apiKey' => $apiKey,
             'integritySignature' => $boldIntegritySignature,
             'description' => "Pago",
-            /* 'tax' => 'vat-19', */
+            'tax' => 'vat-19',
+
+            /* 'tax' => json_encode(['vat' => $order->tax_amount]), */
             'redirectionUrl' => config('services.bold.redirect_url'),
             'expiration-date' => $expirationTimestamp,
         ];
-        $subtotal=0;
+        $subtotal = 0;
         foreach ($order->items as $item) {
             $subtotal += $item->final_price * $item->quantity;
         }
-
-
         return view('orders.checkout-bold', compact('order', 'boldCheckoutConfig', 'subtotal'));
     }
 

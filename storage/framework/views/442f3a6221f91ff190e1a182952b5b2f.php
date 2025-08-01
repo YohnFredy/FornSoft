@@ -39,8 +39,6 @@
 
     <div class="bg-white overflow-hidden shadow-lg shadow-ink border border-neutral-300 rounded-lg">
         <div class="p-6 sm:p-8 bg-white">
-            
-
                 <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
@@ -57,8 +55,6 @@ unset($__params);
 unset($__split);
 if (isset($__slots)) unset($__slots);
 ?>
-
-           
         </div>
     </div>
  <?php echo $__env->renderComponent(); ?>

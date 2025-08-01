@@ -52,7 +52,7 @@
 
                 // Forzamos el recálculo del layout del navegador pidiendo una propiedad.
                 // Es un pequeño truco para obtener la altura más actualizada.
-                treeContent.getBoundingClientRect(); 
+                treeContent.getBoundingClientRect();
 
                 const height = treeContent.scrollHeight;
 

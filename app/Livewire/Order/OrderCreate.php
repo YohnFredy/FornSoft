@@ -20,19 +20,17 @@ class OrderCreate extends Component
 
     public $user_id, $tipo_usuario = 'inactive';
 
-    public $shipping_cost=0;
+    public $shipping_cost = 0;
 
     // Variables organizadas para cálculos
     public $totals = [
+        'subtotal' => 0,
+        'descuento' => 0,
+        'total_bruto_factura' => 0,
+        'iva' => 0,
+        'total_factura' => 0,
         'quantity' => 0,
-        'subtotal_without_tax' => 0,        // Suma de (price * quantity) sin IVA
-        'discount_without_tax' => 0,        // Descuento aplicado sobre base sin IVA
-        'taxable_amount' => 0,              // Base gravable (subtotal - descuento sin IVA)
-        'tax_amount' => 0,                  // Valor total del IVA
-        'subtotal_with_tax' => 0,           // Suma de (final_price * quantity) con IVA
-        'discount_with_tax' => 0,           // Descuento aplicado sobre base con IVA
-        'total' => 0,                       // Total final a pagar
-        'total_pts' => 0,                   // Total de puntos
+        'total_pts' => 0,             
     ];
 
     public $countries = [], $departments = [], $cities = [];
@@ -81,7 +79,6 @@ class OrderCreate extends Component
                 'name' => $product->name,
                 'price' => $product->price,
                 'tax_percent' => $product->tax_percent,
-                'final_price' => $product->final_price,
                 'pts_base' => $product->pts_base,
                 'pts_bonus' => $product->pts_bonus,
                 'pts_dist' => $product->pts_dist,
@@ -91,7 +88,7 @@ class OrderCreate extends Component
             ];
         })->filter();
 
-      
+
         // Determinar tipo de usuario
         $totalPts = collect($this->products)->sum(fn($product) => $product['pts_base'] * $product['quantity']);
         $this->tipo_usuario = match (true) {
@@ -100,8 +97,8 @@ class OrderCreate extends Component
             !$user?->activation && $totalPts >= $this->activationPt->min_pts_first => 'new_affiliate',
             default => 'inactive',
         };
- 
-  
+
+
         // Construir items del carrito según tipo de usuario
         match ($this->tipo_usuario) {
             'new_affiliate' => $this->optimize($this->activationPt->min_pts_first),
@@ -111,10 +108,8 @@ class OrderCreate extends Component
         };
 
 
-      
-        $this->calculateTotals();
 
-         
+        $this->calculateTotals();
     }
 
     /**
@@ -130,7 +125,6 @@ class OrderCreate extends Component
                 'name' => $item['name'],
                 'price' => $item['price'],
                 'tax_percent' => $item['tax_percent'],
-                'final_price' => $item['final_price'],
                 'pts' => $useDistributorPts ? $item['pts_dist'] : $item['pts_base'],
                 'discount_percent' => $discount ?? $item['maximum_discount'],
                 'quantity' => $item['quantity'],
@@ -147,41 +141,27 @@ class OrderCreate extends Component
         $this->totals = array_fill_keys(array_keys($this->totals), 0);
 
         foreach ($this->productItems as &$item) {
-            // Cálculos por item
-            $subtotal_without_tax = $item['price'] * $item['quantity'];
-            $subtotal_with_tax = $item['final_price'] * $item['quantity'];
-            $discount_without_tax = $subtotal_without_tax * ($item['discount_percent'] / 100);
-            $discount_with_tax = $subtotal_with_tax * ($item['discount_percent'] / 100);
-            $taxable_amount = $subtotal_without_tax - $discount_without_tax;
-            $tax_amount = $taxable_amount * ($item['tax_percent'] / 100);
-            $item_total = $taxable_amount + $tax_amount;
+            $subtotal = $item['price'] * $item['quantity'];
+            $descuento =  ($subtotal * $item['discount_percent']) / 100;
+            $total_bruto_factura = $subtotal - $descuento;
+            $iva = ($total_bruto_factura * $item['tax_percent']) / 100;
+            $total_factura =  $total_bruto_factura + $iva;
             $total_pts = $item['pts'] * $item['quantity'];
 
-            // Agregar valores calculados al item para uso posterior
-            $item['subtotal_without_tax'] = $subtotal_without_tax;
-            $item['subtotal_with_tax'] = $subtotal_with_tax;
-            $item['discount_without_tax'] = $discount_without_tax;
-            $item['discount_with_tax'] = $discount_with_tax;
-            $item['taxable_amount'] = $taxable_amount;
-            $item['tax_amount'] = $tax_amount;
-            $item['item_total'] = $item_total;
-            $item['total_pts'] = $total_pts;
-
-            // Sumar a totales generales
+            $this->totals['subtotal'] += $subtotal;
             $this->totals['quantity'] += $item['quantity'];
-            $this->totals['subtotal_without_tax'] += $subtotal_without_tax;
-            $this->totals['discount_without_tax'] += $discount_without_tax;
-            $this->totals['taxable_amount'] += $taxable_amount;
-            $this->totals['tax_amount'] += $tax_amount;
-            $this->totals['subtotal_with_tax'] += $subtotal_with_tax;
-            $this->totals['discount_with_tax'] += $discount_with_tax;
+            $this->totals['descuento'] +=  $descuento;
+            $this->totals['total_bruto_factura'] +=  $total_bruto_factura;
+            $this->totals['iva'] +=  $iva;
+            $this->totals['total_factura'] += $total_factura;
             $this->totals['total_pts'] += $total_pts;
         }
 
-        // Calcular total final
-        $this->totals['total'] = $this->totals['taxable_amount'] + $this->totals['tax_amount'] + $this->shipping_cost;
 
-      
+        foreach ($this->productItems as &$item) {
+            $subtotal = $item['price'] * $item['quantity'];
+            $descuento =  ($subtotal * $item['discount_percent']) / 100;
+        }
     }
 
     /**
@@ -191,7 +171,7 @@ class OrderCreate extends Component
     {
         $productsUnit = [];
         $index = 0;
- 
+
         foreach ($this->products as $product) {
             for ($i = 0; $i < $product['quantity']; $i++) {
                 $productsUnit[] = [
@@ -200,7 +180,6 @@ class OrderCreate extends Component
                     'name' => $product['name'],
                     'price' => $product['price'],
                     'tax_percent' => $product['tax_percent'],
-                    'final_price' => $product['final_price'],
                     'pts_base' => $product['pts_base'],
                     'pts_bonus' => $product['pts_bonus'],
                     'pts_dist' => $product['pts_dist'],
@@ -224,7 +203,6 @@ class OrderCreate extends Component
                 'name' => $unit['name'],
                 'price' => $unit['price'],
                 'tax_percent' => $unit['tax_percent'],
-                'final_price' => $unit['final_price'],
                 'pts' => $pts,
                 'discount_percent' => $discount,
                 'quantity' => 1,
@@ -235,7 +213,6 @@ class OrderCreate extends Component
                 'name' => $item['name'],
                 'price' => $item['price'],
                 'tax_percent' => $item['tax_percent'],
-                'final_price' => $item['final_price'],
                 'pts' => $item['pts'],
                 'discount_percent' => $item['discount_percent'],
             ]));
@@ -246,7 +223,7 @@ class OrderCreate extends Component
                 $this->productItems[$key] = $item;
             }
         }
- 
+
         $this->calculateTotals();
     }
 
@@ -348,12 +325,12 @@ class OrderCreate extends Component
             'dni' => $this->dni,
             'email' => $this->email,
             'envio_type' => $this->envio_type,
-            'subtotal' => round($this->totals['subtotal_with_tax']),
-            'discount' => round($this->totals['discount_with_tax']),
-            'taxable_amount' => $this->totals['taxable_amount'],
-            'tax_amount' => $this->totals['tax_amount'],
-            'shipping_cost' => round($this->shipping_cost),
-            'total' => round($this->totals['total']),
+            'subtotal' => $this->totals['subtotal'],
+            'discount' => $this->totals['descuento'],
+            'taxable_amount' => $this->totals['total_bruto_factura'],
+            'tax_amount' => $this->totals['iva'],
+            'shipping_cost' => $this->shipping_cost,
+            'total' => $this->totals['total_factura'],
             'total_pts' => $this->totals['total_pts'],
         ];
 
@@ -371,66 +348,32 @@ class OrderCreate extends Component
 
         // Crear OrderItems con cálculos correctos
         foreach ($this->productItems as $item) {
+
+            $subtotal = $item['price'] * $item['quantity'];
+            $descuento =  ($subtotal * $item['discount_percent']) / 100;
+            $total_bruto_factura = $subtotal - $descuento;
+            $iva = ($total_bruto_factura * $item['tax_percent']) / 100;
+            $total_pts = $item['pts'] * $item['quantity'];
+
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item['product_id'],
                 'name' => $item['name'],
-                'final_price' => $item['final_price'],
+                'unit_price' => $item['price'],
                 'pts' => $item['pts'],
                 'quantity' => $item['quantity'],
-                'discount' => $item['discount_with_tax'],
+                'discount' =>  $descuento,
                 'tax_percent' => $item['tax_percent'],
-                'tax_amount' => $item['tax_amount'],
-                'subtotal' => $item['taxable_amount'], 
-                'total' => $item['item_total'],
-                'totalPts' => $item['total_pts'],
+                'tax_amount' => $iva,
+                'unit_sales_price' => $total_bruto_factura,
+                'total' => 0,
+                'totalPts' => $total_pts,
             ]);
         }
 
         session()->forget('cart');
 
         return redirect()->route('bold.checkout', $order);
-    }
-
-    // Métodos auxiliares para compatibilidad con la vista
-    public function getQuantityProperty()
-    {
-        return $this->totals['quantity'];
-    }
-
-    public function getSubTotalProperty()
-    {
-        return $this->totals['subtotal_with_tax'];
-    }
-
-    public function getDiscountProperty()
-    {
-        return $this->totals['discount_with_tax'];
-    }
-
-    public function getTotalWithoutTaxesProperty()
-    {
-        return $this->totals['taxable_amount'];
-    }
-
-    public function getTotalTaxProperty()
-    {
-        return $this->totals['tax_amount'];
-    }
-
-    public function getShippingCostProperty()
-    {
-        return $this->shipping_cost;
-    }
-
-    public function getTotalProperty()
-    {
-        return $this->totals['total'];
-    }
-
-    public function getTotalPtsProperty()
-    {
-        return $this->totals['total_pts'];
     }
 
     #[Layout('components.layouts.app')]

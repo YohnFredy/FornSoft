@@ -78,7 +78,7 @@
                     <!-- Precio -->
                     <div class="mt-4">
                         <p class="text-2xl text-secondary">
-                            ${{ number_format($product->final_price, 0) }}
+                             ${{ format_price_with_tax($product->price, $product->tax_percent) }}
                         </p>
                         @if ($product->maximum_discount > 0)
                             <p class="text-sm text-primary">
@@ -218,7 +218,7 @@
             </div>
 
             <div class="  col-span-10 sm:col-span-2 flex justify-center items-center mb-1">
-                ${{ number_format($product->final_price, 0) }}
+               ${{ format_price_with_tax($product->price, $product->tax_percent) }}
             </div>
 
             {{-- <div class=" col-span-10 sm:col-span-2 flex justify-center items-center mb-1">

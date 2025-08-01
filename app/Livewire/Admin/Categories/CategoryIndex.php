@@ -40,7 +40,7 @@ class CategoryIndex extends Component
                 });
             }
         }
-        $categories = $categories->paginate(10);
+        $categories = $categories->orderBy('id', 'desc')->paginate(10);
         return view('livewire.admin.categories.category-index', [
             'categories' => $categories
         ]);

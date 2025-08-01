@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -114,4 +115,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function commissions()
+    {
+        return $this->hasMany(Commission::class);
+    }
+
+      public function consentLogs(): HasMany
+    {
+        return $this->hasMany(ConsentLog::class);
+    }
+
+    /**
+     * Opcional: Relación para obtener el último consentimiento fácilmente.
+     */
+    public function latestConsentLog()
+    {
+        return $this->hasOne(ConsentLog::class)->latestOfMany('accepted_at');
+    }
+
 }

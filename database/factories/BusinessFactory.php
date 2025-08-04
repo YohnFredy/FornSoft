@@ -22,6 +22,7 @@ class BusinessFactory extends Factory
     {
           return [
             'name' => fake()->unique()->company(), // Genera un nombre de empresa único
+            'slug' => Str::slug($this->faker->unique()->word),
             'nit' => fake()->unique()->numerify('#########-#'), // Genera un NIT falso como 987654321-0
             'user_id' => 1,
 

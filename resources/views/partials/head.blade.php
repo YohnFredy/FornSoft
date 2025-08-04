@@ -12,6 +12,7 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+@stack('scripts')
 @stack('js')
 
 <!-- Script de Alpine para el control del árbol -->

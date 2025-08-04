@@ -559,7 +559,7 @@ if (isset($__slots)) unset($__slots);
 
             <!-- Existing Images -->
             <!--[if BLOCK]><![endif]--><?php if($isEditMode): ?>
-                <div class=" mt-4">
+                 <div class=" mt-4">
                     <?php if (isset($component)) { $__componentOriginald8ba2b4c22a13c55321e34443c386276 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald8ba2b4c22a13c55321e34443c386276 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -579,15 +579,21 @@ if (isset($__slots)) unset($__slots);
 <?php $component = $__componentOriginald8ba2b4c22a13c55321e34443c386276; ?>
 <?php unset($__componentOriginald8ba2b4c22a13c55321e34443c386276); ?>
 <?php endif; ?>
-                    <div class="grid grid-cols-6 gap-2 ">
-                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 ">
+                        
+                        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $path): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div
-                                class="col-span-2 md:col-span-1  relative bg-white shadow-md shadow-palette-300  border border-palette-200  rounded-lg flex items-center justify-center p-2">
+                                class="relative bg-white shadow-md shadow-palette-300  border border-palette-200  rounded-lg flex items-center justify-center p-2">
                                 <div class="">
-                                    <img src="<?php echo e(Storage::url($image)); ?>" class="h-20" alt="Imagen del Producto">
-                                    <button type="button" wire:confirm="Esta seguuro de eliminar la imagen ?"
-                                        class=" absolute top-2 right-2 font-bold text-palette-400"
-                                        wire:click="removeImage('<?php echo e($image); ?>')">X</button>
+                                    <img src="<?php echo e(Storage::url($path)); ?>" class="h-20 object-cover"
+                                        alt="Imagen del Negocio">
+
+                                    
+                                    <button type="button" wire:click="removeMedia(<?php echo e($id); ?>)"
+                                        wire:confirm="¿Estás seguro de eliminar esta imagen?"
+                                        class=" absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">
+                                        X
+                                    </button>
                                 </div>
                             </div>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->

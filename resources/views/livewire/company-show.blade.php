@@ -1,40 +1,52 @@
 <div class="">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
         <!-- Header con información básica -->
-        <div class="bg-white rounded-2xl overflow-hidden mb-8">
-            <div class="relative bg-gradient-to-r from-primary to-secondary p-6 sm:p-8">
-                <div class="relative">
-                    <!-- Cambiamos a layout vertical en pantallas pequeñas -->
-                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                        <div class="flex-1">
-                            <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
-                                {{ $businessData->business->name }}
-                            </h1>
+        <div class="bg-white rounded-2xl border-2 shadow-md shadow-ink mb-10">
+            <div class="bg-gradient-to-r from-black/3 via-white to-black/3 overflow-hidden">
+                <div class="relative p-4 sm:p-8">
+                    <div class="relative">
+                        <!-- Layout vertical en móviles, horizontal en pantallas grandes -->
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 sm:gap-4">
 
-                            @if ($businessData->business->nit)
-                                <p class="text-white/90 text-base sm:text-lg mb-2">
-                                    NIT: {{ $businessData->business->nit }}
-                                </p>
-                            @endif
+                            <!-- Información textual -->
+                            <div class="flex-1">
+                                <h1 class="text-2xl sm:text-4xl font-bold mb-2">
+                                    {{ $businessData->business->name }}
+                                </h1>
 
-                            @if ($businessData->description)
-                                <p class="text-white/90 leading-relaxed max-w-full sm:max-w-3xl text-sm sm:text-base">
-                                    {{ $businessData->description }}
-                                </p>
-                            @endif
-                        </div>
+                                @if ($businessData->business->nit)
+                                    <p class="text-base sm:text-lg mb-2">
+                                        NIT: {{ $businessData->business->nit }}
+                                    </p>
+                                @endif
 
-                        <div class="sm:ml-6">
-                            <div
-                                class="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-white border border-white/30">
-                                <i class="fas fa-store mr-2"></i>
-                                <span class="capitalize font-medium">{{ __($businessData->store_type) }}</span>
+                                @if ($businessData->description)
+                                    <div class=" text-justify [&_*]:!text-justify">
+                                        {!! $businessData->description !!}
+                                    </div>
+                                @endif
                             </div>
+
+                            <!-- Logo y tipo de tienda -->
+                            <div class="flex flex-col items-center sm:items-center sm:ml-6 text-center">
+                                @if ($businessData->business->latestLogo)
+                                    <img src="{{ asset('storage/' . $businessData->business->latestLogo->path) }}"
+                                        alt="{{ $businessData->business->name }}" class="h-24 object-contain mb-2">
+                                @endif
+
+                                <div class="inline-flex items-center px-4 py-2 rounded-full border border-ink/30">
+                                    <i class="fas fa-store mr-2"></i>
+                                    <span class="capitalize font-medium">{{ __($businessData->store_type) }}</span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
 
         <!-- Galería de imágenes de la empresa -->
@@ -45,35 +57,23 @@
                         class="w-12 h-12 bg-gradient-to-br from-premium to-danger rounded-xl flex items-center justify-center mr-4">
                         <i class="fas fa-images text-white text-lg"></i>
                     </div>
-                    <h2 class=" text-xl sm:text-2xl font-bold text-ink">Galería de la Empresa</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-ink">Galería de {{ $businessData->business->name }}
+                    </h2>
                 </div>
 
                 @php
-                    // Imágenes de ejemplo - después conectarás con la tabla images
-                    $companyImages = [
-                        [
-                            'url' =>
-                                'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop&crop=center',
-                            'alt' => '' . $businessData->business->name,
-                            'is_primary' => true,
-                        ],
-                        [
-                            'url' =>
-                                'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=600&fit=crop&crop=center',
-                            'alt' => '' . $businessData->business->name,
-                            'is_primary' => false,
-                        ],
-                        [
-                            'url' =>
-                                'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop&crop=center',
-                            'alt' => '' . $businessData->business->name,
-                            'is_primary' => false,
-                        ],
-                    ];
+                    $images = $businessData->business->images
+                        ->map(function ($image) use ($businessData) {
+                            return [
+                                'url' => asset('storage/' . $image->path),
+                                'alt' => $businessData->business->name,
+                                'is_primary' => false, // puedes cambiar esto si defines una imagen destacada
+                            ];
+                        })
+                        ->toArray();
 
-                    // Mezcla las imágenes y toma 3
-                    shuffle($companyImages);
-                    $displayImages = array_slice($companyImages, 0, 3);
+                    shuffle($images);
+                    $displayImages = array_slice($images, 0, 3);
                 @endphp
 
                 @if (count($displayImages) == 1)
@@ -189,7 +189,7 @@
             <!-- Información de contacto -->
             <div class="lg:col-span-2 space-y-8">
                 <!-- Contacto -->
-                <div class="sm:bg-white rounded-2xl sm:shadow-lg shadow-ink sm:border sm:p-6">
+                <div class="bg-white rounded-2xl sm:shadow-lg shadow-ink sm:border sm:p-6">
                     <div class="flex items-center mb-6">
                         <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mr-4">
                             <i class="fas fa-phone text-white text-lg"></i>
@@ -216,21 +216,32 @@
                         <!-- Whatsapp -->
                         <div
                             class="flex sm:flex-row flex-col sm:items-center items-start p-4 bg-primary/10 rounded-xl hover:bg-primary/15 transition-colors">
-                            <div
-                                class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center sm:mr-4 mb-2 sm:mb-0">
-                                <i class="fab fa-whatsapp text-white text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 font-medium">WhatsApp</p>
-                                <a href="tel:{{ $businessData->phone }}"
-                                    class="text-ink font-semibold hover:text-primary transition-colors">
-                                    {{ $businessData->phone }}
-                                </a>
-                            </div>
+
+
+
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $businessData->whatsapp) }}?text={{ urlencode('Hola, estoy interesado en sus productos y vengo referido por Fornuvi S.A.S.') }}"
+                                target="_blank" rel="noopener"
+                                class="flex sm:flex-row flex-col sm:items-center items-start p-4 w-full bg-primary/10 rounded-xl hover:bg-primary/15 transition-colors group no-underline">
+
+                                <div
+                                    class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center sm:mr-4 mb-2 sm:mb-0">
+                                    <i class="fab fa-whatsapp text-white text-xl"></i>
+                                </div>
+
+                                <div>
+                                    <p class="text-sm  text-gray-600 font-medium">contacta a
+                                        {{ $businessData->business->name }} directamente por WhatsApp
+                                    </p>
+                                    <span class="text-ink font-semibold group-hover:text-primary transition-colors">
+                                        {{ $businessData->whatsapp }}
+                                    </span>
+                                </div>
+                            </a>
                         </div>
 
                         <!-- Email -->
-                        @if ($businessData->email)
+                        @if ($businessData->business_email)
                             <div
                                 class="flex sm:flex-row flex-col sm:items-center items-start p-4 bg-primary/10 rounded-xl hover:bg-primary/15 transition-colors">
                                 <div
@@ -239,9 +250,9 @@
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600 font-medium">Email</p>
-                                    <a href="mailto:{{ $businessData->email }}"
+                                    <a href="mailto:{{ $businessData->business_email }}"
                                         class="text-ink font-semibold hover:text-primary transition-colors break-words">
-                                        {{ $businessData->email }}
+                                        {{ $businessData->business_email }}
                                     </a>
                                 </div>
                             </div>
@@ -269,7 +280,7 @@
                 </div>
 
                 <!-- Ubicación -->
-                <div class="bg-white rounded-2xl shadow-lg shadow-ink border p-4 sm:p-6">
+                <div class="bg-white rounded-2xl sm:shadow-lg shadow-ink sm:border sm:p-6">
                     <div class="flex items-center mb-6">
                         <div
                             class="w-10 h-10 sm:w-12 sm:h-12 bg-premium rounded-xl flex items-center justify-center mr-3 sm:mr-4">
@@ -286,170 +297,155 @@
                                         class="w-10 h-10 bg-premium rounded-lg flex items-center justify-center mt-1 flex-shrink-0">
                                         <i class="fas fa-map-marker-alt text-white text-sm"></i>
                                     </div>
-                                    <div class="flex-1">
-                                        <p class="text-sm text-gray-600 font-medium mb-1">Dirección</p>
-                                        <p class="text-ink font-semibold text-sm sm:text-base">
-                                            {{ $businessData->address }}</p>
-                                        @if ($businessData->city || $businessData->department || $businessData->country)
-                                            <p class="text-gray-600 text-sm mt-1">
-                                                {{ $businessData->city }}{{ $businessData->department ? ', ' . $businessData->department : '' }}{{ $businessData->country ? ' - ' . $businessData->country : '' }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
 
-                                <!-- Botones de navegación -->
-                                <div class="mt-4 pt-4 border-t border-premium/50">
-                                    <p class="text-sm text-gray-600 font-medium mb-3 flex items-center">
-                                        <i class="fas fa-route mr-2 text-premium"></i>
-                                        ¿Cómo llegar?
-                                    </p>
 
-                                    @php
-                                        $hasCoordinates =
-                                            !empty($businessData->latitude) && !empty($businessData->longitude);
-                                        if ($hasCoordinates) {
-                                            $coordinates = $businessData->latitude . ',' . $businessData->longitude;
-                                            $googleMapsUrl = 'https://www.google.com/maps/search/' . $coordinates;
-                                            $googleMapsAppUrl = 'https://maps.google.com/?q=' . $coordinates;
-                                            $wazeUrl = 'https://waze.com/ul?ll=' . $coordinates;
-                                        } else {
-                                            $fullAddress = $businessData->address;
-                                            $fullAddress .= $businessData->city ? ', ' . $businessData->city : '';
-                                            $fullAddress .= $businessData->department
-                                                ? ', ' . $businessData->department
-                                                : '';
-                                            $fullAddress .= $businessData->country ? ', ' . $businessData->country : '';
-                                            $googleMapsUrl =
-                                                'https://www.google.com/maps/search/' . urlencode($fullAddress);
-                                            $googleMapsAppUrl = 'https://maps.google.com/?q=' . urlencode($fullAddress);
-                                            $wazeUrl = 'https://waze.com/ul?q=' . urlencode($fullAddress);
-                                        }
-                                    @endphp
+                                    <div class=" flex items-center">
+                                        <div>
+                                            @if ($businessData->city || $businessData->department || $businessData->country)
+                                                <p class="text-ink">
+                                                    {{-- Si city_id existe, usamos el nombre de la relación, si no usamos el campo city manual --}}
+                                                    {{ $businessData->cityRelation ? $businessData->cityRelation->name : $businessData->city }}
+                                                    {{ $businessData->department ? ', ' . $businessData->department->name : '' }}
+                                                    {{ $businessData->country ? ' - ' . $businessData->country->name : '' }}
+                                                </p>
 
-                                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                                        <!-- Google Maps (Web) -->
-                                        <a href="{{ $googleMapsUrl }}" target="_blank"
-                                            class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-secondary hover:bg-blue-50 transition group">
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3 group-hover:bg-secondary transition">
-                                                    <i class="fas fa-globe text-white text-sm"></i>
-                                                </div>
-                                                <div class="text-left">
-                                                    <p class="font-semibold text-ink text-sm">Google Maps</p>
-                                                    <p class="text-xs text-gray-600">Navegador</p>
-                                                </div>
-                                            </div>
-                                        </a>
-
-                                        <!-- Google Maps App -->
-                                        <a href="{{ $googleMapsAppUrl }}"
-                                            class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-primary hover:bg-blue-50 transition group">
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center mr-3 group-hover:bg-primary transition">
-                                                    <i class="fas fa-mobile-alt text-white text-sm"></i>
-                                                </div>
-                                                <div class="text-left">
-                                                    <p class="font-semibold text-ink text-sm">Maps App</p>
-                                                    <p class="text-xs text-gray-600">Aplicación</p>
-                                                </div>
-                                            </div>
-                                        </a>
-
-                                        <!-- Waze -->
-                                        <a href="{{ $wazeUrl }}" target="_blank"
-                                            class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-primary hover:bg-blue-50 transition group">
-                                            <div class="flex items-center">
-                                                <div
-                                                    class="w-8 h-8 bg-ink rounded-lg flex items-center justify-center mr-3 group-hover:bg-primary transition">
-                                                    <i class="fas fa-route text-white text-sm"></i>
-                                                </div>
-                                                <div class="text-left">
-                                                    <p class="font-semibold text-ink text-sm">Waze</p>
-                                                    <p class="text-xs text-gray-600">GPS</p>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                    <!-- Información método de navegación -->
-                                    <div class="mt-3 p-3 bg-white/90 rounded-lg">
-                                        <div
-                                            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                                            <p class="text-xs text-ink flex items-center">
-                                                <i class="fas fa-info-circle mr-2 text-primary"></i>
-                                                Selecciona tu aplicación de navegación preferida
-                                            </p>
-
-                                            <div class="flex items-center">
-                                                @if ($hasCoordinates)
-                                                    <i class="fas fa-crosshairs text-primary text-xs mr-1"></i>
-                                                    <span class="text-xs text-primary font-medium">Ubicación
-                                                        precisa</span>
-                                                @else
-                                                    <i class="fas fa-map-marker text-danger text-xs mr-1"></i>
-                                                    <span class="text-xs text-danger font-medium">Por dirección</span>
-                                                @endif
-                                            </div>
+                                                <p class="">
+                                                    {{ $businessData->address }}
+                                                </p>
+                                            @endif
                                         </div>
 
-                                        @if ($hasCoordinates)
-                                            <p class="text-xs text-gray-500 mt-1">
-                                                Coordenadas: {{ number_format($businessData->latitude, 6) }},
-                                                {{ number_format($businessData->longitude, 6) }}
-                                            </p>
-                                        @endif
                                     </div>
+
+
                                 </div>
+
+                                @if ($businessData->store_type == 'physical' || $businessData->store_type == 'hybrid')
+
+
+
+                                    <!-- Botones de navegación -->
+                                    <div class="mt-4 pt-4 border-t border-premium/50">
+                                        <p class="text-sm text-gray-600 font-medium mb-3 flex items-center">
+                                            <i class="fas fa-route mr-2 text-premium"></i>
+                                            ¿Cómo llegar?
+                                        </p>
+
+                                        @php
+                                            $hasCoordinates =
+                                                !empty($businessData->latitude) &&
+                                                !empty($businessData->longitude) &&
+                                                $businessData->latitude > 0 &&
+                                                $businessData->longitude > 0;
+                                            if ($hasCoordinates) {
+                                                $coordinates = $businessData->latitude . ',' . $businessData->longitude;
+                                                $googleMapsUrl = 'https://www.google.com/maps/search/' . $coordinates;
+                                                $googleMapsAppUrl = 'https://maps.google.com/?q=' . $coordinates;
+                                                $wazeUrl = 'https://waze.com/ul?ll=' . $coordinates;
+                                            } else {
+                                                $fullAddress = $businessData->address;
+                                                $fullAddress .= $businessData->city ? ', ' . $businessData->city : '';
+                                                $fullAddress .= $businessData->department
+                                                    ? ', ' . $businessData->department
+                                                    : '';
+                                                $fullAddress .= $businessData->country
+                                                    ? ', ' . $businessData->country
+                                                    : '';
+                                                $googleMapsUrl =
+                                                    'https://www.google.com/maps/search/' . urlencode($fullAddress);
+                                                $googleMapsAppUrl =
+                                                    'https://maps.google.com/?q=' . urlencode($fullAddress);
+                                                $wazeUrl = 'https://waze.com/ul?q=' . urlencode($fullAddress);
+                                            }
+                                        @endphp
+
+                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                            <!-- Google Maps (Web) -->
+                                            <a href="{{ $googleMapsUrl }}" target="_blank"
+                                                class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-secondary hover:bg-blue-50 transition group">
+                                                <div class="flex items-center">
+                                                    <div
+                                                        class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3 group-hover:bg-secondary transition">
+                                                        <i class="fas fa-globe text-white text-sm"></i>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <p class="font-semibold text-ink text-sm">Google Maps</p>
+                                                        <p class="text-xs text-gray-600">Navegador</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+
+                                            <!-- Google Maps App -->
+                                            <a href="{{ $googleMapsAppUrl }}"
+                                                class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-primary hover:bg-blue-50 transition group">
+                                                <div class="flex items-center">
+                                                    <div
+                                                        class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center mr-3 group-hover:bg-primary transition">
+                                                        <i class="fas fa-mobile-alt text-white text-sm"></i>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <p class="font-semibold text-ink text-sm">Maps App</p>
+                                                        <p class="text-xs text-gray-600">Aplicación</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+
+                                            <!-- Waze -->
+                                            <a href="{{ $wazeUrl }}" target="_blank"
+                                                class="flex items-center px-4 py-3 bg-white border-2 border-premium/25 rounded-lg hover:border-primary hover:bg-blue-50 transition group">
+                                                <div class="flex items-center">
+                                                    <div
+                                                        class="w-8 h-8 bg-ink rounded-lg flex items-center justify-center mr-3 group-hover:bg-primary transition">
+                                                        <i class="fas fa-route text-white text-sm"></i>
+                                                    </div>
+                                                    <div class="text-left">
+                                                        <p class="font-semibold text-ink text-sm">Waze</p>
+                                                        <p class="text-xs text-gray-600">GPS</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- Información método de navegación -->
+                                        <div class="mt-3 p-3 bg-white/90 rounded-lg">
+                                            <div
+                                                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                                <p class="text-xs text-ink flex items-center">
+                                                    <i class="fas fa-info-circle mr-2 text-primary"></i>
+                                                    Selecciona tu aplicación de navegación preferida
+                                                </p>
+
+                                                <div class="flex items-center">
+                                                    @if ($hasCoordinates)
+                                                        <i class="fas fa-crosshairs text-primary text-xs mr-1"></i>
+                                                        <span class="text-xs text-primary font-medium">Ubicación
+                                                            precisa</span>
+                                                    @else
+                                                        <i class="fas fa-map-marker text-danger text-xs mr-1"></i>
+                                                        <span class="text-xs text-danger font-medium">Por
+                                                            dirección</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            @if ($hasCoordinates)
+                                                <p class="text-xs text-gray-500 mt-1">
+                                                    Coordenadas: {{ number_format($businessData->latitude, 6) }},
+                                                    {{ number_format($businessData->longitude, 6) }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
                 </div>
-
-
-                <!-- Videos promocionales -->
-                @if ($businessData->promo_video_url || $businessData->additional_videos)
-                    <div class="sm:bg-white rounded-2xl sm:shadow-lg sm:hadow-ink sm:border sm:p-6">
-                        <div class="flex items-center mb-6">
-                            <div class="w-12 h-12 bg-danger rounded-xl flex items-center justify-center mr-4">
-                                <i class="fas fa-play text-white text-lg"></i>
-                            </div>
-                            <h2 class="text-2xl font-bold text-ink">Videos Promocionales</h2>
-                        </div>
-
-                        <div class="space-y-4">
-                            @if ($businessData->promo_video_url)
-                                <div class="aspect-video bg-gray-100 rounded-xl overflow-hidden">
-                                    <iframe src="{{ $businessData->promo_video_url }}" class="w-full h-full"
-                                        frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            @endif
-
-                            @if ($businessData->additional_videos)
-                                @php
-                                    $additionalVideos = json_decode($businessData->additional_videos, true) ?? [];
-                                @endphp
-                                @if (count($additionalVideos) > 0)
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                                        @foreach ($additionalVideos as $video)
-                                            <div class="aspect-video bg-gray-100 rounded-xl overflow-hidden">
-                                                <iframe src="{{ $video }}" class="w-full h-full"
-                                                    frameborder="0" allowfullscreen></iframe>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-                @endif
             </div>
 
 
             <!-- Sidebar con redes sociales y enlaces -->
-            <div class="space-y-8">
+            <div class="space-y-8 ">
                 <!-- Redes Sociales -->
                 @php
                     $socialNetworks = collect([
@@ -516,90 +512,68 @@
                         </div>
                     </div>
                 @endif
-
-                <!-- Enlaces personalizados -->
-                @if ($businessData->custom_links)
-                    @php
-                        $customLinks = json_decode($businessData->custom_links, true) ?? [];
-                    @endphp
-                    @if (count($customLinks) > 0)
-                        <div class="sm:bg-white rounded-2xl sm:shadow-lg sm:shadow-ink pt-4 sm:p-6">
-                            <div class="flex items-center mb-6">
-                                <div class="w-12 h-12 bg-secondary rounded-xl flex items-center justify-center mr-4">
-                                    <i class="fas fa-link text-white text-lg"></i>
-                                </div>
-                                <h2 class="text-2xl font-bold text-ink">Enlaces Adicionales</h2>
-                            </div>
-
-                            <div class="space-y-3">
-                                @foreach ($customLinks as $link)
-                                    <a href="{{ $link['url'] ?? '#' }}" target="_blank"
-                                        class="flex items-center p-4 bg-gradient-to-r from-secondary/15 to-primary/20 rounded-xl hover:from-primary/15 hover:to-secondary/15 transition-all duration-300 group">
-                                        <div
-                                            class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center mr-4 group-hover:bg-secondary transition-colors">
-                                            <i class="fas fa-external-link-alt text-white text-sm"></i>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p
-                                                class="font-semibold text-ink group-hover:text-primary transition-colors">
-                                                {{ $link['name'] ?? 'Enlace personalizado' }}
-                                            </p>
-                                            @if (isset($link['description']))
-                                                <p class="text-sm text-gray-600">{{ $link['description'] }}</p>
-                                            @endif
-                                        </div>
-                                        <i
-                                            class="fas fa-chevron-right text-gray-700 group-hover:text-primary transition-colors"></i>
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                @endif
-
-                <!-- Información adicional -->
-                {{-- <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <div class="flex items-center mb-6">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-info text-white text-lg"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-ink">Información</h2>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <span class="text-gray-600 font-medium">Tipo de Tienda</span>
-                            <span class="capitalize font-semibold text-ink px-3 py-1 bg-white rounded-full">
-                                {{ $businessData->store_type }}
-                            </span>
-                        </div>
-
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <span class="text-gray-600 font-medium">Registrado</span>
-                            <span class="font-semibold text-ink">
-                                {{ $businessData->created_at->format('d/m/Y') }}
-                            </span>
-                        </div>
-
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <span class="text-gray-600 font-medium">Última actualización</span>
-                            <span class="font-semibold text-ink">
-                                {{ $businessData->updated_at->format('d/m/Y') }}
-                            </span>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
+    </div>
 
-        <!-- Botón de regreso -->
-        <div class="mt-8 flex justify-center">
-            <a href="{{ route('companies.index') }}"
-                class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                <i class="fas fa-arrow-left mr-3"></i>
-                Volver a la lista
-            </a>
+    @if ($businessData->promo_video_url || $businessData->additional_videos)
+        <div class="mt-8 md:mt-16 space-y-4">
+            <div class="flex items-center justify-center">
+                <div class="w-12 h-12 bg-danger rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-play text-white text-lg"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-ink">Videos Promocionales</h2>
+            </div>
+
+            {{-- Video principal --}}
+            @if ($businessData->promo_video_url)
+                <div class="flex justify-center px-4 md:px-0">
+                    {!! $businessData->promo_video_url !!}
+                </div>
+            @endif
+
+            {{-- Videos adicionales --}}
+            @if ($businessData->additional_videos)
+                @foreach ($businessData->additional_videos as $video)
+                    <div class="flex justify-center px-4 md:px-0">
+                        {!! $video !!}
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    @endif
+
+    <div class="bg-white rounded-3xl shadow-lg mt-8 max-w-4xl mx-auto">
+        <div class="rounded-3xl bg-gradient-to-r from-black/3 via-white to-black/3 p-8 sm:p-10">
+            <h2 class="text-xl font-semibold text-ink mb-4">Beneficios de tus compras como afiliado</h2>
+
+            <p class="text-gray-700 leading-relaxed">
+                Por cada compra que usted realice como afiliado de Fornuvi a la marca
+                <span class="font-semibold">{{ $businessData->business->name }}</span>, Fornuvi recibe una comisión
+                que varía entre <span class="font-semibold">{{ $businessData->business->minimum_percentage }}%</span>
+                (mínimo) y <span class="font-semibold">{{ $businessData->business->maximum_percentage }}%</span>
+                (máximo), dependiendo de las condiciones comerciales.
+            </p>
+
+            <p class="text-gray-700 leading-relaxed mt-4">
+                Cada comisión de <span class="font-semibold">ingreso bruto de $38.000</span>, equivalente a
+                <span class="font-semibold">1.80 puntos</span>. Ingreso bruto corresponde al valor total
+                <span class="italic">antes de aplicar cualquier descuento, retención o gasto legal obligatorio</span>.
+            </p>
         </div>
     </div>
+
+
+
+    <!-- Botón de regreso -->
+    <div class="mt-8 flex justify-center">
+        <a href="{{ route('companies.index') }}"
+            class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+            <i class="fas fa-arrow-left mr-3"></i>
+            Volver a la lista
+        </a>
+    </div>
+
+
+    <script async src="//www.instagram.com/embed.js"></script>
 </div>

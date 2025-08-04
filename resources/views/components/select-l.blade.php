@@ -11,9 +11,9 @@
     <select id="{{ $for }}" name="{{ $for }}"
         {{ $attributes->merge([
             'class' => 'block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg 
-            focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
+                    focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer',
         ]) }}>
-          {{ $slot }}
+        {{ $slot }}
     </select>
 
     <div class="absolute inset-y-0 right-5 top-8 flex items-center pointer-events-none">
@@ -23,8 +23,7 @@
                 clip-rule="evenodd" />
         </svg>
     </div>
+    @error($for)
+        <p class="text-sm text-danger">{{ $message }}</p>
+    @enderror
 </div>
-
-@error($for)
-    <p class="text-sm text-danger">{{ $message }}</p>
-@enderror

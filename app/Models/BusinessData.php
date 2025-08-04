@@ -16,10 +16,11 @@ class BusinessData extends Model
         'phone',
         'whatsapp',
         'website_url',
-        'email',
+        'business_email',
         'description',
-        'country',
-        'department',
+        'country_id',
+        'department_id',
+        'city_id',
         'city',
         'address',
         'latitude',
@@ -35,7 +36,7 @@ class BusinessData extends Model
         'custom_links',
     ];
 
-     protected $casts = [
+    protected $casts = [
         'additional_videos' => 'array',
         'custom_links' => 'array',
     ];
@@ -43,5 +44,21 @@ class BusinessData extends Model
     public function business(): BelongsTo
     {
         return $this->belongsTo(Business::class);
+    }
+
+
+    public function country()
+    {
+        return $this->belongsTo(\App\Models\Country::class, 'country_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(\App\Models\Department::class, 'department_id');
+    }
+
+    public function cityRelation()
+    {
+        return $this->belongsTo(\App\Models\City::class, 'city_id');
     }
 }

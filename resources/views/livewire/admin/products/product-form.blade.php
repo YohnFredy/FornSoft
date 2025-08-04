@@ -15,15 +15,15 @@
                 </div>
 
                 <div class=" col-span-6 md:col-span-1">
-                    <x-input type="number" label="Precio publico:" for="final_price" wire:model.blur="final_price" step="0.01"
-                        min="0" required />
+                    <x-input type="number" label="Precio publico:" for="final_price" wire:model.blur="final_price"
+                        step="0.01" min="0" required />
                 </div>
                 <div class=" col-span-6 md:col-span-1">
-                    <x-input type="number" label="iva %:" for="tax_percent" wire:model.blur="tax_percent" step="0.01"
-                        min="0" required />
+                    <x-input type="number" label="iva %:" for="tax_percent" wire:model.blur="tax_percent"
+                        step="0.01" min="0" required />
                 </div>
                 <div class=" col-span-6 md:col-span-1">
-                    <x-input type="number" label="Precio sin iva" for="price"  wire:model.blur="price" step="0.01"
+                    <x-input type="number" label="Precio sin iva" for="price" wire:model.blur="price" step="0.01"
                         min="0" required />
                 </div>
 
@@ -143,17 +143,23 @@
 
             <!-- Existing Images -->
             @if ($isEditMode)
-                <div class=" mt-4">
+                 <div class=" mt-4">
                     <x-label>Imágenes Existentes:</x-label>
-                    <div class="grid grid-cols-6 gap-2 ">
-                        @foreach ($images as $image)
+                    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 ">
+                        {{-- CORRECCIÓN: Iterar sobre el array asociativo [id => path] --}}
+                        @foreach ($images as $id => $path)
                             <div
-                                class="col-span-2 md:col-span-1  relative bg-white shadow-md shadow-palette-300  border border-palette-200  rounded-lg flex items-center justify-center p-2">
+                                class="relative bg-white shadow-md shadow-palette-300  border border-palette-200  rounded-lg flex items-center justify-center p-2">
                                 <div class="">
-                                    <img src="{{ Storage::url($image) }}" class="h-20" alt="Imagen del Producto">
-                                    <button type="button" wire:confirm="Esta seguuro de eliminar la imagen ?"
-                                        class=" absolute top-2 right-2 font-bold text-palette-400"
-                                        wire:click="removeImage('{{ $image }}')">X</button>
+                                    <img src="{{ Storage::url($path) }}" class="h-20 object-cover"
+                                        alt="Imagen del Negocio">
+
+                                    {{-- CORRECCIÓN: Llamar al nuevo método con el ID y una confirmación --}}
+                                    <button type="button" wire:click="removeMedia({{ $id }})"
+                                        wire:confirm="¿Estás seguro de eliminar esta imagen?"
+                                        class=" absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">
+                                        X
+                                    </button>
                                 </div>
                             </div>
                         @endforeach

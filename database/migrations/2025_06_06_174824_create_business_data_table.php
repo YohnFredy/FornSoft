@@ -20,17 +20,18 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('whatsapp')->nullable();
             $table->string('website_url')->nullable();
-            $table->string('email')->nullable();
+            $table->string('business_email')->nullable();
             $table->text('description')->nullable(); // Descripción de la empresa
 
             // Ubicación
-            $table->string('country')->nullable();
-            $table->string('department')->nullable();
+            $table->integer('country_id');
+            $table->integer('department_id')->nullable();
+            $table->integer('city_id')->nullable();
             $table->string('city')->nullable();
             $table->string('address')->nullable();
 
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable()->default(0);
+            $table->decimal('longitude', 10, 7)->nullable()->default(0);
 
 
             // Redes sociales (campos opcionales)
@@ -42,7 +43,7 @@ return new class extends Migration
             $table->string('x_url')->nullable(); // Twitter (X)
 
             // Multimedia
-            $table->string('promo_video_url')->nullable(); // video promocional principal
+            $table->text('promo_video_url')->nullable();
             $table->json('additional_videos')->nullable(); // otros videos si aplica
 
             // Otros enlaces personalizados
@@ -54,8 +55,9 @@ return new class extends Migration
 
             $table->index(['latitude', 'longitude']);
             $table->index('store_type');
-            $table->index('country');
-            $table->index('department');
+            $table->index('country_id');
+            $table->index('department_id');
+            $table->index('city_id');
             $table->index('city');
             $table->index('address');
         });

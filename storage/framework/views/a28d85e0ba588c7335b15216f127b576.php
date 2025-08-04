@@ -1,6 +1,6 @@
 <div>
     <!-- cart -->
-    <a href="<?php echo e(route('products.cart')); ?>" :active="request() - > routeIs('products.cart')"
+    <a href="<?php echo e(route('products.cart')); ?>" :active="request()->routeIs('products.cart')"
         class=" relative flex items-center ml-3 
         <?php echo e(request()->routeIs('products.cart') ? 'text-secondary hover:text-primary border-b-2 border-primary' : 'text-primary hover:text-secondary  '); ?>">
         <div class=" text-2xl "><i class="fas fa-cart-arrow-down"></i></div>

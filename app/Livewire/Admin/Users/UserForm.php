@@ -91,8 +91,6 @@ class UserForm extends Component
         }
 
         $this->countries = Country::all();
-
-      
     }
 
     public function updatedSelectedCountry($country_id)

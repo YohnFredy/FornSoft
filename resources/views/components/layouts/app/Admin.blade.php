@@ -29,11 +29,11 @@
                     'route' => 'admin.products.index',
                     'routeIs' => 'admin.products.*',
                 ],
-                [
-                    'name' => 'Generar',
-                    'icon' => 'calculator',
-                    'route' => 'admin.products.index',
-                    'routeIs' => 'admin.products.*',
+                 [
+                    'name' => 'Negocios aliados',
+                    'icon' => 'building-office-2',
+                    'route' => 'admin.businesses.index',
+                    'routeIs' => 'admin.businesses.*',
                 ],
             ],
         ],

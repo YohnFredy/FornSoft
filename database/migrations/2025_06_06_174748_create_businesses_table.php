@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('nit')->unique(); // NIT único
             $table->foreignId('user_id')->constrained()->onUpdate('cascade');
-            $table->decimal('percentage', 4, 2)->default(0);
+            $table->decimal('minimum_percentage', 4, 2)->default(0);
+            $table->decimal('maximum_percentage', 4, 2)->default(0);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_active')->default(true); // Define si el comercio está habilitado
             $table->rememberToken();
             $table->timestamps();
             $table->index('name');

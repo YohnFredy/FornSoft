@@ -12,6 +12,7 @@
 
 <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
+<?php echo $__env->yieldPushContent('scripts'); ?>
 <?php echo $__env->yieldPushContent('js'); ?>
 
 <!-- Script de Alpine para el control del árbol -->

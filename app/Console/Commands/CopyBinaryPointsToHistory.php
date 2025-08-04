@@ -10,6 +10,8 @@ use Carbon\Carbon;
 
 class CopyBinaryPointsToHistory extends Command
 {
+    /* php artisan copy:binary-points */
+
     protected $signature = 'copy:binary-points';
     protected $description = 'Copia los datos de binary_points a points_histories';
 
@@ -17,8 +19,11 @@ class CopyBinaryPointsToHistory extends Command
     {
         $this->info('Iniciando copia de datos...');
 
-        $startDate = Carbon::now()->startOfDay(); // Puedes cambiar la lógica si necesitas una fecha específica
-        $endDate = Carbon::now()->endOfDay();
+        /* $startDate = Carbon::now()->startOfDay(); // Puedes cambiar la lógica si necesitas una fecha específica
+        $endDate = Carbon::now()->endOfDay(); */
+
+        $startDate = Carbon::parse('2025-07-01')->startOfDay();
+        $endDate = Carbon::parse('2025-07-31')->endOfDay();
 
         $binaryPoints = BinaryPoint::all();
 
@@ -33,7 +38,7 @@ class CopyBinaryPointsToHistory extends Command
                     'personal' => $point->personal,
                     'unilevel' => 0,
                     'left_binary' => $point->left_points,
-                    'right_binary' =>$point->right_points,
+                    'right_binary' => $point->right_points,
                 ]
             );
         }

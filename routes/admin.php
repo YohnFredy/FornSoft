@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BusinessController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\InvoiceController;
@@ -51,6 +52,18 @@ Route::middleware(['auth'])->group(function () {
             'edit' => 'can:admin.products.edit',
             'update' => 'can:admin.products.edit',
             'destroy' => 'can:admin.products.destroy'
+        ]);
+
+        Route::resource('business', BusinessController::class)
+        ->names('businesses')
+        ->middleware([
+            'index' => 'can:admin.businesses.index',
+            'create' => 'can:admin.businesses.create',
+            'store' => 'can:admin.businesses.create',
+            'show' => 'can:admin.businesses.show',
+            'edit' => 'can:admin.businesses.edit',
+            'update' => 'can:admin.businesses.edit',
+            'destroy' => 'can:admin.businesses.destroy'
         ]);
 
     // Otras rutas de recursos con permisos...

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Products;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -55,7 +56,6 @@ class ProductForm extends Component
     {
         return $value === '' ? 0 : $value;
     }
-
 
     public function updatedFinalPrice($valor)
     {
@@ -114,7 +114,7 @@ class ProductForm extends Component
     public function loadProductData()
     {
         $this->fill($this->product->toArray());
-        $this->images = $this->product->images->pluck('path')->toArray();
+        $this->images = $this->product->images->pluck('path', 'id')->toArray();
     }
 
     public function loadCategoryData()
@@ -221,14 +221,35 @@ class ProductForm extends Component
         return redirect()->route('admin.products.index');
     }
 
-    public function removeImage($path)
+    public function removeMedia($mediaId)
+    {
+
+        $image = Image::find($mediaId);
+
+        if (!$image) {
+            return; // La imagen no existe
+        }
+
+        // Eliminar el archivo físico
+        Storage::disk('public')->delete($image->path);
+
+        // Eliminar de la base de datos
+        $image->delete();
+
+        // Actualizar el estado del componente para que la vista refleje el cambio al instante
+        if (isset($this->images[$mediaId])) {
+            unset($this->images[$mediaId]);
+        }
+    }
+
+   /*  public function removeImage($path)
     {
         if (!in_array($path, $this->images)) return;
 
         $this->images = array_filter($this->images, fn($image) => $image !== $path);
         Storage::delete('public/' . $path);
         $this->product->images()->where('path', $path)->delete();
-    }
+    } */
 
     protected function saveImages($product)
     {

@@ -20,7 +20,7 @@
             'name' => 'Aliados',
             'icon' => 'shopping-bag',
             'route' => 'companies.index',
-            'routeIs' => 'companies.index',
+            'routeIs' => 'companies*',
         ],
 
 

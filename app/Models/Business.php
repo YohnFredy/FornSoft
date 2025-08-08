@@ -49,6 +49,16 @@ class Business extends Model
         return $this->morphMany(Image::class, 'imageable')->where('type', 'image');
     }
 
+    public function businessCategories()
+    {
+        return $this->belongsToMany(
+            \App\Models\BusinessCategory::class,
+            'business_business_category',
+            'business_id',
+            'business_category_id'
+        );
+    }
+
     public function categories(): BelongsToMany
     {
         // Usamos "categories" como nombre del método para que sea más natural de leer ($business->categories)

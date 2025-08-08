@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,21 +34,30 @@ class DatabaseSeeder extends Seeder
             RegisterRedSeeder::class,
             CategorySeeder::class,
             ImageSeeder::class,
+            StoreTypeSeeder::class,
         ]);
 
+        /* BusinessCategory::factory(10)->create();
 
-        $categories = BusinessCategory::factory(10)->create();
-        $categoryIds = $categories->pluck('id');
+        Business::factory(20)->create()->each(function ($business) {
+            // Business Data
+            $businessData = BusinessData::factory()->create([
+                'business_id' => $business->id
+            ]);
 
-        Business::factory(10) // Queremos 10 empresas
-            ->has(BusinessData::factory(), 'data') // Para cada empresa, crea 1 registro de BusinessData usando la relación 'data' del modelo Business
-            ->create() // Ejecuta la creación de las empresas y sus datos asociados
-            ->each(function ($business) use ($categoryIds) {
-                // Después de crear cada empresa, ejecutamos esta función
-                // Le asignamos un número aleatorio (entre 1 y 3) de categorías
-                $business->categories()->attach(
-                    $categoryIds->random(rand(1, 3))
-                );
-            });
+            // Relación many-to-many con categorías
+            $categoryIds = \App\Models\BusinessCategory::inRandomOrder()->take(rand(1, 3))->pluck('id');
+            $business->categories()->attach($categoryIds);
+
+            // Relación many-to-many con store types (1, 2 o ambos)
+            $storeTypeOptions = [
+                [1],
+                [2],
+                [1, 2]
+            ];
+            $storeTypeIds = collect($storeTypeOptions)->random();
+
+            $businessData->storeTypes()->sync($storeTypeIds);
+        }); */
     }
 }

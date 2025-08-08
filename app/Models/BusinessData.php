@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class BusinessData extends Model
 {
@@ -12,7 +13,6 @@ class BusinessData extends Model
 
     protected $fillable = [
         'business_id',
-        'store_type',
         'phone',
         'whatsapp',
         'website_url',
@@ -46,6 +46,11 @@ class BusinessData extends Model
         return $this->belongsTo(Business::class);
     }
 
+   
+    public function storeTypes()
+    {
+        return $this->belongsToMany(StoreType::class, 'business_data_store_type');
+    }
 
     public function country()
     {

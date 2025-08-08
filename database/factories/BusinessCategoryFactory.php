@@ -17,12 +17,7 @@ class BusinessCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            // Genera un nombre de categoría único y realista
-            'name' => fake()->unique()->randomElement([
-                'Tecnología', 'Restaurantes', 'Consultoría', 'Salud y Bienestar',
-                'Educación', 'Tiendas Minoristas', 'Servicios Financieros', 'Entretenimiento',
-                'Construcción', 'Bienes Raíces', 'Marketing Digital', 'Logística'
-            ]),
+            'name' => $this->faker->unique()->word(),
         ];
     }
 }

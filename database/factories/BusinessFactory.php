@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,18 +18,21 @@ class BusinessFactory extends Factory
      * @return array<string, mixed>
      */
 
-    protected static ?string $password;
     public function definition(): array
     {
-          return [
-            'name' => fake()->unique()->company(), // Genera un nombre de empresa único
-            'slug' => Str::slug($this->faker->unique()->word),
-            'nit' => fake()->unique()->numerify('#########-#'), // Genera un NIT falso como 987654321-0
-            'user_id' => 1,
-
-            'email' => fake()->unique()->safeEmail(),
+        $name = $this->faker->company();
+        return [
+            'name' => $name,
+            'slug' => Str::slug($name) . '-' . $this->faker->unique()->numberBetween(100, 999),
+            'nit' => $this->faker->unique()->numerify('#########'),
+            'user_id' => \App\Models\User::factory(),
+            'minimum_percentage' => $this->faker->randomFloat(2, 0, 10),
+            'maximum_percentage' => $this->faker->randomFloat(2, 10, 20),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => bcrypt('password'),
+            'is_active' => $this->faker->boolean(90),
+            'remember_token' => Str::random(10),
         ];
     }
 }

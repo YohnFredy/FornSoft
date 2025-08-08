@@ -22,7 +22,6 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 
 
-
 class Register extends Component
 {
     public $sponsor = '', $side = '';
@@ -131,10 +130,10 @@ class Register extends Component
     {
         $this->validate();
         // Validar reCAPTCHA
-        if (!$this->validateRecaptcha()) {
+        /* if (!$this->validateRecaptcha()) {
             session()->flash('captcha', '⚠️ No se pudo verificar tu envío mediante reCAPTCHA. Esto puede ocurrir si tu conexión es inestable o si Google no pudo confirmar la seguridad del envío. Por favor, intenta nuevamente recargando la página.');
             return;
-        }
+        } */
 
         try {
             DB::transaction(function () { // 

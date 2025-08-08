@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\BusinessData;
+use App\Models\StoreType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 
 return new class extends Migration
 {
@@ -16,7 +19,6 @@ return new class extends Migration
             $table->foreignId('business_id')->constrained()->onDelete('cascade');
 
             // Información general
-            $table->enum('store_type', ['online', 'physical', 'hybrid'])->default('physical');
             $table->string('phone')->nullable();
             $table->string('whatsapp')->nullable();
             $table->string('website_url')->nullable();
@@ -54,7 +56,6 @@ return new class extends Migration
             // Índices para mejorar rendimiento en búsquedas y filtros
 
             $table->index(['latitude', 'longitude']);
-            $table->index('store_type');
             $table->index('country_id');
             $table->index('department_id');
             $table->index('city_id');
@@ -62,7 +63,7 @@ return new class extends Migration
             $table->index('address');
         });
     }
-
+   
     /**
      * Reverse the migrations.
      */

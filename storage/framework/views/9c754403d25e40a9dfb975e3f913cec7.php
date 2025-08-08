@@ -37,10 +37,12 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars); ?>
 
 <?php if ($expandable && $heading): ?>
-    <ui-disclosure <?php echo e($attributes->class('group/disclosure')); ?> <?php if($expanded === false): ?> open <?php endif; ?> data-flux-navlist-group>
-        <button type="button" class="w-full h-10 lg:h-8 flex items-center group/disclosure-button mb-[2px] rounded-lg hover:bg-zinc-800/5 dark:hover:bg-white/[7%] text-zinc-500 hover:text-zinc-800 dark:text-white/80 dark:hover:text-white">
-            <div class="pl-3 pr-4">
-                <?php if (isset($component)) { $__componentOriginal298ff21bbc41cebb188cbb18c6c11bc0 = $component; } ?>
+<ui-disclosure <?php echo e($attributes->class('group/disclosure')); ?> <?php if($expanded === false): ?> open <?php endif; ?>
+    data-flux-navlist-group>
+    <button type="button"
+        class="w-full h-10 lg:h-8 flex items-center group/disclosure-button mb-[2px] rounded-lg hover:bg-zinc-800/5  text-zinc-500 hover:text-zinc-800">
+        <div class="pl-3 pr-4">
+            <?php if (isset($component)) { $__componentOriginal298ff21bbc41cebb188cbb18c6c11bc0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal298ff21bbc41cebb188cbb18c6c11bc0 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-down','data' => ['class' => 'size-3! hidden group-data-open/disclosure-button:block']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.chevron-down'); ?>
@@ -60,7 +62,7 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginal298ff21bbc41cebb188cbb18c6c11bc0; ?>
 <?php unset($__componentOriginal298ff21bbc41cebb188cbb18c6c11bc0); ?>
 <?php endif; ?>
-                <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
+            <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal31cb76c8d087d4f00797aeea7232b4c3 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-3! block group-data-open/disclosure-button:hidden']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.chevron-right'); ?>
@@ -80,33 +82,33 @@ unset($__defined_vars); ?>
 <?php $component = $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3; ?>
 <?php unset($__componentOriginal31cb76c8d087d4f00797aeea7232b4c3); ?>
 <?php endif; ?>
-            </div>
-
-            <span class="text-sm font-medium leading-none"><?php echo e($heading); ?></span>
-        </button>
-
-        <div class="relative hidden data-open:block space-y-[2px] pl-7" <?php if($expanded === true): ?> data-open <?php endif; ?>>
-            <div class="absolute inset-y-[3px] w-px bg-zinc-200 dark:bg-white/30 left-0 ml-4"></div>
-
-            <?php echo e($slot); ?>
-
-        </div>
-    </ui-disclosure>
-<?php elseif ($heading): ?>
-    <div <?php echo e($attributes->class('block space-y-[2px]')); ?>>
-        <div class="px-3 py-2">
-            <div class="text-sm text-ink font-medium leading-none"><?php echo e($heading); ?></div>
         </div>
 
-        <div>
-            <?php echo e($slot); ?>
+        <span class="text-sm font-medium leading-none"><?php echo e($heading); ?></span>
+    </button>
 
-        </div>
-    </div>
-<?php else: ?>
-    <div <?php echo e($attributes->class('block space-y-[2px]')); ?>>
+    <div class="relative hidden data-open:block space-y-[2px] pl-7" <?php if($expanded === true): ?> data-open <?php endif; ?>>
+        <div class="absolute inset-y-[3px] w-px bg-zinc-200 left-0 ml-4"></div>
+
         <?php echo e($slot); ?>
 
     </div>
+</ui-disclosure>
+<?php elseif ($heading): ?>
+<div <?php echo e($attributes->class('block space-y-[2px]')); ?>>
+    <div class="px-3 py-2">
+        <div class="text-sm text-ink font-medium leading-none"><?php echo e($heading); ?></div>
+    </div>
+
+    <div>
+        <?php echo e($slot); ?>
+
+    </div>
+</div>
+<?php else: ?>
+<div <?php echo e($attributes->class('block space-y-[2px]')); ?>>
+    <?php echo e($slot); ?>
+
+</div>
 <?php endif; ?>
 <?php /**PATH C:\Users\Fredy\Herd\fornuvi\resources\views/flux/navlist/group.blade.php ENDPATH**/ ?>

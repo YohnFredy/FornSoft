@@ -180,7 +180,7 @@
                 <flux:spacer />
 
                 <div class=" space-x-2">
-                    <flux:button wire:click="redirectToHome" type="button" variant="primary">Inicio</flux:button>
+                    <flux:button wire:click="redirectToHome" type="submit" variant="primary">Inicio</flux:button>
 
                     <flux:button x-on:click="$wire.confirmingRegistration = false">Cerrar</flux:button>
                 </div>
@@ -188,7 +188,7 @@
         </div>
     </flux:modal>
 
-    @push('js')
+    {{-- @push('js')
         <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.key') }}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -235,7 +235,7 @@
                 });
             });
         </script>
-    @endpush
+    @endpush --}}
 
     <script>
         // Selecciona el campo de entrada

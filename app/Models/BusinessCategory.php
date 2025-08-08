@@ -20,4 +20,5 @@ class BusinessCategory extends Model
         // 2do arg (opcional): Nombre de la tabla pivote. Lo ponemos por claridad.
         return $this->belongsToMany(Business::class, 'business_business_category');
     }
+    
 }

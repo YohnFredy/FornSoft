@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Department;
 use App\Models\Image;
+use App\Models\StoreType;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -25,7 +26,7 @@ class BusinessForm extends Component
     public $name = '', $slug = '', $nit = '', $user_id, $minimum_percentage = 0, $maximum_percentage = 0, $email = '', $is_active = true, $password = '';
 
     // Propiedades del modelo BusinessData
-    public $store_type = 'physical', $phone = '', $whatsapp = '', $website_url = '', $business_email = '', $description = '';
+    public $phone = '', $whatsapp = '', $website_url = '', $business_email = '', $description = '';
 
     public $facebook_url = '', $instagram_url = '', $linkedin_url = '', $youtube_url = '', $tiktok_url = '', $x_url = '', $promo_video_url = '';
 
@@ -35,7 +36,7 @@ class BusinessForm extends Component
     public $country_id, $department_id, $city_id, $address;
     public $countries = [], $departments = [], $cities = [];
     public $selectedCountry = '', $selectedDepartment = '', $selectedCity = '',  $city = '';
-    public $latitude = '', $longitude = '';
+    public $latitude = 0, $longitude = 0;
 
     //Estructura para manejar imágenes nuevas y existentes.
     public $newImages = [];
@@ -46,6 +47,10 @@ class BusinessForm extends Component
     // Propiedades para las categorías
     public $allCategories = [];
     public $selectedCategories = [];
+
+    // Propiedades para las categorías
+    public $allStoreTypes = [];
+    public $selectedStoreTypes = [];
 
     public $isEditMode = false;
 
@@ -61,7 +66,7 @@ class BusinessForm extends Component
             'maximum_percentage' => 'numeric|min:0|max:99',
             'email' => ['required', 'email', 'max:255', Rule::unique('businesses')->ignore($businessId)],
             'is_active' => 'required|boolean',
-            'store_type' => ['required', Rule::in(['online', 'physical', 'hybrid'])],
+            /*  'store_type' => ['required', Rule::in(['online', 'physical', 'hybrid'])], */
             'phone' => 'nullable|string|max:255',
             'whatsapp' => 'nullable|string|max:255',
             'website_url' => 'nullable|url|max:255',
@@ -85,8 +90,10 @@ class BusinessForm extends Component
             'newLogos.*' => 'nullable|image|max:2048',
             'selectedCategories' => 'required|array|min:1',
             'selectedCategories.*' => 'exists:business_categories,id',
+            'selectedStoreTypes' => 'required|array|min:1',
+            'selectedStoreTypes.*' => 'exists:store_types,id',
             'additional_videos' => 'nullable|array',
-            'additional_videos.*' => 'nullable|url|max:255', // Cada video debe ser una URL válida
+            /* 'additional_videos.*' => 'nullable',  */
             'custom_links' => 'nullable|array',
             'custom_links.*.title' => 'required_with:custom_links.*.url|string|max:255', // El título es requerido si la URL existe
             'custom_links.*.url' => 'required_with:custom_links.*.title|url|max:255',    // La URL es requerida si el título existe
@@ -96,6 +103,8 @@ class BusinessForm extends Component
     public function mount(BusinessData $businessData)
     {
         $this->allCategories = BusinessCategory::all();
+        $this->allStoreTypes = StoreType::all();
+
         $this->businessData = $businessData;
 
         if ($this->businessData->exists) {
@@ -178,7 +187,6 @@ class BusinessForm extends Component
         $this->email = $business->email;
         $this->is_active = $business->is_active;
 
-        $this->store_type = $this->businessData->store_type;
         $this->phone = $this->businessData->phone;
         $this->whatsapp = $this->businessData->whatsapp;
         $this->website_url = $this->businessData->website_url;
@@ -209,6 +217,7 @@ class BusinessForm extends Component
 
 
         $this->selectedCategories = $business->categories->pluck('id')->toArray();
+        $this->selectedStoreTypes = $this->businessData->storeTypes->pluck('id')->toArray();
 
         $this->existingImages = $business->galleryImages()->pluck('path', 'id')->toArray();
         $this->existingLogos = $business->logos()->pluck('path', 'id')->toArray();
@@ -226,13 +235,13 @@ class BusinessForm extends Component
 
         $business = Business::create($business);
 
-        $business->data()->create($this->prepareBusinessData());
+        $businessData = $business->data()->create($this->prepareBusinessData());
 
         $business->categories()->sync($this->selectedCategories);
+        $businessData->storeTypes()->sync($this->selectedStoreTypes);
+
         $this->saveLogos($business);
         $this->saveImages($business);
-
-
 
         session()->flash('success', 'Negocio creado exitosamente.');
         return redirect()->route('admin.businesses.index');
@@ -240,7 +249,6 @@ class BusinessForm extends Component
 
     public function update()
     {
-
         // Preparar los datos para actualizar
         $data = $this->prepareBusiness();
 
@@ -256,7 +264,10 @@ class BusinessForm extends Component
 
         // Actualizar relaciones, datos adicionales o imágenes si aplica...
         $business->data()->update($this->prepareBusinessData());
+
         $business->categories()->sync($this->selectedCategories);
+        $this->businessData->storeTypes()->sync($this->selectedStoreTypes);
+
         $this->saveLogos($business);
         $this->saveImages($business);
 
@@ -340,7 +351,6 @@ class BusinessForm extends Component
             return !empty($link['title']) && !empty($link['url']);
         });
         return [
-            'store_type' => $this->store_type,
             'phone' => $this->phone,
             'whatsapp' => $this->whatsapp,
             'website_url' => $this->website_url,

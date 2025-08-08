@@ -40,13 +40,6 @@
                         <option value="0">Inactivo</option>
                     </x-select-l>
                 </div>
-                <div class="col-span-6 md:col-span-2">
-                    <x-select-l label="Tipo de Tienda:" for="store_type" wire:model.live="store_type">
-                        <option value="online">Online</option>
-                        <option value="physical">Fisica</option>
-                        <option value="hybrid">Fisica y Online</option>
-                    </x-select-l>
-                </div>
                 {{-- Resto de los campos de texto --}}
                 <div class="col-span-6 md:col-span-2">
                     <x-input type='text' label="Teléfono:" for="phone" wire:model.live="phone" />
@@ -209,6 +202,20 @@
                         @endforeach
                     </div>
                     <x-input-error for="selectedCategories" />
+                </div>
+
+                <div class="col-span-6 mt-5">
+                    <x-label for="StoreType">Tipo de Tienda:</x-label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border p-2 rounded-md">
+                        @foreach ($allStoreTypes as $storeType)
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" wire:model.live="selectedStoreTypes"
+                                    value="{{ $storeType->id }}" class="rounded">
+                                <span>{{ $storeType->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <x-input-error for="selectedStoreTypes" />
                 </div>
 
                 <div class="col-span-6 form-group">

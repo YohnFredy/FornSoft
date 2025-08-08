@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('nit')->unique(); // NIT único
+            $table->string('nit')->nullable(); // NIT único
             $table->foreignId('user_id')->constrained()->onUpdate('cascade');
             $table->decimal('minimum_percentage', 4, 2)->default(0);
             $table->decimal('maximum_percentage', 4, 2)->default(0);
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
             $table->index('name');
             $table->index('nit');
+            $table->unique(['name', 'nit']);
         });
     }
 

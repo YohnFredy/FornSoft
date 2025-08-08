@@ -14,55 +14,37 @@ class BusinessDataFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
 
+    public function definition()
+    {
         return [
-            // Información básica
-            'store_type' => $this->faker->randomElement(['online', 'physical', 'hybrid']),
+            'business_id' => \App\Models\Business::factory(),
             'phone' => $this->faker->phoneNumber(),
-            'business_email' => $this->faker->safeEmail(),
+            'whatsapp' => $this->faker->phoneNumber(),
             'website_url' => $this->faker->url(),
+            'business_email' => $this->faker->companyEmail(),
             'description' => $this->faker->paragraph(),
 
-            // Ubicación
-
-            'country_id' => 1,
+            'country_id' => 1, // puedes reemplazar con tu lógica real
             'department_id' => 1,
-            'city' => 'cali',
-            'address' => $this->faker->streetAddress(),
+            'city_id' => 1,
+            'city' => $this->faker->city(),
+            'address' => $this->faker->address(),
+            'latitude' => $this->faker->latitude(),
+            'longitude' => $this->faker->longitude(),
 
-            'latitude' => 3.4707424,
-            'longitude' => -76.5275020,
+            'facebook_url' => $this->faker->url(),
+            'instagram_url' => $this->faker->url(),
+            'linkedin_url' => $this->faker->url(),
+            'youtube_url' => $this->faker->url(),
+            'tiktok_url' => $this->faker->url(),
+            'x_url' => $this->faker->url(),
 
-            // Redes sociales
-            'facebook_url' => 'https://facebook.com/' . $this->faker->userName(),
-            'instagram_url' => 'https://instagram.com/' . $this->faker->userName(),
-            'linkedin_url' => 'https://linkedin.com/company/' . $this->faker->slug(),
-            'youtube_url' => 'https://youtube.com/channel/' . $this->faker->uuid(),
-            'tiktok_url' => 'https://tiktok.com/@' . $this->faker->userName(),
-            'x_url' => 'https://x.com/' . $this->faker->userName(),
-
-            // Videos
-            'promo_video_url' => 'https://www.youtube.com/embed/' . $this->faker->uuid(),
-
-            'additional_videos' => [
-                'https://youtu.be/43kJpw26dKg?si=M6GfRhhnbQmWtRaS',
-                'https://youtu.be/fQjFowjh34E?si=aOpN_lQg6v-eEUvc',
-                'https://youtu.be/i0FHB_o5akA?si=0B6qXRS_z_9t93ia',
-            ],
-
-            // Enlaces personalizados
-            'custom_links' => [
-                [
-                    'url' => 'https://catalogo.grupohinode.com/colombia/?page=1',
-                    'title' => 'Catalogo Hinode',
-                ],
-                [
-                    'url' => 'https://co.oriflame.com/products/digital-catalogue-current?PageNumber=1',
-                    'title' => 'Catalogo oriflame',
-                ],
-            ],
+            'promo_video_url' => $this->faker->url(),
+            'additional_videos' => json_encode([$this->faker->url(), $this->faker->url()]),
+            'custom_links' => json_encode([
+                ['title' => 'Catálogo PDF', 'url' => $this->faker->url()],
+            ]),
         ];
     }
 }

@@ -8,10 +8,10 @@ use App\Models\Image;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-
 
 class ProductForm extends Component
 {
@@ -73,7 +73,7 @@ class ProductForm extends Component
         // Aseguramos que los valores sean válidos
         $valor = $this->getValidValue($valor);
         $this->final_price = $this->getValidValue($this->final_price);
-        
+
 
         // Cálculo de precio
         $this->price = round($this->final_price / (1 + ($valor / 100)), 2);
@@ -92,22 +92,24 @@ class ProductForm extends Component
         $this->final_price = round(($this->price *  $tax_percent / 100) + $this->price, 2);
     }
 
-
     public function mount(Product $product)
     {
-        $this->product = $product ?? new Product();
+        $this->product = $product;
 
         // Cargar las categorías de nivel raíz (sin padre)
         $this->categoryLevels[0] = Category::whereNull('parent_id')->get();
 
         if ($this->product->exists) {
+
+            $this->authorize('admin.products.edit');
+
             $this->loadProductData();
             $this->loadCategoryData();
             $this->isEditMode = true;
 
             $this->final_price = round($this->final_price, 2);
         } else {
-            $this->maximum_discount = 0;
+            $this->authorize('admin.products.create');
         }
     }
 
@@ -138,13 +140,11 @@ class ProductForm extends Component
             $level++;
         }
 
-        // Si la categoría tiene un padre, asignar su ID
-        if ($this->category->parent_id) {
-            $this->selectedLevels[$level] = $this->category->parent_id;
-            $this->category_id = $this->category->parent_id;
-        }
+        // Aquí corregimos: asignamos la categoría final, no el parent_id
+        $this->category_id = $this->category->id;
 
-        $this->hasChildCategories = true;
+        // Si la última categoría no tiene hijos, habilitar la bandera
+        $this->hasChildCategories = $this->category->children()->count() === 0;
     }
 
     #[On('calculadora-financiera')]
@@ -161,7 +161,6 @@ class ProductForm extends Component
 
         $this->updatedFinalPrice($this->final_price);
     }
-
 
     public function updatedSelectedLevels($value, $key)
     {
@@ -212,7 +211,6 @@ class ProductForm extends Component
     public function update()
     {
         $validatedData = $this->validate();
-        $validatedData['slug'] = Str::slug($this->name);
 
         $this->product->update($validatedData);
         $this->saveImages($this->product);
@@ -242,15 +240,6 @@ class ProductForm extends Component
         }
     }
 
-   /*  public function removeImage($path)
-    {
-        if (!in_array($path, $this->images)) return;
-
-        $this->images = array_filter($this->images, fn($image) => $image !== $path);
-        Storage::delete('public/' . $path);
-        $this->product->images()->where('path', $path)->delete();
-    } */
-
     protected function saveImages($product)
     {
         foreach ($this->newImages as $image) {
@@ -263,6 +252,7 @@ class ProductForm extends Component
         }
     }
 
+    #[Layout('components.layouts.admin')]
     public function render()
     {
         return view('livewire.admin.products.product-form', [

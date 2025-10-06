@@ -28,7 +28,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4 px-6">
         <div>
             <h1 class="text-2xl font-bold text-primary">Gestión de productos</h1>
-            <p class="text-sm text-ink mt-1">Administra tus productos de productos</p>
+            <p class="text-sm text-ink mt-1">Administra tus productos</p>
         </div>
         <a href="{{ route('admin.products.create') }}"
             class="mt-4 md:mt-0 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-secondary transition duration-200 flex items-center shadow-lg shadow-primary/20">
@@ -66,6 +66,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-neutral-50">
                     <tr class="text-xs font-medium text-primary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-4 text-left">Id</th>
                         <th scope="col" class="px-6 py-4 text-left">Imágenes</th>
                         <th scope="col" class="px-6 py-4 text-left">Nombre</th>
                         <th scope="col" class="px-6 py-4 text-left">Descripción</th>
@@ -77,58 +78,65 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-neutral-300">
                     @forelse ($products as $product)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <div wire:key="{{ $product->id }}">
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <th scope="row" class="px-6 py-4">
+                                    {{ $product->id }}
+                                </th>
+                                <th scope="row" class="">
+                                    @if ($product->latestImage)
+                                        <img class=" h-10 mx-auto" src="{{ Storage::url($product->latestImage->path) }}"
+                                            alt="{{ $product->name }}">
+                                    @endif
+                                </th>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
+                                <td class="px-6 py-4 ">{!! Str::limit($product->description, 40) !!}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${{ number_format($product->final_price, 0) }}
+                                </td>
 
-                            <th scope="row" class="px-6 py-4 whitespace-nowrap">
-                                @if ($product->latestImage)
-                                    <img class=" h-10 mx-auto" src="{{ Storage::url($product->latestImage->path) }}"
-                                        alt="{{ $product->name }}">
-                                @endif
-                            </th>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
-                            <td class="px-6 py-4 ">{!! Str::limit($product->description, 40) !!}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">${{ number_format($product->final_price, 0) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if ($product->is_active)
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-premium/5 text-premium">
+                                            <span class="flex items-center">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-premium mr-1.5"></span>
+                                                Activo
+                                            </span>
+                                        </span>
+                                    @else
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            <span class="flex items-center">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-red-600 mr-1.5"></span>
+                                                Inactivo
+                                            </span>
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center justify-end space-x-3">
 
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($product->is_active)
-                                    <span
-                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-premium/5 text-premium">
-                                        <span class="flex items-center">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-premium mr-1.5"></span>
-                                            Activo
-                                        </span>
-                                    </span>
-                                @else
-                                    <span
-                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        <span class="flex items-center">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-red-600 mr-1.5"></span>
-                                            Inactivo
-                                        </span>
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="flex items-center justify-end space-x-3">
-                                    <a href="{{ route('admin.products.show', $product) }}"
-                                        class="text-primary hover:text-primary/80 transition-colors p-1.5 rounded-md hover:bg-primary/10">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.products.edit', $product) }}"
-                                        class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST"
-                                        onsubmit="return confirm('¿Estás seguro que deseas eliminar esta categoría?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit"
-                                            class="text-danger hover:text-danger/80 transition-colors p-1.5 rounded-md hover:bg-danger/10">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                        {{-- mostrar --}}
+                                        <a href=""
+                                            class="text-primary hover:text-primary/80 transition-colors p-1.5 rounded-md hover:bg-primary/10">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+
+                                        {{-- Editar --}}
+                                        <a href="{{ route('admin.products.edit', $product) }}"
+                                            class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        {{-- eliminar --}}
+                                        <button wire:click="destroy({{ $product->id }})"
+                                            wire:confirm="¿Estás seguro de eliminar el producto {{ $product->name }}?"
+                                            class="text-primary hover:text-primary/80 transition-colors px-1.5 rounded-md hover:bg-primary/10">
+                                            <i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </div>
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-16 text-center">

@@ -49,35 +49,114 @@
         </div>
 
         <!-- Shipping and Contact Details -->
-        <div class="bg-white rounded-lg p-6 border border-neutral-200 shadow-md mb-6">
+        <div class="bg-white rounded-lg p-4 sm:p-6 shadow-md border border-neutral-200 mb-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Shipping Details -->
-                <div>
-                    <p class="text-lg font-semibold  uppercase mb-4">Detalles de Envío</p>
-                    @if ($order->envio_type == 1)
-                        <p class="">Recogida en tienda:</p>
-                        <p class="">Calle 15 #42, Cali, Valle del Cauca</p>
-                    @else
-                        <p class="font-medium">Dirección:</p>
-                        <p class="text-neutral-600">{{ $order->address }} - {{ $order->additional_address }}
-                        </p>
-                        <p class="text-neutral-600">{{ $order->country->name }} -
-                            {{ $order->department->name }} -
-                            @if (!$order->city_id == null)
-                                {{ $order->city->name }}
-                            @else
-                                {{ $order->addCity }}
-                            @endif
-                        </p>
-                    @endif
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-3 bg-gradient-to-br from-primary to-secondary rounded-xl shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="20" height="14" x="2" y="5" rx="2" />
+                                <line x1="2" x2="22" y1="10" y2="10" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-primary">Detalles de Facturación</h2>
+                            <p class="text-gray-600">Información del comprador</p>
+                        </div>
+                    </div>
+                    <div class="bg-neutral-50 shadow p-3 rounded-md">
+
+                        <div class="bg-neutral-50 p-4 rounded-md space-y-2">
+                            <p><span class="font-bold">Nombre/Razón social:</span>
+                                {{ $order->billingData->name ?? 'N/A' }}
+                            </p>
+                            <p><span class="font-bold">{{ $order->billingData->documentType?->code }}</span>
+                                {{ $order->billingData->document ?? 'N/A' }}
+                            </p>
+                            <p><span class="font-bold">Email:</span> {{ $order->billingData->email ?? 'N/A' }}</p>
+                            <p><span class="font-bold">Teléfono:</span> {{ $order->billingData->phone ?? 'N/A' }}
+                            </p>
+                            <p><span class="font-bold">Dirección:</span>
+                                {{ $order->billingData->address ?? 'N/A' }},
+                                {{ $order->billingData->city?->name ?? $order->billingData->addCity }},
+                                {{ $order->billingData->department?->name }},
+                                {{ $order->billingData->country?->name }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Contact Details -->
-                <div>
-                    <p class="text-lg font-semibold text-primary uppercase mb-4">Contacto</p>
-                    <p class="">Recibe: {{ $order->contact }}</p>
-                    <p class="">Teléfono: {{ $order->phone }}</p>
-                </div>
+                <!-- Detalles de Envío -->
+                @if ($order->shipping_type == 1)
+
+                    <div class="flex items-start gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mt-0.5 flex-shrink-0 text-primary"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v18h18" />
+                            <path d="M7 14v3" />
+                            <path d="M11 9v8" />
+                            <path d="M15 14v3" />
+                            <path d="M19 15v2" />
+                        </svg>
+                        <div>
+                            <p class="font-bold">Recogida en tienda:</p>
+                            <p class="text-neutral-600">Calle 15 #42, Cali, Valle del Cauca</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="p-3 bg-gradient-to-br from-premium to-danger rounded-xl shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12V7a1 1 0 0 1 1-1h4l3 3h4l2 2v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Z" />
+                                    <path d="M5 12H1l3-3 3 3" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-primary">Detalles de Envío</h2>
+                                <p class="text-gray-600">Entrega a domicilio</p>
+                            </div>
+                        </div>
+                        <div class="bg-neutral-50 shadow p-3 rounded-md ">
+                            <div class="bg-neutral-50 p-4 rounded-md space-y-2">
+                                @if ($order->shipping_name)
+                                    <p><span class="font-bold">Nombre:</span> {{ $order->shipping_name }}</p>
+                                    <p><span class="font-bold">{{ $order->billingData->documentType?->code }}:</span>
+                                        {{ $order->shipping_document }}
+                                    </p>
+                                    <p><span class="font-bold">Teléfono:</span> {{ $order->shipping_phone }}</p>
+                                    <p><span class="font-bold">Dirección:</span>
+                                        {{ $order->shipping_address }} {{ $order->shipping_additional_address }},
+                                        {{ $order->shippingCity?->name ?? $order->shipping_addCity }},
+                                        {{ $order->shippingDepartment?->name }},
+                                        {{ $order->shippingCountry?->name }}
+                                    </p>
+                                @else
+                                    <!-- Si no hay datos de envío, usar facturación como receptor -->
+                                    <p><span class="font-bold">Nombre:</span>
+                                        {{ $order->billingData->name ?? 'N/A' }}</p>
+                                    <p><span class="font-bold">{{ $order->billingData->documentType?->code }}:</span>
+                                        {{ $order->billingData->document ?? 'N/A' }}
+                                    </p>
+                                    <p><span class="font-bold">Teléfono:</span>
+                                        {{ $order->billingData->phone ?? 'N/A' }}</p>
+                                    <p><span class="font-bold">Dirección:</span>
+                                        {{ $order->shipping_address }} {{ $order->shipping_additional_address }},
+                                        {{ $order->shippingCity?->name ?? $order->shipping_addCity }},
+                                        {{ $order->shippingDepartment?->name }},
+                                        {{ $order->shippingCountry?->name }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 

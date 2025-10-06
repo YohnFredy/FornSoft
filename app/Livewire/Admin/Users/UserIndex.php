@@ -3,11 +3,11 @@
 namespace App\Livewire\Admin\Users;
 
 use App\Models\User;
-use App\Models\UserActivation;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\Volt\Compilers\Mount;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
+use Spatie\Permission\Models\Role;
 
 class UserIndex extends Component
 {
@@ -16,6 +16,41 @@ class UserIndex extends Component
     public $search = '', $searchTerms;
     public $active = '';
 
+    // --- Para roles ---
+    public bool $showRoleModal = false;
+    public $selectedUser;
+    public $selectedRole;
+
+    public function openRoleModal($userId)
+    {
+        $this->selectedUser = User::findOrFail($userId);
+        $this->selectedRole = $this->selectedUser->roles->pluck('name')->first() ?? null;
+        $this->showRoleModal = true;
+    }
+
+    public function assignRole()
+    {
+        $this->validate([
+            'selectedRole' => 'nullable|string|exists:roles,name',
+        ]);
+
+        if ($this->selectedUser->id == 1) {
+            session()->flash('success', ' este usuario no se le puede cambiar el rol');
+        } else {
+            if ($this->selectedUser) {
+                if ($this->selectedRole) {
+                    // Si selecciona un rol, lo asignamos
+                    $this->selectedUser->syncRoles([$this->selectedRole]);
+                    session()->flash('success', "Rol '{$this->selectedRole}' asignado al usuario {$this->selectedUser->username}");
+                } else {
+                    // Si selecciona "Ninguno", quitamos todos los roles
+                    $this->selectedUser->syncRoles([]);
+                    session()->flash('success', "Se eliminaron todos los roles del usuario {$this->selectedUser->username}");
+                }
+            }
+        }
+        $this->showRoleModal = false;
+    }
 
     public function deactivate($id)
     {
@@ -32,7 +67,6 @@ class UserIndex extends Component
             ? $user->activation->update(['is_active' => 1])
             : $user->activation()->create(['is_active' => 1]);
     }
-
 
     public function searchEnter()
     {
@@ -51,8 +85,11 @@ class UserIndex extends Component
         $this->resetPage();
     }
 
+    #[Layout('components.layouts.admin')]
     public function render()
     {
+        $this->authorize('admin.users.index');
+
         $users = User::query();
 
         if (!empty($this->searchTerms)) {
@@ -73,7 +110,8 @@ class UserIndex extends Component
         $users = $users->orderBy('id', 'desc')->paginate(10);
 
         return view('livewire.admin.users.user-index', [
-            'users' => $users
+            'users' => $users,
+            'roles' => Role::all(),
         ]);
     }
 }

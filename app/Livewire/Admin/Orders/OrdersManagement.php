@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\UserActivation;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -140,14 +141,24 @@ class OrdersManagement extends Component
         }
 
         $activation = $user->activation;
+        $mesNumero = $order->updated_at->month;
 
-        if (!$activation && $order->total_pts >= $activationPt->min_pts_first) {
+        /* total de puntos durante el mes actual que ya están aprobados */
+        $monthlyPoints =  Order::where('user_id', $user->id)
+            ->whereBetween('status', [2, 5]) // status >= 2 y status <= 5
+            ->whereMonth('created_at', $mesNumero)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_pts');
+
+        $total_pts =  $monthlyPoints;
+
+        if (!$activation &&  $total_pts >= $activationPt->min_pts_first) {
             UserActivation::create([
                 'user_id'      => $user->id,
                 'is_active'    => true,
                 'activated_at' => $order->updated_at,
             ]);
-        } elseif ($activation && !$activation->is_active && $order->total_pts >= $activationPt->min_pts_monthly) {
+        } elseif ($activation && !$activation->is_active &&  $total_pts  >= $activationPt->min_pts_monthly) {
             $activation->update([
                 'is_active'    => true,
                 'activated_at' => $order->updated_at,
@@ -178,15 +189,14 @@ class OrdersManagement extends Component
         $order->update(['status' => 7]);
     }
 
+    #[Layout('components.layouts.admin')]
     public function render()
     {
         $orders = Order::query()
             ->when($this->selectedStatus !== '', function ($query) {
                 return $query->where('status', $this->selectedStatus);
             })
-            ->orderBy('id', 'desc') // Del más antiguo al más nuevo
-            ->with(['user', 'country', 'department', 'city']) // Eager loading para optimizar
-            ->paginate(10);
+            ->orderBy('id', 'desc')->paginate(10);
 
         // Contar órdenes aprobadas para el botón global
         $approvedOrdersCount = Order::where('status', Order::STATUS_SALE_APPROVED)->count();

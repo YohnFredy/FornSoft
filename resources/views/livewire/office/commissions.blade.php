@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div class="ml-4 flex-1">
-                            <p class="text-sm font-medium text-secondary">Mes Anterior</p>
+                            <p class="text-sm font-medium text-secondary">Total Comisiones {{-- Mes Anterior --}}</p>
                             <p class="text-2xl font-bold text-ink"> ${{ number_format($summaryCommission ?? 0, 0) }}</p>
                         </div>
                     </div>
@@ -101,9 +101,9 @@
                         <select wire:model.live="selectedPeriod"
                             class="block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg 
                             focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer">
-                            <option value="last_month">Mes Anterior</option>
+                            {{-- <option value="last_month">Mes Anterior</option>
                             <option value="current_quarter">Trimestre Actual</option>
-                            <option value="current_year">Año Actual</option>
+                            <option value="current_year">Año Actual</option> --}}
                             <option value="all_time">Todo el Tiempo</option>
                         </select>
 
@@ -124,12 +124,13 @@
                         <select wire:model.live="selectedType"
                             class="block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg 
                             focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer">
-                            {{--  <option value="">Todas</option> --}}
+                            <option value="">Todas</option>
                             <option value="1">Bolsa Global</option>
                             {{--  <option value="3">Generacional</option>
                             <option value="4">Gen Avanzado</option>
                             <option value="5">Rangos</option>
                             <option value="6">Regalias</option> --}}
+                            <option value="7">Socio estratégico</option>
                         </select>
                     </div>
                 </div>
@@ -160,7 +161,18 @@
                     @forelse($commissions as $commission)
                         <tr class="hover:bg-gray-50 transition-colors duration-200">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ $commission->type_name ?? 'Bolsa Global' }}
+                                @switch($commission->type)
+                                    @case(1)
+                                        <p>Bolsa Global</p>
+                                    @break
+
+                                    @case(7)
+                                        <p>Socio estratégico</p>
+                                    @break
+
+                                    @default
+                                        <p>Otro tipo de comisión</p>
+                                @endswitch
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div
@@ -175,26 +187,26 @@
                                 {{ \Carbon\Carbon::parse($commission->end)->format('Y-m-d') }}
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-12 text-center">
-                                <div class="flex flex-col items-center">
-                                    <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    <h3 class="text-lg font-medium text-gray-900 mb-2">No hay comisiones</h3>
-                                    <p class="text-sm text-gray-500">No se encontraron comisiones con los filtros
-                                        seleccionados.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </table>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <h3 class="text-lg font-medium text-gray-900 mb-2">No hay comisiones</h3>
+                                        <p class="text-sm text-gray-500">No se encontraron comisiones con los filtros
+                                            seleccionados.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </table>
+                </div>
             </div>
+
+
         </div>
-
-
     </div>
-</div>

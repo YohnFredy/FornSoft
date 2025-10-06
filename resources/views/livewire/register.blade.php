@@ -21,8 +21,8 @@
 
             <!-- username -->
             <div class="col-span-2 sm:col-span-1">
-                <x-input wire:model.live.debounce.500ms="username" id="username" label="Username:" type="text"
-                    for="username" placeholder="Nombre de usuario" required />
+                <x-input wire:model.live.debounce.500ms="username" id="username" label="Nombre de usuario:"
+                    type="text" for="username" placeholder="Nombre de usuario" required />
             </div>
 
             <!-- Dni -->
@@ -42,10 +42,10 @@
                 <x-radio class="" name="sex" label="Sexo:" wire:model="sex" :options="[['value' => 'male', 'label' => 'Masculino'], ['value' => 'female', 'label' => 'Femenino']]" />
             </div>
 
-            <div class="col-span-2 sm:col-span-1">
+            <div class="col-span-2 sm:col-span-1 mb-5">
                 <x-input wire:model.live="birthdate" type="date" max="2999-12-31" label="Fecha nacimiento:"
                     required />
-                <div class="text-sm text-danger -mt-5 mb-5">
+                <div class="text-sm text-danger -mt-5">
                     @error('birthdate')
                         {{ $message }}
                     @enderror
@@ -101,7 +101,7 @@
 
             <!-- sponsor -->
             <div class="col-span-2 sm:col-span-1">
-                <x-input wire:model="sponsor" id="sponsor" disabled label="Sponsor:" type="text" for="sponsor"
+                <x-input wire:model="sponsor" id="sponsor" disabled label="Auspiciador:" type="text" for="sponsor"
                     placeholder="sponsor" required />
             </div>
 
@@ -113,14 +113,14 @@
 
             <!-- Password -->
             <div class=" col-span-2">
-                <x-input wire:model.live.debounce.750ms="password" id="password" label="{{ __('Password') }}:"
+                <x-input wire:model.live.debounce.750ms="password" id="password" label="Contraseña:"
                     type="password" for="password" autocomplete="new-password" placeholder="Password" required />
             </div>
 
             <!-- Confirm Password -->
             <div class=" col-span-2">
                 <x-input wire:model.live.debounce.750ms="password_confirmation" id="password_confirmation"
-                    label="{{ __('Confirm password') }}:" type="password" for="password_confirmation"
+                    label="Confirmación de contraseña:" type="password" for="password_confirmation"
                     autocomplete="new-password" placeholder="Confirm password" required />
             </div>
 

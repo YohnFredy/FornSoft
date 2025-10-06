@@ -85,17 +85,14 @@ class OrderController extends Controller
             'apiKey' => $apiKey,
             'integritySignature' => $boldIntegritySignature,
             'description' => "Pago",
-            'tax' => 'vat-19',
+            'tax' => $order->tax_amount,
 
             /* 'tax' => json_encode(['vat' => $order->tax_amount]), */
             'redirectionUrl' => config('services.bold.redirect_url'),
             'expiration-date' => $expirationTimestamp,
         ];
-        $subtotal = 0;
-        foreach ($order->items as $item) {
-            $subtotal += $item->final_price * $item->quantity;
-        }
-        return view('orders.checkout-bold', compact('order', 'boldCheckoutConfig', 'subtotal'));
+
+        return view('orders.checkout-bold', compact('order', 'boldCheckoutConfig'));
     }
 
     public function wompiCheckout(Order $order)

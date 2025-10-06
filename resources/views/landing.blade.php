@@ -64,7 +64,7 @@
 
         <header class="">
             <div class="flex justify-center">
-                 <x-app-logo-icon class=" fill-current" />
+                <x-app-logo-icon class=" fill-current" />
             </div>
             <div
                 class="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-center mt-4 md:mt-8 mx-4">
@@ -86,7 +86,8 @@
                     <video id="fornuvi-video" class="w-full h-full object-contain sm:rounded-t-lg shadow-md" controls
                         playsinline webkit-playsinline preload="none"
                         poster="{{ asset('storage/videos/empresarios.jpg') }}">
-                        <source src="{{ asset('storage/videos/oportunidad_fornuvi.mp4') }}" type="video/mp4">
+                        <source src="{{ asset('storage/videos/convierte_tus_compras_en_ingresos_reales.mp4') }}"
+                            type="video/mp4">
                         Tu navegador no soporta la etiqueta de video. Considera actualizarlo.
                     </video>
                     {{-- Mensaje de error, oculto por defecto --}}
@@ -94,7 +95,7 @@
                         style="display: none;">
                         <p>Lo sentimos, hubo un problema al cargar el video.</p>
                         <p class="mt-2">
-                            <a href="{{ asset('storage/videos/oportunidad_fornuvi.mp4') }}"
+                            <a href="{{ asset('storage/videos/convierte_tus_compras_en_ingresos_reales.mp4') }}"
                                 class="text-red-800 underline font-medium" download>Descargar video</a>
                             para verlo.
                         </p>
@@ -317,7 +318,6 @@
 
     {{-- Pasamos el ID de la visita y la URL de tracking al JavaScript --}}
     <script>
-        // Pasamos datos de PHP a JavaScript de forma segura
         window.fornuviTracking = {
             visitId: {{ $visitId ?? 'null' }},
             trackUrl: '{{ route('landing.track') }}',
@@ -329,17 +329,47 @@
             const videoError = document.getElementById('video-error');
             const videoErrorMessageText = videoError ? videoError.querySelector('p:first-child') : null;
 
-            function isMobileDevice() {
-                return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -
-                    1) || (window.innerWidth <= 768);
-            }
-
             if (videoElement && videoError && videoErrorMessageText) {
                 videoElement.setAttribute('playsinline', '');
                 videoElement.setAttribute('webkit-playsinline', '');
                 videoElement.setAttribute('x5-playsinline', '');
                 videoElement.setAttribute('x5-video-player-type', 'h5');
 
+                // Estado inicial: no autoplay
+                videoElement.autoplay = false;
+                videoElement.muted = false;
+                videoElement.volume = 1.0;
+
+                // Mostrar un aviso "Haz clic para reproducir"
+                const videoContainer = videoElement.parentElement;
+                let playMsgElement = null;
+
+                if (videoContainer) {
+                    playMsgElement = document.createElement('div');
+                    playMsgElement.className =
+                        'absolute top-0 left-0 right-0 p-2 bg-black/60 text-white text-sm text-center shadow-md z-10 sm:rounded-t-lg';
+                    playMsgElement.innerHTML = 'Haz clic en el video para reproducir con sonido';
+                    videoContainer.appendChild(playMsgElement);
+                }
+
+                // Evento de reproducción manual
+                const startVideoWithSound = () => {
+                    videoElement.muted = false;
+                    videoElement.volume = 1.0;
+                    videoElement.play().then(() => {
+                        console.log("Video iniciado con sonido.");
+                        if (playMsgElement) playMsgElement.style.display = 'none';
+                    }).catch(err => {
+                        console.warn("No se pudo reproducir el video:", err);
+                    });
+                };
+
+                videoElement.addEventListener('click', startVideoWithSound);
+                videoElement.addEventListener('touchstart', startVideoWithSound, {
+                    passive: true
+                });
+
+                // Manejo de errores
                 videoElement.addEventListener('error', function(e) {
                     console.error('Error de video:', e);
                     let errorText = 'Lo sentimos, hubo un problema al cargar el video.';
@@ -366,89 +396,6 @@
                     videoError.style.display = 'block';
                     videoElement.style.display = 'none';
                 });
-
-                videoElement.addEventListener('canplay', () => console.log('Video puede empezar a reproducirse.'));
-                videoElement.addEventListener('canplaythrough', () => console.log(
-                    'Video listo para reproducirse completamente.'));
-
-                let mobileMsgElement = null;
-
-                // Función para actualizar la visibilidad del mensaje de sonido
-                function updateSoundMessageVisibility() {
-                    if (mobileMsgElement) {
-                        if (videoElement.muted) {
-                            mobileMsgElement.style.display = 'block'; // O la clase que lo haga visible
-                        } else {
-                            mobileMsgElement.style.display = 'none';
-                        }
-                    }
-                }
-
-                if (isMobileDevice()) {
-                    videoElement.muted = true; // Iniciar mudo en móviles
-
-                    const videoContainer = videoElement.parentElement;
-                    if (videoContainer) {
-                        mobileMsgElement = document.createElement('div');
-                        mobileMsgElement.className =
-                            'absolute top-0 left-0 right-0 p-2 bg-black/60 text-white text-sm text-left shadow-md pointer-events-none z-10 sm:rounded-t-lg';
-                        mobileMsgElement.innerHTML = 'Toca el video para activar el sonido';
-                        videoContainer.appendChild(mobileMsgElement);
-
-                        // Mostrar/ocultar mensaje basado en el estado 'muted'
-                        updateSoundMessageVisibility(); // Llamada inicial
-                        videoElement.addEventListener('volumechange', updateSoundMessageVisibility);
-                    }
-
-                    const unmuteAndPlay = () => {
-                        if (videoElement.muted) {
-                            videoElement.muted = false; // Esto disparará 'volumechange' y ocultará el mensaje
-                        }
-                        if (videoElement.paused) {
-                            videoElement.play().catch(e => console.warn("Play después de unmute falló:", e));
-                        }
-                        // Ya no es necesario remover estos listeners si queremos que el tap siempre intente desmutear/reproducir
-                        // Pero si es solo para la primera interacción:
-                        // videoElement.removeEventListener('click', unmuteAndPlay);
-                        // videoElement.removeEventListener('touchstart', unmuteAndPlay);
-                    };
-
-                    videoElement.addEventListener('click', unmuteAndPlay);
-                    videoElement.addEventListener('touchstart', unmuteAndPlay, {
-                        passive: true
-                    });
-                }
-
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    videoElement.muted = true;
-                    videoElement.playsInline = true;
-                    const playPromise = videoElement.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(_ => {
-                            console.log('Autoplay (muted) intentado en iOS exitosamente.');
-                            // 'volumechange' se disparará si el estado de muteo cambia o ya es el deseado
-                            updateSoundMessageVisibility(); // Asegurar estado correcto del mensaje
-                        }).catch(error => {
-                            console.warn('Autoplay (muted) en iOS fue prevenido o falló.', error);
-                            updateSoundMessageVisibility(); // Asegurar estado correcto del mensaje
-                        });
-                    }
-                } else {
-                    // Para otros dispositivos (no iOS y no móviles si la lógica se expandiera),
-                    // también asegurar el estado inicial del mensaje si no es móvil pero se quiere
-                    // la misma lógica de mensaje (aunque el mensaje solo se crea en isMobileDevice()).
-                    // Esto es más por completitud si se refactoriza.
-                    if (mobileMsgElement) { // Si el mensaje existe (solo en móviles por ahora)
-                        updateSoundMessageVisibility();
-                    }
-                }
-
-                setTimeout(() => {
-                    if (videoElement.readyState === 0 && !videoElement.error) {
-                        console.warn('Video no parece haber cargado metadatos después de 5 segundos.');
-                    }
-                }, 5000);
-
             } else {
                 console.error('Faltan elementos del video en el DOM.');
             }

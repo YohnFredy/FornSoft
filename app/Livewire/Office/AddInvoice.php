@@ -45,7 +45,7 @@ class AddInvoice extends Component
         'invoice_number' => 'required|string|max:255',
         'total_amount' => 'required|numeric|min:0',
         'invoice_date' => 'required|date',
-        'image' => 'required|image|max:10240',
+        'image' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240', // 10MB Max
     ];
 
     public function mount()
@@ -142,38 +142,9 @@ class AddInvoice extends Component
         $this->matchingMerchants = collect();
     }
 
-    private function validateRecaptcha()
-    {
-
-        if (empty($this->recaptcha_token)) {
-            return false;
-        }
-        try {
-            $response = Http::asForm()->timeout(15)->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => config('services.recaptcha.secret'),
-                'response' => $this->recaptcha_token,
-                'remoteip' => request()->ip()
-            ]);
-
-            $result = $response->json();
-
-            // Verificar que la respuesta sea exitosa y el score sea aceptable
-            return $result['success'] &&
-                isset($result['score']) &&
-                $result['score'] >= 0.5 && // Score mínimo para registro
-                $result['action'] === 'user_ddInvoice'; // Acción específica para registro
-
-        } catch (\Exception $e) {
-            // Log del error para debugging
-            Log::error('reCAPTCHA validation error: ' . $e->getMessage());
-            return false;
-        }
-    }
-
     public function save()
     {
         $this->validate();
-
 
         // Validar combinación única de nit + invoice_number
         $exists = \App\Models\Invoice::where('invoice_number', $this->invoice_number)
@@ -184,13 +155,6 @@ class AddInvoice extends Component
             session()->flash('error', '⚠️ Ya existe una factura con este número y este NIT.');
             return;
         }
-
-        // Validar reCAPTCHA
-        if (!$this->validateRecaptcha()) {
-            session()->flash('captcha', '⚠️ No se pudo verificar tu envío mediante reCAPTCHA. Esto puede ocurrir si tu conexión es inestable o si Google no pudo confirmar la seguridad del envío. Por favor, intenta nuevamente recargando la página.');
-            return;
-        }
-
         $branch = BusinessData::find($this->selectedBranchId);
         if (
             !$branch ||
@@ -207,11 +171,14 @@ class AddInvoice extends Component
         $directory = 'invoices/' . now()->format('Y/m/d');
         $storagePath = $directory . '/' . $filename;
 
-        $imageManager = InterventionImage::read($uploadedFile->getRealPath())
-            ->scale(width: 720);
-        $encodedImage = $imageManager->toWebp(60);
-
-        Storage::disk('public')->put($storagePath, (string) $encodedImage);
+        if (str_starts_with($uploadedFile->getMimeType(), 'image/')) {
+            $imageManager = InterventionImage::read($uploadedFile->getRealPath())
+                ->scale(width: 720);
+            $encodedImage = $imageManager->toWebp(60);
+            Storage::disk('public')->put($storagePath, (string) $encodedImage);
+        } else {
+            $uploadedFile->storeAs($directory, $filename, 'public');
+        }
 
         Invoice::create([
             'user_id' => Auth::id(),

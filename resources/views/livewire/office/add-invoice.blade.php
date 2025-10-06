@@ -35,7 +35,7 @@
         @endif
 
         <div class="md:p-8 lg:p-10">
-            <form id="invoice-form" wire:submit="save" class="space-y-8">
+            <form wire:submit="save" class="space-y-8">
                 <!-- Sección de búsqueda de comerciantes -->
                 <div
                     class="bg-gradient-to-r from-primary/15 to-secondary/2 rounded-xl  p-4 md:p-6 border border-primary/30">
@@ -245,7 +245,8 @@
                             </label>
                             <div class="relative">
                                 <input type="date" id="invoice_date" wire:model="invoice_date"
-                                    class="w-full pl-12 pr-4 py-3 border border-premium/30 bg-white rounded-lg shadow-sm focus:ring-2 focus:ring-premium focus:border-premium transition-all" required>
+                                    class="w-full pl-12 pr-4 py-3 border border-premium/30 bg-white rounded-lg shadow-sm focus:ring-2 focus:ring-premium focus:border-premium transition-all"
+                                    required>
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <svg class="h-5 w-5 text-ink" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -275,19 +276,20 @@
                         <div class="w-8 h-8 bg-ink rounded-full flex items-center justify-center">
                             <span class="text-white font-semibold text-sm">4</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-ink">Foto de la Factura</h3>
+                        <h3 class="text-lg font-semibold text-ink">Foto de la Factura o PDF</h3>
                     </div>
 
                     <div class="space-y-4">
                         <div>
                             <label for="image" class="block text-sm font-medium text-primary mb-2">
-                                Subir Imagen
+                                Subir Imagen o PDF
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="relative">
-                                <input type="file" accept="image/*" capture="environment" id="image"
+                                <input type="file" accept="image/*,application/pdf" id="image"
                                     wire:model="image"
-                                    class="w-full px-4 py-3 border-2 border-dashed bg-white border-primary rounded-lg hover:border-ink focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer" required>
+                                    class="w-full px-4 py-3 border-2 border-dashed bg-white border-primary rounded-lg hover:border-ink focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
+                                    required>
                             </div>
                             @error('image')
                                 <p class="mt-1 text-sm text-danger flex items-center">
@@ -301,7 +303,7 @@
                             @enderror
                         </div>
 
-                        @if ($image)
+                        @if ($image && str_starts_with($image->getMimeType(), 'image/'))
                             <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
                                 <div class="flex items-center justify-between mb-3">
                                     <p class="text-sm font-medium text-ink">Previsualización de la imagen</p>
@@ -323,6 +325,11 @@
                                     </div>
                                 </div>
                             </div>
+                        @elseif($image && $image->getMimeType() === 'application/pdf')
+                            <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                                <p class="text-sm font-medium text-ink">Archivo PDF cargado:
+                                    {{ $image->getClientOriginalName() }}</p>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -336,21 +343,28 @@
                                     class=" text-lg">*</strong> son obligatorios</p>
                         </div>
 
-                        <flux:button id="invoice-register-btn" type="submit" variant="primary" icon="check">
-                            Guardar
-                            Factura</flux:button>
+                        <flux:button type="submit" variant="primary" icon="check" wire:loading.attr="disabled"
+                            wire:target="image, save" class="transition-opacity"
+                            wire:loading.class="opacity-75 cursor-wait">
+                            {{-- Esto se muestra cuando NO se está cargando --}}
+                            <span wire:loading.remove wire:target="image, save">
+                                Guardar Factura
+                            </span>
+
+                            {{-- Esto se muestra MIENTRAS se carga el archivo o se guarda el formulario --}}
+                            <span wire:loading wire:target="image, save">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Procesando...
+                            </span>
+                        </flux:button>
                     </div>
-                    @if (session('captcha'))
-                        <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 2000)" x-show="show" x-transition
-                            class="col-span-2 bg-danger/3 text-danger w-full rounded-2xl p-4 relative">
-                            <button @click="show = false"
-                                class="absolute top-2 right-3 text-danger hover:text-danger/60 text-xl font-bold"
-                                aria-label="Cerrar">
-                                &times;
-                            </button>
-                            {{ session('captcha') }}
-                        </div>
-                    @endif
 
                     @if (session('error'))
                         <div x-data="{ show: true }" x-show="show" x-transition
@@ -372,59 +386,6 @@
     <div class="mt-8 text-center text-sm text-gray-500">
         <p>Sistema de Registro de Facturas v2.0</p>
     </div>
-
-
-    @push('js')
-        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.key') }}"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Usar ID específico en lugar de selector genérico
-                const form = document.getElementById('invoice-form');
-                const registerBtn = document.getElementById('invoice-register-btn');
-
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    // Verificar que no esté ya procesando
-                    if (registerBtn.disabled) {
-                        return;
-                    }
-
-                    // Deshabilitar botón temporalmente
-                    registerBtn.disabled = true;
-
-                    grecaptcha.ready(function() {
-                        grecaptcha.execute('{{ config('services.recaptcha.key') }}', {
-                            action: 'user_ddInvoice'
-                        }).then(function(token) {
-                            // Asignar el token al componente Livewire
-                            @this.set('recaptcha_token', token);
-
-                            // Ejecutar el método save
-                            @this.save().then(function() {
-                                // El botón se rehabilitará automáticamente por Livewire
-                            }).catch(function(error) {
-                                registerBtn.disabled = false;
-                                console.error('Error en registro:', error);
-                            });
-
-                        }).catch(function(error) {
-                            console.error('Error reCAPTCHA:', error);
-                            registerBtn.disabled = false;
-                            alert('Error de verificación. Por favor, intenta nuevamente.');
-                        });
-                    });
-                });
-
-                // Rehabilitar botón si hay errores de validación
-                Livewire.on('validation-errors', function() {
-                    registerBtn.disabled = false;
-                });
-            });
-        </script>
-    @endpush
-
-
 
 </div>
 

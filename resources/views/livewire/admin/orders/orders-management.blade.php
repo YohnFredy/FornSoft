@@ -46,8 +46,8 @@
                                 </td>
                                 <td class="py-4 px-6">
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->envio_type === 'delivery' ? 'bg-primary/10 text-primary' : 'bg-ink/10 text-ink' }}">
-                                        {{ $order->envio_type === 'delivery' ? 'Envío a domicilio' : 'Retiro en tienda' }}
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->shipping_type === 2 ? 'bg-primary/10 text-primary' : 'bg-ink/10 text-ink' }}">
+                                        {{ $order->shipping_type === 2 ? 'Envío a domicilio' : 'Retiro en tienda' }}
                                     </span>
                                 </td>
                                 <td class="py-4 px-6">

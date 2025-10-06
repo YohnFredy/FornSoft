@@ -2,7 +2,6 @@
 
 
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -15,8 +14,6 @@ use App\Livewire\Product\Cart;
 use App\Livewire\Product\ProductListing;
 use App\Livewire\Product\ProductShow;
 use App\Livewire\Prueba;
-use App\Livewire\ShowProduct;
-use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 

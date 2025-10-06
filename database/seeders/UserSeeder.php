@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\UserData;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,14 +14,31 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+
+        $superadmin = User::factory()->create([
             'name' => 'alfredo',
             'last_name' => 'correa',
             'dni' => 94154629,
             'username' => 'Lider',
             'email' => 'lider@gmail.com',
             'password' => bcrypt('123'),
-        ])->assignRole('Superadmin');
-       User::factory(10)->create(); 
+        ]);
+
+        // Asignar rol
+        $superadmin->assignRole('Superadmin');
+
+        // Crear su respectivo user_data
+        UserData::factory()->create([
+            'user_id' => $superadmin->id,
+        ]);
+
+        // Crear usuarios adicionales con sus datos
+        User::factory(5)
+            ->create()
+            ->each(function ($user) {
+                UserData::factory()->create([
+                    'user_id' => $user->id,
+                ]);
+            });
     }
 }

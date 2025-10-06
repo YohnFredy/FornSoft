@@ -6,10 +6,6 @@
         <x-auth-header title="Crear una cuenta" description="Ingresa los datos a continuación para crear la cuenta" />
     @endif
 
-
-
-
-
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
 
@@ -105,15 +101,14 @@
 
             <!-- sponsor -->
             <div class="col-span-2 sm:col-span-1">
-                <x-input wire:model="sponsor" id="sponsor" disabled label="Sponsor:" type="text" for="sponsor"
-                    placeholder="sponsor" />
+                <x-input wire:model="sponsor" id="sponsor" :disabled="$isEditMode == true" label="Sponsor:" type="text"
+                    for="sponsor" placeholder="sponsor" />
             </div>
 
 
             @if ($isEditMode == false)
                 <!-- side -->
                 <div class="col-span-2 sm:col-span-1">
-
 
                     <label for="lado" class="block mb-2 text-sm font-medium text-primary ">Posicion</label>
 
@@ -123,23 +118,8 @@
                         <option value="left">Left</option>
                     </select>
                 </div>
-            @else
-                <!-- side -->
-                <div class="col-span-2 sm:col-span-1">
 
 
-                    <label for="lado" class="block mb-2 text-sm font-medium text-primary ">Posicion</label>
-
-                    <select wire:model.live="side"
-                        class="block w-full bg-neutral-50/50 appearance-none border border-gray-300 text-primary text-sm rounded-lg focus:outline-1 focus:outline-primary focus:bg-white p-2.5 cursor-pointer "
-                        disabled>
-                        <option value="right">Right</option>
-                        <option value="left">Left</option>
-                    </select>
-                </div>
-            @endif
-
-            @if ($isEditMode == false)
                 <!-- Password -->
                 <div class=" col-span-2">
                     <x-input wire:model.live.debounce.750ms="password" id="password" label="{{ __('Password') }}:"
@@ -154,16 +134,17 @@
                         autocomplete="new-password" placeholder="Confirm password" />
                 </div>
             @endif
-            <x-button-dynamic type="submit" wire:loading.attr="disabled" wire:target="save,update">
-                <span wire:loading.remove wire:target="save,update">
-                    {{ $isEditMode ? 'Actualizar' : 'Guardar' }}
-                </span>
-                <span wire:loading wire:target="save,update">
-                    Procesando...
-                </span>
-            </x-button-dynamic>
 
         </div>
+
+        <x-button-dynamic type="submit" wire:loading.attr="disabled" wire:target="save,update">
+            <span wire:loading.remove wire:target="save,update">
+                {{ $isEditMode ? 'Actualizar' : 'Guardar' }}
+            </span>
+            <span wire:loading wire:target="save,update">
+                Procesando...
+            </span>
+        </x-button-dynamic>
 
     </form>
 

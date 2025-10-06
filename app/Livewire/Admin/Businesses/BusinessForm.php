@@ -13,6 +13,7 @@ use App\Models\StoreType;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -108,12 +109,18 @@ class BusinessForm extends Component
         $this->businessData = $businessData;
 
         if ($this->businessData->exists) {
+
+            $this->authorize('admin.businesses.edit');
+
             $this->isEditMode = true;
             $this->loadBusinessData();
 
             $this->departments = Department::where('country_id', $this->selectedCountry)->get();
             $this->cities = City::where('department_id', $this->selectedDepartment)->get();
         } else {
+
+            $this->authorize('admin.businesses.create');
+
             $this->addVideo();
             $this->addCustomLink();
         }
@@ -376,6 +383,8 @@ class BusinessForm extends Component
             'custom_links' => !empty($filteredLinks) ? $filteredLinks : null,
         ];
     }
+
+    #[Layout('components.layouts.admin')]
     public function render()
     {
         return view('livewire.admin.businesses.business-form');

@@ -6,21 +6,43 @@ use App\Models\ActivationPt;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Department;
+use App\Models\DocumentType;
 use App\Models\Order;
+use App\Models\OrderBillingData;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class OrderCreate extends Component
 {
-    public $cart = [], $products = [], $productItems = [], $groupedItems = [], $activationPt;
+    public $cart = [], $shippingCountires = [], $products = [], $productItems = [], $groupedItems = [], $documentTypes = [];
+    public $user, $tipo_usuario = 'inactive', $activationPt, $shipping_cost = 0, $shipping_type = 2, $terms = false;
 
-    public $user_id, $tipo_usuario = 'inactive';
+    // ===== Facturación =====
+    #[Validate]
+    public $name, $document_type = 3, $document, $email, $phone, $address = '';
+    #[Validate]
+    public $countries = [], $departments = [], $cities = [];
+    #[Validate]
+    public $selectedCountry, $selectedDepartment, $selectedCity, $city = '';
 
-    public $shipping_cost = 0;
+    // ===== Datos del que recibe =====
+    #[Validate]
+    public  $shippingDifferent = false, $shipping_name, $shipping_document_type = 3, $shipping_document, $shipping_phone;
+    #[Validate]
+    public $shipping_countries = [], $shipping_departments = [], $shipping_cities = [];
+
+    #[Validate]
+    public $shipping_selectedCountry, $shipping_selectedDepartment, $shipping_selectedCity, $shipping_city = '';
+
+    #[Validate()]
+    public $shipping_address, $shipping_additional_address;
 
     // Variables organizadas para cálculos
     public $totals = [
@@ -30,40 +52,58 @@ class OrderCreate extends Component
         'iva' => 0,
         'total_factura' => 0,
         'quantity' => 0,
-        'total_pts' => 0,             
+        'total_pts' => 0,
     ];
 
-    public $countries = [], $departments = [], $cities = [];
-    public $name = '', $phone = '', $dni = '', $email = '', $envio_type = 2;
-    public $selectedCountry, $selectedDepartment, $selectedCity, $city = '';
-    public $address = '', $additionalAddress = '', $terms = false;
-
-    public function rules()
+    protected function rules()
     {
-        return [
-            'name' => 'required|min:3',
-            'phone' => 'required|min:3',
-            'dni' => 'required|min:3',
-            'email' => 'required|email|min:3',
-            'envio_type' => ['required', Rule::in([1, 2])],
+        $rules = [
 
-            // Solo si el tipo de envío es a domicilio
-            'selectedCountry' => Rule::requiredIf($this->envio_type == 2),
-            'selectedDepartment' => Rule::requiredIf($this->envio_type == 2),
-            'selectedCity' => Rule::requiredIf($this->envio_type == 2 && empty($this->city)),
-            'city' => Rule::requiredIf($this->envio_type == 2 && empty($this->selectedCity)),
-            'address' => Rule::requiredIf($this->envio_type == 2),
+            //datos de facturar
+            'name' => 'required|string|max:255',
+            'document_type' => 'required',
+            'document' => 'required|regex:/^[0-9]+$/|max:50',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:30',
+            'selectedCountry' => 'required',
+            'selectedDepartment' => 'required',
+            'selectedCity' => Rule::requiredIf(empty($this->city)),
+            'city' =>  Rule::requiredIf(empty($this->selectedCity)),
+            'address' => 'required|max:255',
+
+            'shipping_selectedCountry' => Rule::requiredIf($this->shipping_type == 2),
+            'shipping_selectedDepartment' => Rule::requiredIf($this->shipping_type == 2),
+            'shipping_selectedCity' => Rule::requiredIf($this->shipping_type == 2 && empty($this->shipping_city)),
+            'shipping_city' => Rule::requiredIf($this->shipping_type == 2 && empty($this->shipping_selectedCity)),
+            'shipping_address' => Rule::requiredIf($this->shipping_type == 2),
+            'shipping_additional_address' => 'nullable|string|max:255',
+
+            'shipping_type' => ['required', Rule::in(['1', '2'])],
             'terms' => 'required|accepted',
         ];
+
+        if ($this->shippingDifferent == true) {
+            $rules = array_merge($rules, [
+                'shipping_name' => 'required|string|max:255',
+                'shipping_document_type' => 'required',
+                'shipping_document' => 'required|regex:/^[0-9]+$/|max:50',
+                'shipping_phone' => 'required|string|max:30',
+            ]);
+        }
+
+        return $rules;
     }
 
     public function mount()
     {
-
-        $user = Auth::user();
+        $this->user = Auth::user();
         $this->cart = session('cart', []);
         $this->activationPt = ActivationPt::first();
         $this->countries = Country::all();
+        $this->shippingCountires =  $this->countries;
+        $this->documentTypes = DocumentType::where('is_active', '>=', 1)->get();
+
+        $this->loadData();
 
         $productIds = collect($this->cart)->pluck('id');
         $productsDB = Product::whereIn('id', $productIds)->get()->keyBy('id');
@@ -92,12 +132,11 @@ class OrderCreate extends Component
         // Determinar tipo de usuario
         $totalPts = collect($this->products)->sum(fn($product) => $product['pts_base'] * $product['quantity']);
         $this->tipo_usuario = match (true) {
-            $user?->activation?->is_active => 'active',
-            $user?->activation && !$user->activation->is_active && $totalPts >= $this->activationPt->min_pts_monthly => 'renew_activation',
-            !$user?->activation && $totalPts >= $this->activationPt->min_pts_first => 'new_affiliate',
+            $this->user?->activation?->is_active => 'active',
+            $this->user?->activation && !$this->user->activation->is_active && $totalPts >= $this->activationPt->min_pts_monthly => 'renew_activation',
+            !$this->user?->activation && $totalPts >= $this->activationPt->min_pts_first => 'new_affiliate',
             default => 'inactive',
         };
-
 
         // Construir items del carrito según tipo de usuario
         match ($this->tipo_usuario) {
@@ -107,14 +146,36 @@ class OrderCreate extends Component
             default => $this->buildCartItems($this->products, useDistributorPts: false, discount: 0),
         };
 
-
-
         $this->calculateTotals();
     }
 
-    /**
-     * Construye los elementos del carrito a partir de los productos.
-     */
+    public function loadData()
+    {
+        $this->name = ucwords(strtolower($this->user->name . ' ' . $this->user->last_name));
+        $this->document_type = 3;
+        $this->document = $this->user->dni;
+        $this->email = $this->user->email;
+        $this->phone = $this->user->userData->phone;
+
+        $this->selectedCountry = $this->user->userData->country_id;
+        $this->departments = Department::where('country_id', $this->selectedCountry)->get();
+        $this->selectedDepartment  = $this->user->userData->department_id;
+        $this->cities = City::where('department_id', $this->selectedDepartment)->get();
+        $this->selectedCity = $this->user->userData->city_id;
+        $this->city  = $this->user->userData->city;
+        $this->address = $this->user->userData->address;
+
+        $this->shipping_selectedCountry =  $this->selectedCountry;
+        $this->shipping_departments =  $this->departments;
+        $this->shipping_selectedDepartment  = $this->selectedDepartment;
+        $this->shipping_cities = $this->cities;
+        $this->shipping_selectedCity =  $this->selectedCity;
+        $this->shipping_city  =   $this->city;
+        $this->shipping_address =  $this->address;
+    }
+
+
+    //Construye los elementos del carrito a partir de los productos.
     protected function buildCartItems($products, bool $useDistributorPts = true, ?int $discount = null)
     {
         $this->productItems = [];
@@ -132,9 +193,7 @@ class OrderCreate extends Component
         }
     }
 
-    /**
-     * Calcula todos los totales de la compra de manera clara y organizada.
-     */
+    //Calcula todos los totales de la compra de manera clara y organizada.
     public function calculateTotals()
     {
         // Reiniciar totales
@@ -164,9 +223,7 @@ class OrderCreate extends Component
         }
     }
 
-    /**
-     * Optimiza el carrito para cumplir con un mínimo de puntos requeridos.
-     */
+    // Optimiza el carrito para cumplir con un mínimo de puntos requeridos.
     public function optimize(float $minPts)
     {
         $productsUnit = [];
@@ -227,9 +284,7 @@ class OrderCreate extends Component
         $this->calculateTotals();
     }
 
-    /**
-     * Encuentra la mejor combinación de productos que cumplan con los puntos mínimos.
-     */
+    //Encuentra la mejor combinación de productos que cumplan con los puntos mínimos.
     protected function findBestPtsCombination(array $units, float $target): array
     {
         $bestCombo = [];
@@ -252,9 +307,7 @@ class OrderCreate extends Component
         return $bestCombo;
     }
 
-    /**
-     * Genera todas las combinaciones posibles de $length elementos.
-     */
+    //Genera todas las combinaciones posibles de $length elementos.
     private function getCombinations(array $items, int $length): array
     {
         if ($length === 0) return [[]];
@@ -273,110 +326,136 @@ class OrderCreate extends Component
         return array_merge($combosWithHead, $combosWithoutHead);
     }
 
-    public function onEnvioTypeChange()
+    public function updatedShippingSelectedCountry($shippingCountryId)
     {
-        if ($this->envio_type == 1) {
-            $this->reset([
-                'selectedCountry',
-                'departments',
-                'selectedDepartment',
-                'cities',
-                'selectedCity',
-                'city',
-                'address',
-                'additionalAddress',
-            ]);
-        }
+        $this->reset(['shipping_departments', 'shipping_selectedDepartment', 'shipping_cities', 'shipping_selectedCity', 'shipping_city']);
+        $this->shipping_departments = Department::where('country_id', $shippingCountryId)->get();
+    }
+
+    public function updatedShippingSelectedDepartment($shippingDepartmentId)
+    {
+        $this->reset(['shipping_cities', 'shipping_selectedCity', 'shipping_city', 'shipping_cost']);
+        $this->shipping_cities = City::where('department_id', $shippingDepartmentId)->get();
+    }
+
+    public function updatedShippingSelectedCity($shippingCityId)
+    {
+        $this->reset('shipping_city');
+        $this->shipping_cost = City::find($shippingCityId)->cost ?? 0;
     }
 
     public function updatedSelectedCountry($countryId)
     {
         $this->reset(['departments', 'selectedDepartment', 'cities', 'selectedCity', 'city']);
         $this->departments = Department::where('country_id', $countryId)->get();
-        $this->calculateTotals();
     }
 
     public function updatedSelectedDepartment($departmentId)
     {
         $this->reset(['cities', 'selectedCity', 'city']);
         $this->cities = City::where('department_id', $departmentId)->get();
-        $this->calculateTotals();
     }
 
     public function updatedSelectedCity($cityId)
     {
         $this->reset('city');
-        $this->shipping_cost = City::find($cityId)->cost ?? 0;
-        $this->calculateTotals();
     }
 
     public function create_order()
     {
-        $this->user_id = Auth::user()->id;
         $this->validate();
 
-        $publicOrderNumber = strtoupper(dechex(time()) . bin2hex(random_bytes(4)));
+        try {
+            DB::transaction(function () {
+                $publicOrderNumber = strtoupper(dechex(time()) . bin2hex(random_bytes(4)));
 
-        $orderData = [
-            'public_order_number' => $publicOrderNumber,
-            'user_id' => $this->user_id,
-            'contact' => $this->name,
-            'phone' => $this->phone,
-            'dni' => $this->dni,
-            'email' => $this->email,
-            'envio_type' => $this->envio_type,
-            'subtotal' => $this->totals['subtotal'],
-            'discount' => $this->totals['descuento'],
-            'taxable_amount' => $this->totals['total_bruto_factura'],
-            'tax_amount' => $this->totals['iva'],
-            'shipping_cost' => $this->shipping_cost,
-            'total' => $this->totals['total_factura'],
-            'total_pts' => $this->totals['total_pts'],
-        ];
+                $orderData = [
+                    'public_order_number' => $publicOrderNumber,
+                    'user_id' => $this->user->id,
+                    'status' => Order::STATUS_SALE_PENDING,
+                    'shipping_type' => $this->shipping_type,
+                    // === Totales ===
+                    'subtotal' => $this->totals['subtotal'],
+                    'discount' => $this->totals['descuento'],
+                    'taxable_amount' => $this->totals['total_bruto_factura'],
+                    'tax_amount' => $this->totals['iva'],
+                    'shipping_cost' => $this->shipping_cost,
+                    'total' => $this->totals['total_factura'] + $this->shipping_cost,
+                    'total_pts' => $this->totals['total_pts'],
+                ];
 
-        if ($this->envio_type == 2) {
-            $orderData = array_merge($orderData, [
-                'country_id' => $this->selectedCountry,
-                'department_id' => $this->selectedDepartment,
-                'city_id' => $this->selectedCity,
-                'addCity' => $this->city,
-                'address' => $this->address,
-                'additional_address' => $this->additionalAddress,
-            ]);
+                if ($this->shipping_type == 2) {
+                    $orderData = array_merge($orderData, [
+                        'shipping_country_id' => $this->shipping_selectedCountry,
+                        'shipping_department_id' => $this->shipping_selectedDepartment,
+                        'shipping_city_id' => $this->shipping_selectedCity,
+                        'shipping_addCity' => $this->shipping_city,
+                        'shipping_address' => $this->shipping_address,
+                        'shipping_additional_address' => $this->shipping_additional_address,
+                    ]);
+                }
+
+                if ($this->shippingDifferent == true) {
+                    $orderData = array_merge($orderData, [
+                        'shipping_name' => $this->shipping_name,
+                        'document_type_id' => $this->shipping_document_type,
+                        'shipping_document' => $this->shipping_document,
+                        'shipping_phone' => $this->shipping_phone,
+                    ]);
+                }
+
+                $order = Order::create($orderData);
+
+                $orderBillingData = [
+                    'order_id' => $order->id,
+                    'name' => $this->name,
+                    'document_type_id' => $this->document_type,
+                    'document' => $this->document,
+                    'email' => $this->email,
+                    'phone' => $this->phone,
+                    'address' => $this->address,
+                    'country_id' => $this->selectedCountry,
+                    'department_id' => $this->selectedDepartment,
+                    'city_id' => $this->selectedCity,
+                    'addCity' => $this->city,
+                ];
+
+                OrderBillingData::create($orderBillingData);
+
+                foreach ($this->productItems as $item) {
+                    $subtotal = $item['price'] * $item['quantity'];
+                    $descuento = ($subtotal * $item['discount_percent']) / 100;
+                    $total_bruto_factura = $subtotal - $descuento;
+                    $iva = ($total_bruto_factura * $item['tax_percent']) / 100;
+                    $total_pts = $item['pts'] * $item['quantity'];
+
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $item['product_id'],
+                        'name' => $item['name'],
+                        'unit_price' => $item['price'],
+                        'pts' => $item['pts'],
+                        'quantity' => $item['quantity'],
+                        'discount' => $descuento,
+                        'tax_percent' => $item['tax_percent'],
+                        'tax_amount' => $iva,
+                        'unit_sales_price' => $total_bruto_factura,
+                        'totalPts' => $total_pts,
+                    ]);
+                }
+
+                session()->forget('cart');
+
+                return redirect()->route('bold.checkout', $order);
+            });
+        } catch (\Exception $e) {
+            // Aquí puedes manejar el error, por ejemplo, registrarlo o mostrar un mensaje al usuario.
+            Log::error('Error al crear la orden: ' . $e->getMessage());
+            // Opcionalmente, puedes redirigir al usuario a una página de error.
+            // return redirect()->route('error.page')->with('error', 'Ocurrió un error al procesar tu orden.');
         }
-        $order = Order::create($orderData);
-
-        // Crear OrderItems con cálculos correctos
-        foreach ($this->productItems as $item) {
-
-            $subtotal = $item['price'] * $item['quantity'];
-            $descuento =  ($subtotal * $item['discount_percent']) / 100;
-            $total_bruto_factura = $subtotal - $descuento;
-            $iva = ($total_bruto_factura * $item['tax_percent']) / 100;
-            $total_pts = $item['pts'] * $item['quantity'];
-
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['product_id'],
-                'name' => $item['name'],
-                'unit_price' => $item['price'],
-                'pts' => $item['pts'],
-                'quantity' => $item['quantity'],
-                'discount' =>  $descuento,
-                'tax_percent' => $item['tax_percent'],
-                'tax_amount' => $iva,
-                'unit_sales_price' => $total_bruto_factura,
-                'total' => 0,
-                'totalPts' => $total_pts,
-            ]);
-        }
-
-        session()->forget('cart');
-
-        return redirect()->route('bold.checkout', $order);
     }
 
-    #[Layout('components.layouts.app')]
     public function render()
     {
         return view('livewire.order.order-create');

@@ -11,17 +11,17 @@ use App\Models\Unilevel;
 use App\Models\UnilevelTotal;
 use App\Models\User;
 use App\Models\UserData;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class UserForm extends Component
 {
+    public ?User $user;
 
-    public $user;
     public $isEditMode = false;
 
     public $sponsor = '', $side = 'right';
@@ -76,11 +76,15 @@ class UserForm extends Component
         }
     }
 
-    public function mount()
+    public function mount(User $user)
     {
+        $this->user = $user;
         $this->sponsor = $this->user->username;
 
-        if ($this->isEditMode && $this->user->exists) {
+        if ($this->user->exists) {
+
+            $this->isEditMode = true;
+            $this->authorize('admin.users.edit');
             $this->loadUserData();
             $this->departments = Department::where('country_id', $this->selectedCountry)->get();
             $this->cities = City::where('department_id', $this->selectedDepartment)->get();
@@ -88,6 +92,8 @@ class UserForm extends Component
             if ($this->user->id > 1 && $this->user->binary && $this->user->binary->sponsor_id) {
                 $this->sponsor = optional(User::find($this->user->binary->sponsor_id))->username ?? $this->sponsor;
             }
+        } else {
+            $this->authorize('admin.users.create');
         }
 
         $this->countries = Country::all();
@@ -138,7 +144,6 @@ class UserForm extends Component
         $this->city  = $userData->city ?? '';
         $this->address = $userData->address ?? '';
         $this->side = $this->user->binary->side ?? 'right';
-
 
         $this->country_id = $this->selectedCountry;
         $this->department_id = $this->selectedDepartment;
@@ -299,6 +304,7 @@ class UserForm extends Component
         }
     }
 
+    #[Layout('components.layouts.admin')]
     public function render()
     {
         return view('livewire.admin.users.user-form');

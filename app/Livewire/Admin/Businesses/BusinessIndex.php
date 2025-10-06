@@ -4,13 +4,14 @@ namespace App\Livewire\Admin\Businesses;
 
 use App\Models\Business;
 use App\Models\BusinessData;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
 class BusinessIndex extends Component
 {
-     use WithPagination, WithoutUrlPagination;
+    use WithPagination, WithoutUrlPagination;
 
     public $search = '', $searchTerms;
 
@@ -31,10 +32,21 @@ class BusinessIndex extends Component
         $this->resetPage();
     }
 
+    public function destroy($id)
+    {
+        $this->authorize('admin.businesses.destroy');
 
+        $brand = Business::findOrFail($id);
+        $brand->delete();
+        
+        session()->flash('success', 'El producto fue eliminada correctamente.');
+    }
 
+    #[Layout('components.layouts.admin')]
     public function render()
     {
+        $this->authorize('admin.businesses.index');
+        
         $businessData = BusinessData::query();
         if (!empty($this->searchTerms)) {
             foreach ($this->searchTerms as $term) {
@@ -47,7 +59,7 @@ class BusinessIndex extends Component
 
         $businessData  = $businessData->orderBy('id', 'desc')->paginate(5);
         return view('livewire.admin.businesses.business-index', [
-            'businessData' => $businessData 
+            'businessData' => $businessData
         ]);
     }
 }

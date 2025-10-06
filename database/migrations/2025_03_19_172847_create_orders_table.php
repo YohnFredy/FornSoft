@@ -15,16 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('public_order_number')->unique(); // Número de orden público (no secuencial real)
             $table->foreignId('user_id')->constrained()->restrictOnDelete(); // Cliente que hizo la compra
-
-            $table->string('contact'); // Nombre completo del contacto
-            $table->string('phone'); // Teléfono de contacto
-            $table->string('dni')->nullable(); // Documento de identidad
-            $table->string('email')->nullable(); // Correo electrónico del comprador
-
             $table->tinyInteger('status')->default(1)->unsigned(); // Estado de la orden (ej. 1=pending, 2=paid, etc.)
             $table->string('payment_method')->nullable(); // Método de pago (tarjeta, PSE, etc.)
+            $table->unsignedTinyInteger('shipping_type')->default(1)->comment('1 = Store, 2 = delivery'); // Tipo de entrega
 
-            $table->enum('envio_type', ['store', 'delivery']); // Tipo de entrega
+            // DATOS del que recibe
+            $table->string('shipping_name')->nullable(); // Nombre completo / Razón social
+            $table->foreignId('document_type_id')->nullable()->constrained()->cascadeOnUpdate();
+            $table->string('shipping_document')->nullable(); // Número de documento
+            $table->string('shipping_phone')->nullable();
 
             $table->decimal('subtotal', 10, 2)->default(0); // La suma del precio de los productos (sin ajustes).
             $table->decimal('discount', 10, 2)->default(0); // Descuentos aplicados
@@ -34,12 +33,13 @@ return new class extends Migration
             $table->decimal('total', 10, 2)->default(0)->check('total >= 0'); // Total pagado = subtotal - descuento + impuesto + envío
             $table->decimal('total_pts', 10, 2)->default(0)->check('total_pts >= 0'); // Puntos generados por la orden
 
-            $table->foreignId('country_id')->nullable()->constrained()->cascadeOnUpdate();
-            $table->foreignId('department_id')->nullable()->constrained()->cascadeOnUpdate();
-            $table->foreignId('city_id')->nullable()->constrained()->cascadeOnUpdate();
-            $table->string('addCity')->nullable(); // Para agregar ciudad manual si no aparece
-            $table->string('address')->nullable(); // Dirección principal de envío
-            $table->string('additional_address')->nullable(); // Detalles adicionales de dirección
+            //datos de entrega
+            $table->foreignId('shipping_country_id')->nullable()->constrained('countries')->cascadeOnUpdate();
+            $table->foreignId('shipping_department_id')->nullable()->constrained('departments')->cascadeOnUpdate();
+            $table->foreignId('shipping_city_id')->nullable()->constrained('cities')->cascadeOnUpdate();
+            $table->string('shipping_addCity')->nullable(); // Para agregar ciudad manual si no aparece
+            $table->text('shipping_address')->nullable();
+            $table->string('shipping_additional_address')->nullable(); // Detalles adicionales de dirección
 
             $table->timestamps();
 

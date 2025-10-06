@@ -1,70 +1,61 @@
 <?php
 
-use App\Http\Controllers\Admin\BusinessController;
-use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\InvoiceController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Livewire\Admin\AlliedCommissions\SupportInvoice;
+use App\Livewire\Admin\Businesses\BusinessForm;
+use App\Livewire\Admin\Businesses\BusinessIndex;
+use App\Livewire\Admin\Categories\CategoryForm;
+use App\Livewire\Admin\Categories\CategoryIndex;
+use App\Livewire\Admin\Orders\OrdersManagement;
+use App\Livewire\Admin\Products\ProductForm;
+use App\Livewire\Admin\Products\ProductIndex;
+use App\Livewire\Admin\Users\UserForm;
+use App\Livewire\Admin\Users\UserIndex;
 use Illuminate\Support\Facades\Route;
 
-/* Route::resource('category', CategoryController::class)->names('categories'); */
 
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/', [IndexController::class, 'index'])->middleware(['can:admin.index'])->name('index');
+    Route::get('order', OrdersManagement::class)->name('orders.management');
+
+    Route::get('soporte/factura', SupportInvoice::class)->name('SupportInvoice');
 
     Route::get('factura/{order}', [InvoiceController::class, 'show'])->middleware(['can:admin.factura'])->name('invoice.show');
 
-    Route::resource('user', UserController::class)
-        ->names('users')
-        ->middleware([
-            'index' => 'can:admin.users.index',
-            'create' => 'can:admin.users.create',
-            'store' => 'can:admin.users.create',
-            'show' => 'can:admin.users.show',
-            'edit' => 'can:admin.users.edit',
-            'update' => 'can:admin.users.edit',
-            'destroy' => 'can:admin.users.destroy'
-        ]);
+    Route::resource('role', RoleController::class)
+        ->names('roles')
+        ->middlewareFor('index', 'can:admin.roles.index')
+        ->middlewareFor(['create', 'store'], 'can:admin.roles.create')
+        ->middlewareFor('show', 'can:admin.roles.show')
+        ->middlewareFor(['edit', 'update'], 'can:admin.roles.edit')
+        ->middlewareFor('destroy', 'can:admin.roles.destroy');
+
+    Route::get('category', CategoryIndex::class)->name('categories.index');
+    Route::get('category/create', CategoryForm::class)->name('categories.create');
+    Route::get('category/{category}/edit', CategoryForm::class)->name('categories.edit');
+
+    Route::resource('brands', BrandController::class)
+        ->names('brands')
+        ->middlewareFor('index', 'can:admin.brands.index')
+        ->middlewareFor(['create', 'store'], 'can:admin.brands.create')
+        ->middlewareFor('show', 'can:admin.brands.show')
+        ->middlewareFor(['edit', 'update'], 'can:admin.brands.edit')
+        ->middlewareFor('destroy', 'can:admin.brands.destroy');
+
+    Route::get('user', UserIndex::class)->name('users.index');
+    Route::get('user/create', UserForm::class)->name('users.create');
+    Route::get('user/{user}/edit', UserForm::class)->name('users.edit');
 
 
-    Route::resource('category', CategoryController::class)
-        ->names('categories')
-        ->middleware([
-            'index' => 'can:admin.categories.index',
-            'create' => 'can:admin.categories.create',
-            'store' => 'can:admin.categories.create',
-            'show' => 'can:admin.categories.show',
-            'edit' => 'can:admin.categories.edit',
-            'update' => 'can:admin.categories.edit',
-            'destroy' => 'can:admin.categories.destroy'
-        ]);
+    Route::get('Product', ProductIndex::class)->name('products.index');
+    Route::get('product/create', ProductForm::class)->name('products.create');
+    Route::get('product/{product}/edit', ProductForm::class)->name('products.edit');
 
-
-    Route::resource('product', ProductController::class)
-        ->names('products')
-        ->middleware([
-            'index' => 'can:admin.products.index',
-            'create' => 'can:admin.products.create',
-            'store' => 'can:admin.products.create',
-            'show' => 'can:admin.products.show',
-            'edit' => 'can:admin.products.edit',
-            'update' => 'can:admin.products.edit',
-            'destroy' => 'can:admin.products.destroy'
-        ]);
-
-        Route::resource('business', BusinessController::class)
-        ->names('businesses')
-        ->middleware([
-            'index' => 'can:admin.businesses.index',
-            'create' => 'can:admin.businesses.create',
-            'store' => 'can:admin.businesses.create',
-            'show' => 'can:admin.businesses.show',
-            'edit' => 'can:admin.businesses.edit',
-            'update' => 'can:admin.businesses.edit',
-            'destroy' => 'can:admin.businesses.destroy'
-        ]);
-
-    // Otras rutas de recursos con permisos...
+    Route::get('business', BusinessIndex::class)->name('businesses.index');
+    Route::get('business/create', BusinessForm::class)->name('businesses.create');
+    Route::get('business/{businessData}/edit', BusinessForm::class)->name('businesses.edit');
 });

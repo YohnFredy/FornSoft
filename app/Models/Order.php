@@ -7,18 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
+     use HasFactory;
+
+    protected $table = 'orders';
 
     protected $fillable = [
         'public_order_number',
         'user_id',
-        'contact',
-        'phone',
-        'dni',
-        'email',
         'status',
         'payment_method',
-        'envio_type',
+        'shipping_type',
+
+        // Datos del receptor
+        'shipping_name',
+        'document_type_id',
+        'shipping_document',
+        'shipping_phone',
+
+        // Valores monetarios
         'subtotal',
         'discount',
         'taxable_amount',
@@ -26,12 +32,14 @@ class Order extends Model
         'shipping_cost',
         'total',
         'total_pts',
-        'country_id',
-        'department_id',
-        'city_id',
-        'addCity',
-        'address',
-        'additional_address',
+
+        // Envío
+        'shipping_country_id',
+        'shipping_department_id',
+        'shipping_city_id',
+        'shipping_addCity',
+        'shipping_address',
+        'shipping_additional_address',
     ];
 
     protected $casts = [
@@ -45,7 +53,6 @@ class Order extends Model
         'status' => 'integer',
     ];
 
-
     const STATUS_SALE_PENDING = 1;
     const STATUS_SALE_APPROVED = 2;
     const STATUS_PTS_GENERATED = 3;
@@ -54,6 +61,9 @@ class Order extends Model
     const STATUS_SALE_REJECTED = 6;
     const STATUS_VOIDED  = 7;
     const STATUS_VOID_REJECTED  = 8;
+
+    const SHIPPING_TYPE_STORE = 1;
+    const SHIPPING_TYPE_DELIVERY = 2;
 
     public function getRouteKeyName()
     {
@@ -70,19 +80,26 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function country()
+    public function shippingCountry()
     {
         return $this->belongsTo(Country::class);
     }
 
-    public function department()
+    public function shippingDepartment()
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function city()
+    public function shippingCity()
     {
         return $this->belongsTo(City::class);
+    }
+
+
+    // Datos de facturación (relación 1:1 con order_billing_data)
+    public function billingData()
+    {
+        return $this->hasOne(OrderBillingData::class, 'order_id');
     }
 
     // Método para actualizar el estado de la orden

@@ -1,86 +1,3 @@
-@php
-
-    $groups = [
-        [
-            'heading' => 'Plataforma',
-            'expandable' => false,
-            'items' => [
-                [
-                    'name' => 'Dashboard',
-                    'icon' => 'home',
-                    'route' => 'admin.index',
-                    'routeIs' => 'admin.index',
-                ],
-                [
-                    'name' => 'Usuarios',
-                    'icon' => 'user',
-                    'route' => 'admin.users.index',
-                    'routeIs' => 'admin.users.index',
-                ],
-                [
-                    'name' => 'Categoria',
-                    'icon' => 'tag',
-                    'route' => 'admin.categories.index',
-                    'routeIs' => 'admin.categories.*',
-                ],
-                [
-                    'name' => 'Producto',
-                    'icon' => 'shopping-cart',
-                    'route' => 'admin.products.index',
-                    'routeIs' => 'admin.products.*',
-                ],
-                 [
-                    'name' => 'Negocios aliados',
-                    'icon' => 'building-office-2',
-                    'route' => 'admin.businesses.index',
-                    'routeIs' => 'admin.businesses.*',
-                ],
-            ],
-        ],
-        [
-            'heading' => 'Mis Favoritos',
-            'expandable' => true,
-            'items' => [
-                [
-                    'name' => 'Producto',
-                    'icon' => 'shopping-cart',
-                    'route' => 'admin.products.index',
-                    'routeIs' => 'admin.products.*',
-                ],
-                
-            ],
-        ],
-        [
-            'heading' => 'Tienda',
-            'expandable' => false,
-            'items' => [
-                [
-                    'type' => 'route',
-                    'name' => 'Home',
-                    'icon' => 'home',
-                    'route' => 'home',
-                    'routeIs' => 'home',
-                ],
-                [
-                    'type' => 'route',
-                    'name' => 'Productos',
-                    'icon' => 'shopping-cart',
-                    'route' => 'products.index',
-                    'routeIs' => 'products*',
-                ],
-                [
-                    'type' => 'route',
-                    'name' => 'Oficina',
-                    'icon' => 'building-office-2',
-                    'route' => 'dashboard',
-                    'routeIs' => 'dashboard',
-                ],
-            ],
-        ],
-    ];
-@endphp
-
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" {{-- class="dark bg-white" --}}>
 
@@ -92,39 +9,46 @@
     <flux:sidebar sticky stashable class=" shadow-lg bg-zinc-50  shadow-ink">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('admin.index') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
+        <a href="" class="mr-5 flex items-center space-x-2" wire:navigate>
             <x-app-logo />
         </a>
 
-        <flux:navlist variant="outline">
-            @foreach ($groups as $group)
-                @php
-                    $heading = $group['heading'];
-                    $expandable = $group['expandable'] ?? false;
-                    $items = $group['items'];
-                @endphp
+      {{--  menu lateral --}}
+        <div class=" space-y-1">
+            <x-menu-item title="Dashboard" iconBlade="home" :routes="['admin.index']" />
 
-                @if ($expandable)
-                    <flux:navlist.group expandable :heading="$heading">
-                        @foreach ($items as $item)
-                            <flux:navlist.item :icon="$item['icon']" :href="route($item['route'])"
-                                :current="request()->routeIs($item['routeIs'])" wire:navigate>
-                                {{ __($item['name']) }}
-                            </flux:navlist.item>
-                        @endforeach
-                    </flux:navlist.group>
-                @else
-                    <flux:navlist.group :heading="$heading" class="grid">
-                        @foreach ($items as $item)
-                            <flux:navlist.item :icon="$item['icon']" :href="route($item['route'])"
-                                :current="request()->routeIs($item['routeIs'])" wire:navigate>
-                                {{ __($item['name']) }}
-                            </flux:navlist.item>
-                        @endforeach
-                    </flux:navlist.group>
-                @endif
-            @endforeach
-        </flux:navlist>
+            {{-- Grupo Expandible órdenes --}}
+            <x-menu-item title="Órdenes" iconBlade="shopping-cart" :routes="['admin.orders.*']" :items="[
+                ['name' => 'Tienda', 'route' => 'admin.orders.management', 'iconBlade' => 'shopping-cart'],
+                ['name' => 'Soporte user', 'route' => 'admin.index', 'iconBlade' => 'document-text'],
+            ]" />
+
+            {{-- Grupo Expandible usuarios --}}
+            <x-menu-item title="Usuarios" iconBlade="users" :routes="['admin.users.*', 'admin.roles.*']" :items="[
+                ['name' => 'Usuarios', 'route' => 'admin.users.index', 'iconBlade' => 'user-group'],
+                ['name' => 'Roles', 'route' => 'admin.roles.index', 'iconBlade' => 'user-plus'],
+            ]" />
+
+            <x-menu-item title="Negocios aliados" iconBlade='building-office-2' :routes="['admin.businesses.index']" />
+
+            {{-- Grupo Expandible productos --}}
+            <x-menu-item title="Productos" iconBlade="shopping-bag" :routes="['admin.categories.*', 'admin.brands.*', 'admin.products.*']" :items="[
+                ['name' => 'Categorias', 'route' => 'admin.categories.index', 'iconBlade' => 'tag'],
+                ['name' => 'Marcas', 'route' => 'admin.brands.index', 'iconBlade' => 'tag'],
+                ['name' => 'Productos', 'route' => 'admin.products.index', 'iconBlade' => 'shopping-cart'],
+            ]" />
+        </div>
+
+        <div class="space-y-1 mt-3">
+             <h1 class="ml-3 text-sm font-bold text-ink">Pagina principal</h1>
+             
+               {{-- Grupo Expandible fornuvi --}}
+            <x-menu-item title="Fornuvi" iconBlade="arrow-uturn-left" :routes="['home', 'products.index', 'dashboard']" :items="[
+                ['name' => 'Inicio', 'route' => 'home', 'iconBlade' => 'home'],
+                ['name' => 'Tienda', 'route' => 'products.index', 'iconBlade' => 'shopping-cart'],
+                ['name' => 'Oficina', 'route' => 'dashboard', 'iconBlade' => 'building-office'],
+            ]" />
+        </div>
 
         <flux:spacer />
 

@@ -34,12 +34,13 @@ class CalculadoraFinanciera extends Component
     public float $valorProducto = 18000;
     public float $descuentoPrecioPublicoPorcentaje = 30;
     public float $ivaPorcentaje = 19;
-    public float $tarifaPasarelaPorcentaje = 2.65;
-    public float $tarifaFijaPasarela = 700;
-    public float $reteIcaPorcentaje = 0.7;
+    public float $tarifaPasarelaPorcentaje = 4.19;
+    public float $tarifaFijaPasarela = 900;
+    public float $reteIcaPorcentaje = 0.414;
     public float $reteRentaPorcentaje = 1.5;
+    public float $ReteIVAPorcentaje = 1.5;
     public float $empresaPorcentaje = 10;
-    public float $bonoInicioPorcentaje = 10;
+    public float $bonoInicioPorcentaje = 0;
     public float $valorDolar = 4000;
     public float $binarioPorcentaje = 30;
     public float $bolsaGlobalPorcentaje = 30;
@@ -47,9 +48,7 @@ class CalculadoraFinanciera extends Component
     public float $rangoPorcentaje = 10;
     public float $premiosPorcentaje = 10;
 
-
     // Propiedades calculadas
-
     public float $pts_base = 0;
     public float $pts_bono = 0;
     public float $pts_dist = 0;
@@ -63,7 +62,6 @@ class CalculadoraFinanciera extends Component
             $this->$propertyName = is_numeric($value) ? floatval($value) : 0;
         }
     }
-
 
     private function calcularIva(float $monto, float $ivaPorcentaje): float
     {

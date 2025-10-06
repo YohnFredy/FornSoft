@@ -3,11 +3,9 @@
         <flux:breadcrumbs.item href="{{ route('admin.index') }}">
             <i class="fas fa-home mr-1"></i> Home
         </flux:breadcrumbs.item>
-        <flux:breadcrumbs.item href="{{ route('admin.businesses.index') }}">
-            <i class="fas fa-tag"></i> Categoria
-        </flux:breadcrumbs.item>
+
         <flux:breadcrumbs.item>
-            <i class="fas fa-cart-arrow-down"></i> Producto
+            Negocios Alidos
         </flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
@@ -27,8 +25,8 @@
     <!-- Encabezado de la sección -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4 px-6">
         <div>
-            <h1 class="text-2xl font-bold text-primary">Gestión de Compañias</h1>
-            <p class="text-sm text-ink mt-1">Administra los negocios aliados</p>
+            <h1 class="text-2xl font-bold text-primary">Gestión de Negocios aliados</h1>
+            <p class="text-sm text-ink mt-1">Administra tus Negocios Aliados</p>
         </div>
         <a href="{{ route('admin.businesses.create') }}"
             class="mt-4 md:mt-0 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-secondary transition duration-200 flex items-center shadow-lg shadow-primary/20">
@@ -37,7 +35,7 @@
                     d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                     clip-rule="evenodd" />
             </svg>
-            Nueva alianza
+            Nuevo Negocio
         </a>
     </div>
 
@@ -76,57 +74,57 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-neutral-300">
                     @forelse ($businessData as $data)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <div wire:key="{{ $data->id }}">
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
 
-                            <th scope="row" class="px-6 py-4 whitespace-nowrap">
-                                @if ($data->latestImage)
-                                    <img class=" h-10 mx-auto" src="{{ Storage::url($data->business->latestImage->path) }}"
-                                        alt="{{ $data->business->name }}">
-                                @endif
-                            </th>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $data->business->name }}</td>
-                            <td class="px-6 py-4 ">{{$data->business->nit}}</td>
+                                <th scope="row" class="px-6 py-4 whitespace-nowrap">
+                                    @if ($data->latestImage)
+                                        <img class=" h-10 mx-auto"
+                                            src="{{ Storage::url($data->business->latestImage->path) }}"
+                                            alt="{{ $data->business->name }}">
+                                    @endif
+                                </th>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $data->business->name }}</td>
+                                <td class="px-6 py-4 ">{{ $data->business->nit }}</td>
 
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($data->is_active)
-                                    <span
-                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-premium/5 text-premium">
-                                        <span class="flex items-center">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-premium mr-1.5"></span>
-                                            Activo
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if ($data->is_active)
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-premium/5 text-premium">
+                                            <span class="flex items-center">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-premium mr-1.5"></span>
+                                                Activo
+                                            </span>
                                         </span>
-                                    </span>
-                                @else
-                                    <span
-                                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        <span class="flex items-center">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-red-600 mr-1.5"></span>
-                                            Inactivo
+                                    @else
+                                        <span
+                                            class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                            <span class="flex items-center">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-red-600 mr-1.5"></span>
+                                                Inactivo
+                                            </span>
                                         </span>
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="flex items-center space-x-3">
-                                    <a href="{{ route('admin.businesses.show', $data) }}"
-                                        class="text-primary hover:text-primary/80 transition-colors p-1.5 rounded-md hover:bg-primary/10">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.businesses.edit', $data) }}"
-                                        class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.businesses.destroy', $data) }}" method="POST"
-                                        onsubmit="return confirm('¿Estás seguro que deseas eliminar esta categoría?');">
-                                        @csrf @method('DELETE')
-                                        <button type="submit"
-                                            class="text-danger hover:text-danger/80 transition-colors p-1.5 rounded-md hover:bg-danger/10">
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex items-center space-x-3">
+
+                                        {{-- Editar --}}
+                                        <a href="{{ route('admin.businesses.edit', $data) }}"
+                                            class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        {{-- eliminar --}}
+                                        <button wire:click="destroy({{ $data->id }})"
+                                            wire:confirm="¿Estás seguro de eliminar el negocio aliado {{ $data->business->name }}?"
+                                            class="text-primary hover:text-primary/80 transition-colors px-1.5 rounded-md hover:bg-primary/10">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                    </div>
+                                </td>
+                            </tr>
+                        </div>
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-16 text-center">
@@ -159,4 +157,3 @@
         </div>
     </div>
 </div>
-

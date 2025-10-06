@@ -102,24 +102,31 @@
                 @foreach ($categoryLevels as $level => $categories)
                     @if ($categories->isNotEmpty())
                         <div class="sm:col-span-2">
-                            <x-select-l label="{{ $level === 0 ? 'Categoría:' : 'Subcategoría nivel ' . $level }}"
-                                for="level_{{ $level }}" wire:model.live="selectedLevels.{{ $level }}">
-                                <option value="">Ninguno</option>
+                            <div wire:key="{{ $level }}">
+                                <x-select-l label="{{ $level === 0 ? 'Categoría:' : 'Subcategoría nivel ' . $level }}"
+                                    for="level_{{ $level }}"
+                                    wire:model.live="selectedLevels.{{ $level }}">
+                                    <option value="">Seleccionar categoría</option>
 
-                                @foreach ($categories as $cat)
-                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                @endforeach
-                            </x-select-l>
+                                    @foreach ($categories as $cat)
+                                        <div wire:key="{{ $cat->id }}">
+                                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                        </div>
+                                    @endforeach
+                                </x-select-l>
+                            </div>
                         </div>
                     @endif
                 @endforeach
 
                 <div class="col-span-6 md:col-span-2">
-                    @if ($brands)
+                    @if ( $brands)
                         <x-select-l label="Marca:" for="brand_id" wire:model.live="brand_id">
+                            <option value="">Seleccionar Marca</option>
                             @foreach ($brands as $brand)
-                                <option value="">Ninguno</option>
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                <div wire:key="{{ $brand->id }}">
+                                    <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                </div>
                             @endforeach
                         </x-select-l>
                     @endif
@@ -143,7 +150,7 @@
 
             <!-- Existing Images -->
             @if ($isEditMode)
-                 <div class=" mt-4">
+                <div class=" mt-4">
                     <x-label>Imágenes Existentes:</x-label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 ">
                         {{-- CORRECCIÓN: Iterar sobre el array asociativo [id => path] --}}

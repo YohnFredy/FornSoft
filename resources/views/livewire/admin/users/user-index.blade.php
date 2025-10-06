@@ -1,10 +1,10 @@
 <div>
     <flux:breadcrumbs>
         <flux:breadcrumbs.item href="{{ route('admin.index') }}">
-            <i class="fas fa-home mr-1"></i> Panel
+            <i class="fas fa-home mr-1"></i> Home
         </flux:breadcrumbs.item>
-        <flux:breadcrumbs.item href="{{ route('admin.users.index') }}">
-            <i class="fas fa-tag"></i> Usuario
+        <flux:breadcrumbs.item>
+            <i class="fas fa-cart-arrow-down"></i> Usuario
         </flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
@@ -24,9 +24,18 @@
     <!-- Encabezado de la sección -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mt-8 mb-4 px-6">
         <div>
-            <h1 class="text-2xl font-bold text-primary">Gestión de usuarios</h1>
-            <p class="text-sm text-ink mt-1">Administra tus usuarios</p>
+            <h1 class="text-2xl font-bold text-primary">Gestión de Usuarios</h1>
+            <p class="text-sm text-ink mt-1">Administra tus Usurios</p>
         </div>
+        <a href="{{ route('admin.users.create') }}"
+            class="mt-4 md:mt-0 px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-secondary transition duration-200 flex items-center shadow-lg shadow-primary/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                    clip-rule="evenodd" />
+            </svg>
+            Nuevo Usuario
+        </a>
     </div>
 
     <!-- Tarjeta principal -->
@@ -63,10 +72,10 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-neutral-50">
                     <tr class="text-xs font-medium text-primary uppercase tracking-wider">
+                        <th scope="col" class="px-3 py-2 text-left">id</th>
                         <th scope="col" class="px-3 py-2 text-left">Username</th>
                         <th scope="col" class="px-2 py-2 text-left">Nombre Completo</th>
                         <th scope="col" class="px-2 py-2 text-left">DNI</th>
-                        <th scope="col" class="px-2 py-2 text-left">Email</th>
                         <th scope="col" class="px-2 py-2 text-left">Teléfono</th>
                         <th scope="col" class="px-2 py-2 text-left">Sponsor</th>
                         <th scope="col" class="px-2 py-2 text-left">Estado</th>
@@ -76,54 +85,69 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-neutral-300">
                     @forelse ($users as $user)
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
-                            <td class="px-3 py-1">{{ $user->username }}</td>
-                            <td class="px-2 py-1">{{ $user->name }} {{ $user->last_name }}</td>
-                            <td class="px-2 py-1">{{ $user->dni }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ $user->email }}</td>
-                            <td class="px-2 py-1 whitespace-nowrap">{{ $user->userData->phone}}</td> 
-                            <td class="px-2 py-1 text-sm text-gray-500 ">
-                                @if ($user->id > 1 && $user->binary && $user->binary->sponsor_id)
-                                    {{ optional(\App\Models\User::find($user->binary->sponsor_id))->username ?? 'N/A' }}
-                                @else
-                                    master
-                                @endif
-                            </td>
+                        <div wire:key="{{ $user->id }}">
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-3 py-1">{{ $user->id }}</td>
+                                <td class="px-3 py-1">{{ $user->username }}</td>
+                                <td class="px-2 py-1">{{ $user->name }} {{ $user->last_name }}
 
-                            <td class="px-2 py-1 whitespace-nowrap">
-                                @php
-                                    $isActive = $user->activation?->is_active == 1;
-                                    $tooltip = $isActive ? 'Activo' : 'Inactivo';
-                                    $icon = $isActive ? 'fa-toggle-on' : 'fa-toggle-off';
-                                    $color = $isActive ? 'text-primary' : 'text-danger';
-                                    $method = $isActive ? 'deactivate' : 'activate';
-                                    $confirmation = $isActive
-                                        ? '¿Estás seguro que deseas desactivar este usuario?'
-                                        : '¿Estás seguro que deseas activar este usuario?';
-                                @endphp
+                                    <p class=" text-sm text-secondary whitespace-nowrap"> {{ $user->email }}</p>
+                                </td>
+                                <td class="px-2 py-1">{{ $user->dni }}</td>
 
-                                <flux:tooltip content="{{ $tooltip }}">
-                                    <div class="text-center text-xl {{ $color }} cursor-pointer"
-                                        wire:click="{{ $method }}({{ $user->id }})"
-                                        wire:confirm="{{ $confirmation }}">
-                                        <i class="fas {{ $icon }}"></i>
+                                <td class="px-2 py-1 whitespace-nowrap">{{ $user->userData->phone }}</td>
+                                <td class="px-2 py-1 text-sm text-gray-500 ">
+                                    @if ($user->id > 1 && $user->binary && $user->binary->sponsor_id)
+                                        {{ optional(\App\Models\User::find($user->binary->sponsor_id))->username ?? 'N/A' }}
+                                    @else
+                                        master
+                                    @endif
+                                </td>
+
+                                <td class="px-2 py-1 whitespace-nowrap">
+                                    @php
+                                        $isActive = $user->activation?->is_active == 1;
+                                        $tooltip = $isActive ? 'Activo' : 'Inactivo';
+                                        $icon = $isActive ? 'fa-toggle-on' : 'fa-toggle-off';
+                                        $color = $isActive ? 'text-primary' : 'text-danger';
+                                        $method = $isActive ? 'deactivate' : 'activate';
+                                        $confirmation = $isActive
+                                            ? '¿Estás seguro que deseas desactivar este usuario?'
+                                            : '¿Estás seguro que deseas activar este usuario?';
+                                    @endphp
+
+                                    <flux:tooltip content="{{ $tooltip }}">
+                                        <div class="text-center text-xl {{ $color }} cursor-pointer"
+                                            wire:click="{{ $method }}({{ $user->id }})"
+                                            wire:confirm="{{ $confirmation }}">
+                                            <i class="fas {{ $icon }}"></i>
+                                        </div>
+                                    </flux:tooltip>
+                                </td>
+                                <td class="px-2 py-1 whitespace-nowrap text-left">
+                                    <div class="flex items-center space-x-3">
+
+                                        {{--   <a href="{{ route('admin.users.show', $user) }}"
+                                            class="text-primary hover:text-primary/80 transition-colors p-1.5 rounded-md hover:bg-primary/10">
+                                            <i class="fas fa-user-plus"></i>
+                                        </a> --}}
+
+                                        {{-- Editar --}}
+                                        <a href="{{ route('admin.users.edit', $user) }}"
+                                            class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+
+                                        <button wire:click="openRoleModal({{ $user->id }})"
+                                            wire:confirm="¿Está seguro de que desea agregar o eliminar un rol a este usuario? Recuerde que los usuarios con roles asignados pueden acceder al panel de administración."
+                                            class="text-indigo-600 hover:text-indigo-800 transition-colors p-1.5 rounded-md hover:bg-indigo-50">
+                                            <i class="fas fa-user-shield"></i>
+                                        </button>
                                     </div>
-                                </flux:tooltip>
-                            </td>
-                            <td class="px-2 py-1 whitespace-nowrap text-left">
-                                <div class="flex items-center space-x-3">
-
-                                    <a href="{{ route('admin.users.show', $user) }}"
-                                        class="text-primary hover:text-primary/80 transition-colors p-1.5 rounded-md hover:bg-primary/10">
-                                        <i class="fas fa-user-plus"></i>
-                                    </a>
-                                    <a href="{{ route('admin.users.edit', $user) }}"
-                                        class="text-secondary hover:text-secondary/80 transition-colors p-1.5 rounded-md hover:bg-secondary/10">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        </div>
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-16 text-center">
@@ -155,4 +179,28 @@
             {{ $users->links() }}
         </div>
     </div>
+
+    <flux:modal wire:model.live="showRoleModal" :dismissible="false" class="md:w-96">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">Asignar Rol</flux:heading>
+                <flux:text class="mt-2">¿Está seguro de que desea agregar o eliminar un rol a este usuario
+                    {{ $selectedUser->username ?? '' }}? Recuerde que los usuarios con roles asignados pueden acceder
+                    al panel de administración.</flux:text>
+            </div>
+
+            <x-select-l label="Selecciona un rol:" for="selectedRole" wire:model="selectedRole">
+                <option value="">Eliminar Rol </option>
+                @foreach ($roles as $role)
+                    <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
+            </x-select-l>
+
+            <div class="flex">
+                <flux:spacer />
+                <flux:button type="button" wire:click="assignRole" variant="primary">Asignar</flux:button>
+            </div>
+        </div>
+    </flux:modal>
+
 </div>

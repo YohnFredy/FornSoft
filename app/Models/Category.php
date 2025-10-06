@@ -59,7 +59,7 @@ class Category extends Model
 
     
 
-    public static function boot()
+   public static function boot()
     {
         parent::boot();
 
@@ -71,9 +71,19 @@ class Category extends Model
     public static function generateSlug($name)
     {
         $slug = Str::slug($name);
-        $count = static::where('slug', 'LIKE', "{$slug}%")->count();
+        $originalSlug = $slug;
+        $i = 1;
 
-        /*  return $count ? "{$slug}-{$count}" : $slug; */
-        return $count ? "{$slug}" : $slug;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$i}";
+            $i++;
+        }
+
+        return $slug;
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

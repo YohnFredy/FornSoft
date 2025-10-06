@@ -71,14 +71,12 @@
                     ];
                 })
                 ->toArray();
-
-            shuffle($images);
             $displayImages = array_slice($images, 0, 3);
         @endphp
 
         @if (count($displayImages) > 0)
             <div class="bg-white rounded-2xl sm:shadow-lg shadow-ink sm:border overflow-hidden mb-8">
-                <div class="sm:p-6">
+                <div class="sm:p-10">
                     <div class="flex items-center mb-6">
                         <div
                             class="w-12 h-12 min-w-12 bg-gradient-to-br from-primary to-ink rounded-xl flex items-center justify-center mr-4">
@@ -89,119 +87,31 @@
                         </h2>
                     </div>
 
-
-
-                    @if (count($displayImages) == 1)
-                        <!-- Una sola imagen - Display grande -->
-                        <div class="relative group">
-                            <div class="aspect-[16/9] rounded-2xl overflow-hidden bg-gray-100">
-                                <img src="{{ $displayImages[0]['url'] }}" alt="{{ $displayImages[0]['alt'] }}"
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                            </div>
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="absolute bottom-4 left-4 right-4">
-                                    <p class="text-white font-semibold text-lg">{{ $displayImages[0]['alt'] }}</p>
-                                </div>
-                            </div>
-                            @if ($displayImages[0]['is_primary'])
-                                <div class="absolute top-4 left-4">
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 bg-premium text-white text-sm font-medium rounded-full">
-                                        <i class="fas fa-star mr-1 text-xs"></i>
-                                        Principal
-                                    </span>
-                                </div>
-                            @endif
-                        </div>
-                    @elseif(count($displayImages) == 2)
-                        <!-- Dos imágenes - Grid 2 columnas -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            @foreach ($displayImages as $index => $image)
-                                <div class="relative group">
-                                    <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                                        <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
-                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                    </div>
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div class="absolute bottom-4 left-4 right-4">
-                                            <p class="text-white font-medium">{{ $image['alt'] }}</p>
-                                        </div>
-                                    </div>
-                                    @if ($image['is_primary'])
-                                        <div class="absolute top-4 left-4">
-                                            <span
-                                                class="inline-flex items-center px-3 py-1 bg-premium text-white text-sm font-medium rounded-full">
-                                                <i class="fas fa-star mr-1 text-xs"></i>
-                                                Principal
-                                            </span>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <!-- Tres imágenes - Layout especial: 1 grande + 2 pequeñas -->
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Imagen principal (más grande) -->
-                            <div class="lg:col-span-2">
-                                <div class="relative group">
-                                    <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-gray-100">
-                                        <img src="{{ $displayImages[0]['url'] }}" alt="{{ $displayImages[0]['alt'] }}"
-                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                    </div>
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <div class="absolute bottom-4 left-4 right-4">
-                                            <p class="text-white font-semibold text-lg">{{ $displayImages[0]['alt'] }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    @if ($displayImages[0]['is_primary'])
-                                        <div class="absolute top-4 left-4">
-                                            <span
-                                                class="inline-flex items-center px-3 py-1 bg-premium text-white text-sm font-medium rounded-full">
-                                                <i class="fas fa-star mr-1 text-xs"></i>
-                                                Principal
-                                            </span>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <!-- Imágenes secundarias -->
-                            <div class="space-y-6">
-                                @foreach (array_slice($displayImages, 1) as $image)
-                                    <div class="relative group">
-                                        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                                            <img src="{{ $image['url'] }}" alt="{{ $image['alt'] }}"
-                                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                        </div>
-                                        <div
-                                            class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <div class="absolute bottom-3 left-3 right-3">
-                                                <p class="text-white font-medium text-sm">{{ $image['alt'] }}</p>
-                                            </div>
-                                        </div>
-                                        @if ($image['is_primary'])
-                                            <div class="absolute top-3 left-3">
-                                                <span
-                                                    class="inline-flex items-center px-2 py-1 bg-premium text-white text-xs font-medium rounded-full">
-                                                    <i class="fas fa-star mr-1 text-xs"></i>
-                                                    Principal
-                                                </span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endforeach
+                    <div class="grid grid-cols-3 gap-y-4 md:gap-6 md:px-24">
+                        <!-- Imagen principal -->
+                        <div class="col-span-3 lg:col-span-2">
+                            <div class="rounded-2xl overflow-hidden">
+                                <img class="w-full lg:h-[600px] " src="{{ $displayImages[0]['url'] }}" />
                             </div>
                         </div>
-                    @endif
+
+                        <!-- Columna derecha -->
+                        @if (count($displayImages) > 1)
+                            <div class="col-span-3 lg:col-span-1 flex flex-col gap-6">
+                                <div class="rounded-2xl overflow-hidden">
+                                    <img class="w-full lg:h-[288px] " src="{{ $displayImages[1]['url'] }}" />
+                                </div>
+                                @if (count($displayImages) > 2)
+                                    <div class="rounded-2xl overflow-hidden">
+                                        <img class="w-full lg:h-[288px] " src="{{ $displayImages[2]['url'] }}" />
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         @endif
-
         <!-- Catálogo virtual -->
         @if (!empty($businessData->custom_links))
 
@@ -216,10 +126,12 @@
                         </div>
                         <div>
                             <h2 class="text-xl sm:text-2xl text-secondary ">
-                                <strong class=" text-primary">Catálogo:</strong> {{ $businessData->business->name }}
+                                <strong class=" text-primary">Catálogo:</strong>
+                                {{ $businessData->business->name }}
                             </h2>
                             <p class="text-sm text-danger mt-2 hidden sm:block">
-                                ⚠️ Si el catálogo es de WhatsApp, es posible que no se vea en computador. En ese caso,
+                                ⚠️ Si el catálogo es de WhatsApp, es posible que no se vea en computador. En ese
+                                caso,
                                 haz clic en el botón de WhatsApp en la sección de información para contactar al
                                 comercio.
                             </p>
@@ -429,7 +341,7 @@
                                 </div>
                             </div>
 
-                            @if ($businessData->store_type == 'physical' || $businessData->store_type == 'hybrid')
+                            @if ($businessData->latitude != 0 && $businessData->longitude != 0)
 
                                 <!-- Botones de navegación -->
                                 <div class="mt-4 pt-4 border-t border-premium/50">
@@ -653,7 +565,8 @@
 
             <p class="text-gray-700 leading-relaxed">
                 Por cada compra que usted realice como afiliado de Fornuvi a la marca
-                <span class="font-semibold">{{ $businessData->business->name }}</span>, Fornuvi recibe una comisión
+                <span class="font-semibold">{{ $businessData->business->name }}</span>, Fornuvi recibe una
+                comisión
                 que varía entre <span class="font-semibold">{{ $businessData->business->minimum_percentage }}%</span>
                 (mínimo) y <span class="font-semibold">{{ $businessData->business->maximum_percentage }}%</span>
                 (máximo), dependiendo de las condiciones comerciales.
@@ -662,7 +575,8 @@
             <p class="text-gray-700 leading-relaxed mt-4">
                 Cada comisión de <span class="font-semibold">ingreso bruto de $38.000</span>, equivalente a
                 <span class="font-semibold">1.80 puntos</span>. Ingreso bruto corresponde al valor total
-                <span class="italic">antes de aplicar cualquier descuento, retención o gasto legal obligatorio</span>.
+                <span class="italic">antes de aplicar cualquier descuento, retención o gasto legal
+                    obligatorio</span>.
             </p>
         </div>
     </div>

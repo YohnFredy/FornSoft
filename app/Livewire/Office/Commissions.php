@@ -15,7 +15,7 @@ class Commissions extends Component
     public $user;
     public $summaryCommission; // Resumen de comisiones (ej. totales)
     public $selectedPeriod = 'last_month';
-    public $selectedType = '1';
+    public $selectedType = '';
 
     #[Layout('components.layouts.office')]
     public function render()

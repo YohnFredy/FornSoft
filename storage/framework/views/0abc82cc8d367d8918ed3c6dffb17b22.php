@@ -22,9 +22,15 @@
             'route' => 'companies.index',
             'routeIs' => 'companies*',
         ],
-
-
         [
+            'type' => 'anchor',
+            'name' => 'Contáctanos',
+            'icon' => 'contact',
+            'route' => '#contacto',
+            'routeIs' => 'home',
+        ],
+
+        /* [
             'type' => 'dropdown',
             'name' => 'Oportunidad',
             'iconTrailing' => 'chevron-down',
@@ -45,7 +51,7 @@
                     'routeIs' => 'home',
                 ],
             ],
-        ],
+        ], */
         [
             'type' => 'route',
             'name' => 'Oficina',
@@ -326,7 +332,7 @@
 <?php $component = $__componentOriginald33a3439ec8f8da64b388b23a8637b39; ?>
 <?php unset($__componentOriginald33a3439ec8f8da64b388b23a8637b39); ?>
 <?php endif; ?>
-        
+
         <?php if (isset($component)) { $__componentOriginal4a4f7aa062a095c651c2f80bb685a42a = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal4a4f7aa062a095c651c2f80bb685a42a = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::spacer','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -577,7 +583,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'flex text-primary','href' => ''.e(route('login')).'','wire:navigate' => true]); ?> 
+<?php $component->withAttributes(['class' => 'flex text-primary','href' => ''.e(route('login')).'','wire:navigate' => true]); ?>
                     <span class="flex items-center">
                         Login <?php if (isset($component)) { $__componentOriginal721ffe4c2f548bf447e329eb82269d67 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal721ffe4c2f548bf447e329eb82269d67 = $attributes; } ?>
@@ -598,8 +604,8 @@
 <?php if (isset($__componentOriginal721ffe4c2f548bf447e329eb82269d67)): ?>
 <?php $component = $__componentOriginal721ffe4c2f548bf447e329eb82269d67; ?>
 <?php unset($__componentOriginal721ffe4c2f548bf447e329eb82269d67); ?>
-<?php endif; ?> 
-                    </span> 
+<?php endif; ?>
+                    </span>
                  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal54ddb5b70b37b1e1cf0f2f95e4c53477)): ?>
@@ -961,21 +967,35 @@ if (isset($__slots)) unset($__slots);
                 <div>
                     <h3 class="text-lg font-semibold mb-6">Enlaces rápidos</h3>
                     <ul class="space-y-3">
-                        <li><a href="<?php echo e(route('home')); ?>" class="text-neutral-200 hover:text-white transition">Inicio</a></li>
-                        <li><a href="<?php echo e(route('products.index')); ?>" class="text-neutral-200 hover:text-white transition">Tienda</a></li>
-                        <li><a href="<?php echo e(route('dashboard')); ?>" class="text-neutral-200 hover:text-white transition">Oficina</a></li>
-                        <li><a href="<?php echo e(route('home')); ?>#contacto" class="text-neutral-200 hover:text-white transition">Contacto</a></li>
+                        <li><a href="<?php echo e(route('home')); ?>"
+                                class="text-neutral-200 hover:text-white transition">Inicio</a></li>
+                        <li><a href="<?php echo e(route('products.index')); ?>"
+                                class="text-neutral-200 hover:text-white transition">Tienda</a></li>
+                        <li><a href="<?php echo e(route('dashboard')); ?>"
+                                class="text-neutral-200 hover:text-white transition">Oficina</a></li>
+                        <li><a href="<?php echo e(route('home')); ?>#contacto"
+                                class="text-neutral-200 hover:text-white transition">Contacto</a></li>
+                        <li><a href="<?php echo e(route('pdf-plan-de-pagos')); ?>" target="_blank"
+                                class="text-neutral-200 hover:text-white transition">
+                                Plan de pagos
+                            </a></li>
+
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="text-lg font-semibold mb-6">Soporte</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Preguntas frecuentes</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Términos y condiciones</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Política de privacidad</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Envíos y devoluciones</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Centro de ayuda</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Preguntas
+                                frecuentes</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Términos y
+                                condiciones</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Política de
+                                privacidad</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Envíos y
+                                devoluciones</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Centro de ayuda</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -995,11 +1015,17 @@ if (isset($__slots)) unset($__slots);
             </div>
             <div class="border-t border-gray-800 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 fornuvi. Todos los derechos reservados.</p>
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 fornuvi. Todos los derechos reservados.
+                    </p>
                     <div class="flex space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Términos y condiciones</a>
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Política de privacidad</a>
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Aviso legal</a>
+                        <a href="#"
+                            class="text-gray-400 hover:text-white text-sm transition duration-300">Términos y
+                            condiciones</a>
+                        <a href="#"
+                            class="text-gray-400 hover:text-white text-sm transition duration-300">Política de
+                            privacidad</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Aviso
+                            legal</a>
                     </div>
                 </div>
             </div>
@@ -1020,4 +1046,5 @@ if (isset($__slots)) unset($__slots);
 
 </body>
 
-</html><?php /**PATH C:\Users\Fredy\Herd\fornuvi\resources\views/components/layouts/app/header.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\Users\Fredy\Herd\fornuvi\resources\views/components/layouts/app/header.blade.php ENDPATH**/ ?>

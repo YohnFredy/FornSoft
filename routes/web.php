@@ -21,9 +21,22 @@ Route::get('/', function () {
     return view('index');
 })->name('home');
 
+Route::get('/plan-compensacion', function () {
+    return view('pdf-plan-de-pagos');
+})->name('pdf-plan-de-pagos');
+
+
 // Ruta principal para la landing page
 Route::get('/landing', [LandingPageController::class, 'show'])->name('landing.show');
 Route::get('/oportunidad-de-negocio', [LandingPageController::class, 'show2'])->name('landing.show2');
+
+Route::get('/oportunidad-de-ingresos', function () {
+    return view('capturePage');
+})->name('capturePage');
+
+Route::get('/paso-a-paso', function () {
+    return view('capturePage2');
+})->name('capturePage2');
 
 // Ruta para recibir los datos de seguimiento (eventos) vía AJAX
 Route::post('/track-event', [LandingPageController::class, 'trackEvent'])->name('landing.track');
@@ -35,7 +48,7 @@ Route::get('producto/{product}', ProductShow::class)->name('products.show');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contacto.store');
 
 Route::get('empresas-aliadas', AlliedCompanies::class)->name('companies.index');
-Route::get('empresa-aliada/{id}', CompanyShow::class)->name('companies.show');
+Route::get('empresa-aliada/{businessData}', CompanyShow::class)->name('companies.show');
 
 Route::get('prueba', Prueba::class)->name('prueba');
 

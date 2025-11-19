@@ -7,6 +7,8 @@ use App\Models\BinaryTotal;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Department;
+use App\Models\PubAffiliate;
+use App\Models\PubControl;
 use App\Models\Unilevel;
 use App\Models\UnilevelTotal;
 use App\Models\User;
@@ -24,7 +26,7 @@ use Illuminate\Support\Facades\Log;
 
 class Register extends Component
 {
-    public $sponsor = '', $side = '';
+    public $sponsor = '', $side = '', $controlId, $advertising = false;
 
     #[Validate()]
     public $username, $name, $last_name, $dni, $email, $password, $password_confirmation;
@@ -68,6 +70,10 @@ class Register extends Component
         } else {
             $this->sponsor = $sponsor;
             $this->side = $side;
+        }
+
+        if ($this->side == 'lr') {
+            $this->advertising = true;
         }
 
         $this->countries = Country::all();
@@ -128,6 +134,25 @@ class Register extends Component
 
     public function save() //
     {
+        if ($this->side === 'lr') {
+
+            if (! $control = PubControl::with('user')->orderBy('total_assigned')->first()) {
+                $this->side = null;
+                return;
+            }
+
+            $this->controlId = $control;
+            $this->sponsor = $control->user->username ?? null;
+
+            $binary = BinaryTotal::where('user_id', $control->user_id)->first();
+
+            if (!$binary) {
+                $this->side = 'right';
+            } else {
+                $this->side = $binary->left_affiliates <= $binary->right_affiliates ? 'left' : 'right';
+            }
+        }
+
         $this->validate();
         // Validar reCAPTCHA
         /* if (!$this->validateRecaptcha()) {
@@ -198,6 +223,19 @@ class Register extends Component
             'user_agent'                      => request()->userAgent(),
             'checkbox_text'                   => config('legal.checkbox_text'), // <--- Mucho mejor así
         ]);
+
+        if ($this->controlId && $this->advertising === true) {
+
+            // Incrementa el total asignado en 1
+            $this->controlId->increment('total_assigned');
+
+            // Crea el afiliado asociado
+            PubAffiliate::create([
+                'control_id' => $this->controlId->id,
+                'user_id' => $user->id,
+                'side' => $this->side,
+            ]);
+        };
 
         return $user;
     }

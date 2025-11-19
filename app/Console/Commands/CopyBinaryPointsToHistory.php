@@ -22,8 +22,8 @@ class CopyBinaryPointsToHistory extends Command
         /* $startDate = Carbon::now()->startOfDay(); // Puedes cambiar la lógica si necesitas una fecha específica
         $endDate = Carbon::now()->endOfDay(); */
 
-        $startDate = Carbon::parse('2025-09-01')->startOfDay();
-        $endDate = Carbon::parse('2025-09-30')->endOfDay();
+        $startDate = Carbon::parse('2025-10-01')->startOfDay();
+        $endDate = Carbon::parse('2025-10-31')->endOfDay();
 
         $binaryPoints = BinaryPoint::all();
 

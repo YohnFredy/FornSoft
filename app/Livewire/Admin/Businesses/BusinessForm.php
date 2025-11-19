@@ -24,7 +24,7 @@ class BusinessForm extends Component
     public ?BusinessData $businessData;
 
     // Propiedades del modelo Business
-    public $name = '', $slug = '', $nit = '', $user_id, $minimum_percentage = 0, $maximum_percentage = 0, $email = '', $is_active = true, $password = '';
+    public $name = '', $slug = '', $data_slug = '', $nit = '', $user_id, $minimum_percentage = 0, $maximum_percentage = 0, $email = '', $is_active = true, $password = '';
 
     // Propiedades del modelo BusinessData
     public $phone = '', $whatsapp = '', $website_url = '', $business_email = '', $description = '';
@@ -58,9 +58,11 @@ class BusinessForm extends Component
     protected function rules()
     {
         $businessId = $this->businessData->business->id ?? null;
+        $businessDataId = $this->businessData->id ?? null;
         return [
             'name' => 'required|string|max:255',
             'slug' => ['required', 'string', 'max:255', Rule::unique('businesses')->ignore($businessId)],
+            'data_slug' => ['required', 'string', 'max:255', Rule::unique('business_data', 'slug')->ignore($businessDataId)],
             'nit' => ['string', 'max:255', Rule::unique('businesses')->ignore($businessId)],
             'user_id' => 'exists:users,id',
             'minimum_percentage' => 'numeric|min:0|max:99',
@@ -150,7 +152,11 @@ class BusinessForm extends Component
     }
     public function updatedName($value)
     {
+        // Slug de businesses
         $this->slug = Business::generateSlug($value);
+
+        // Slug de business_data
+        $this->data_slug = BusinessData::generateSlug($value);
     }
 
     public function updatedSelectedCountry($country_id)
@@ -187,12 +193,13 @@ class BusinessForm extends Component
 
         $this->name = $business->name;
         $this->slug = $business->slug;
+        $this->data_slug = $this->businessData->slug;
         $this->nit = $business->nit;
         $this->user_id = $business->user_id;
         $this->minimum_percentage = $business->minimum_percentage;
         $this->maximum_percentage = $business->maximum_percentage;
         $this->email = $business->email;
-        $this->is_active = $business->is_active;
+        $this->is_active = $this->businessData->is_active;
 
         $this->phone = $this->businessData->phone;
         $this->whatsapp = $this->businessData->whatsapp;
@@ -346,7 +353,7 @@ class BusinessForm extends Component
             'minimum_percentage' => $this->minimum_percentage,
             'maximum_percentage' => $this->maximum_percentage,
             'email' => $this->email,
-            'is_active' => $this->is_active,
+            'is_active' => true,
         ];
     }
 
@@ -358,6 +365,8 @@ class BusinessForm extends Component
             return !empty($link['title']) && !empty($link['url']);
         });
         return [
+            'slug' => $this->data_slug,
+            'is_active' => $this->is_active,
             'phone' => $this->phone,
             'whatsapp' => $this->whatsapp,
             'website_url' => $this->website_url,

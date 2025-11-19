@@ -133,7 +133,7 @@ class AlliedCompanies extends Component
         }
 
         // Iniciar la consulta base
-        $query = BusinessData::with(['business.latestLogo', 'storeTypes']); // Precargar relaciones necesarias
+        $query = BusinessData::with(['business.latestLogo', 'storeTypes'])->where('is_active', 1); // Precargar relaciones necesarias
 
         // Aplicar filtro de búsqueda por nombre de empresa
         $query->when($this->search, function ($q) {

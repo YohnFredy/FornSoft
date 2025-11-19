@@ -2,29 +2,29 @@
 
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\IndexController;
-use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Livewire\Admin\AlliedCommissions\SupportInvoice;
 use App\Livewire\Admin\Businesses\BusinessForm;
 use App\Livewire\Admin\Businesses\BusinessIndex;
+use App\Livewire\Admin\BusinessReports\BusinessReportForm;
+use App\Livewire\Admin\BusinessReports\BusinessReportIndex;
 use App\Livewire\Admin\Categories\CategoryForm;
 use App\Livewire\Admin\Categories\CategoryIndex;
+use App\Livewire\Admin\Commissions\Bag;
+use App\Livewire\Admin\Invoices\InvoiceForm;
+use App\Livewire\Admin\Invoices\InvoiceIndex;
 use App\Livewire\Admin\Orders\OrdersManagement;
 use App\Livewire\Admin\Products\ProductForm;
 use App\Livewire\Admin\Products\ProductIndex;
+use App\Livewire\Admin\PubManager;
+use App\Livewire\Admin\SendWhatsapp;
 use App\Livewire\Admin\Users\UserForm;
 use App\Livewire\Admin\Users\UserIndex;
 use Illuminate\Support\Facades\Route;
-
 
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/', [IndexController::class, 'index'])->middleware(['can:admin.index'])->name('index');
     Route::get('order', OrdersManagement::class)->name('orders.management');
-
-    Route::get('soporte/factura', SupportInvoice::class)->name('SupportInvoice');
-
-    Route::get('factura/{order}', [InvoiceController::class, 'show'])->middleware(['can:admin.factura'])->name('invoice.show');
 
     Route::resource('role', RoleController::class)
         ->names('roles')
@@ -58,4 +58,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('business', BusinessIndex::class)->name('businesses.index');
     Route::get('business/create', BusinessForm::class)->name('businesses.create');
     Route::get('business/{businessData}/edit', BusinessForm::class)->name('businesses.edit');
+
+
+    Route::get('gestor-publicidad', PubManager::class)->name('pubMangers.index');
+    Route::get('gestor-publicidad/create', PubManager::class)->name('pubMangers.create');
+    Route::get('gestor-publicidad/{product}/edit', PubManager::class)->name('pubMangers.edit');
+
+    Route::get('soporte_de_compras_usuarios', InvoiceIndex::class)->name('invoices.index');
+    Route::get('soporte_de_compras_usuarios/create', InvoiceForm::class)->name('invoices.create');
+    Route::get('soporte_de_compras_usuarios/{invoice}/edit', InvoiceForm::class)->name('invoices.edit');
+
+    Route::get('soporte_de_compras_negocio', BusinessReportIndex::class)->name('businessReports.index');
+    Route::get('soporte_de_compras_negocio/create', BusinessReportForm::class)->name('businessReports.create');
+    Route::get('soporte_de_compras_negocio/{businessReport}/edit', BusinessReportForm::class)->name('businessReports.edit');
+
+
+    Route::get('Bolsaglobal', Bag::class)->name('bag');
+
+    Route::get('send/WhatsApp', SendWhatsapp::class)->name('sendWhatsApp.index');
 });

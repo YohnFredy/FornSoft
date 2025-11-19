@@ -60,7 +60,7 @@
 <?php endif; ?>
         </a>
 
-      
+        
         <div class=" space-y-1">
             <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
@@ -86,9 +86,31 @@
             
             <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Órdenes','iconBlade' => 'shopping-cart','routes' => ['admin.orders.*'],'items' => [
-                ['name' => 'Tienda', 'route' => 'admin.orders.management', 'iconBlade' => 'shopping-cart'],
-                ['name' => 'Soporte user', 'route' => 'admin.index', 'iconBlade' => 'document-text'],
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Órdenes','iconBlade' => 'shopping-cart','routes' => ['admin.orders.management']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('menu-item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'Órdenes','iconBlade' => 'shopping-cart','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.orders.management'])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $attributes = $__attributesOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__attributesOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $component = $__componentOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__componentOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+
+            
+            <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Comercios Aliados','iconBlade' => 'briefcase','routes' => ['admin.invoices.*'],'items' => [
+                [ 'name' => 'Soporte Usuario', 'route' => 'admin.invoices.index', 'iconBlade' => 'clipboard-document-list' ],
+                ['name' => 'Soporte Negocio', 'route' => 'admin.businessReports.index', 'iconBlade' => 'clipboard-document-list' ],
             ]]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('menu-item'); ?>
 <?php if ($component->shouldRender()): ?>
@@ -96,9 +118,9 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['title' => 'Órdenes','iconBlade' => 'shopping-cart','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.orders.*']),'items' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
-                ['name' => 'Tienda', 'route' => 'admin.orders.management', 'iconBlade' => 'shopping-cart'],
-                ['name' => 'Soporte user', 'route' => 'admin.index', 'iconBlade' => 'document-text'],
+<?php $component->withAttributes(['title' => 'Comercios Aliados','iconBlade' => 'briefcase','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.invoices.*']),'items' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+                [ 'name' => 'Soporte Usuario', 'route' => 'admin.invoices.index', 'iconBlade' => 'clipboard-document-list' ],
+                ['name' => 'Soporte Negocio', 'route' => 'admin.businessReports.index', 'iconBlade' => 'clipboard-document-list' ],
             ])]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
@@ -189,12 +211,77 @@
 <?php $component = $__componentOriginalce95f69c1ef890487f9ea684119db87d; ?>
 <?php unset($__componentOriginalce95f69c1ef890487f9ea684119db87d); ?>
 <?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Enviar WhatsApp','icon' => 'text-xl fab fa-whatsapp','routes' => ['admin.sendWhatsApp.index']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('menu-item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'Enviar WhatsApp','icon' => 'text-xl fab fa-whatsapp','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.sendWhatsApp.index'])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $attributes = $__attributesOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__attributesOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $component = $__componentOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__componentOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'BD_publicidad','iconBlade' => 'user-group','routes' => ['admin.pubMangers.index']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('menu-item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'BD_publicidad','iconBlade' => 'user-group','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.pubMangers.index'])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $attributes = $__attributesOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__attributesOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $component = $__componentOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__componentOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+
+            <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Bolsa Global','iconBlade' => 'user-group','routes' => ['admin.bag']]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('menu-item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['title' => 'Bolsa Global','iconBlade' => 'user-group','routes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(['admin.bag'])]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $attributes = $__attributesOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__attributesOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalce95f69c1ef890487f9ea684119db87d)): ?>
+<?php $component = $__componentOriginalce95f69c1ef890487f9ea684119db87d; ?>
+<?php unset($__componentOriginalce95f69c1ef890487f9ea684119db87d); ?>
+<?php endif; ?>
+
+
         </div>
 
-        <div class="space-y-1 mt-3">
-             <h1 class="ml-3 text-sm font-bold text-ink">Pagina principal</h1>
-             
-               
+        <div class="space-y-1 mt-3 ">
+            <h1 class="ml-3 text-sm font-bold text-ink">Pagina principal</h1>
+
+            
             <?php if (isset($component)) { $__componentOriginalce95f69c1ef890487f9ea684119db87d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalce95f69c1ef890487f9ea684119db87d = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.menu-item','data' => ['title' => 'Fornuvi','iconBlade' => 'arrow-uturn-left','routes' => ['home', 'products.index', 'dashboard'],'items' => [

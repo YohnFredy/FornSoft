@@ -121,7 +121,7 @@ class User extends Authenticatable
         return $this->hasMany(Commission::class);
     }
 
-      public function consentLogs(): HasMany
+    public function consentLogs(): HasMany
     {
         return $this->hasMany(ConsentLog::class);
     }
@@ -134,4 +134,8 @@ class User extends Authenticatable
         return $this->hasOne(ConsentLog::class)->latestOfMany('accepted_at');
     }
 
+    public function business(): HasMany
+    {
+        return $this->hasMany(Business::class);
+    }
 }

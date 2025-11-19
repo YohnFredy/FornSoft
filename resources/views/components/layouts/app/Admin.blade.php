@@ -13,14 +13,17 @@
             <x-app-logo />
         </a>
 
-      {{--  menu lateral --}}
+        {{--  menu lateral --}}
         <div class=" space-y-1">
             <x-menu-item title="Dashboard" iconBlade="home" :routes="['admin.index']" />
 
-            {{-- Grupo Expandible órdenes --}}
-            <x-menu-item title="Órdenes" iconBlade="shopping-cart" :routes="['admin.orders.*']" :items="[
-                ['name' => 'Tienda', 'route' => 'admin.orders.management', 'iconBlade' => 'shopping-cart'],
-                ['name' => 'Soporte user', 'route' => 'admin.index', 'iconBlade' => 'document-text'],
+            {{-- órdenes --}}
+            <x-menu-item title="Órdenes" iconBlade='shopping-cart' :routes="['admin.orders.management']" />
+
+            {{-- Grupo Expandible aliados --}}
+            <x-menu-item title="Comercios Aliados" iconBlade="briefcase" :routes="['admin.invoices.*']" :items="[
+                [ 'name' => 'Soporte Usuario', 'route' => 'admin.invoices.index', 'iconBlade' => 'clipboard-document-list' ],
+                ['name' => 'Soporte Negocio', 'route' => 'admin.businessReports.index', 'iconBlade' => 'clipboard-document-list' ],
             ]" />
 
             {{-- Grupo Expandible usuarios --}}
@@ -37,12 +40,20 @@
                 ['name' => 'Marcas', 'route' => 'admin.brands.index', 'iconBlade' => 'tag'],
                 ['name' => 'Productos', 'route' => 'admin.products.index', 'iconBlade' => 'shopping-cart'],
             ]" />
+
+            <x-menu-item title="Enviar WhatsApp" icon='text-xl fab fa-whatsapp' :routes="['admin.sendWhatsApp.index']" />
+
+            <x-menu-item title="BD_publicidad" iconBlade='user-group' :routes="['admin.pubMangers.index']" />
+
+            <x-menu-item title="Bolsa Global" iconBlade='user-group' :routes="['admin.bag']" />
+
+
         </div>
 
-        <div class="space-y-1 mt-3">
-             <h1 class="ml-3 text-sm font-bold text-ink">Pagina principal</h1>
-             
-               {{-- Grupo Expandible fornuvi --}}
+        <div class="space-y-1 mt-3 ">
+            <h1 class="ml-3 text-sm font-bold text-ink">Pagina principal</h1>
+
+            {{-- Grupo Expandible fornuvi --}}
             <x-menu-item title="Fornuvi" iconBlade="arrow-uturn-left" :routes="['home', 'products.index', 'dashboard']" :items="[
                 ['name' => 'Inicio', 'route' => 'home', 'iconBlade' => 'home'],
                 ['name' => 'Tienda', 'route' => 'products.index', 'iconBlade' => 'shopping-cart'],

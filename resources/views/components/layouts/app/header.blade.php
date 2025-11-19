@@ -22,9 +22,15 @@
             'route' => 'companies.index',
             'routeIs' => 'companies*',
         ],
-
-
         [
+            'type' => 'anchor',
+            'name' => 'Contáctanos',
+            'icon' => 'contact',
+            'route' => '#contacto',
+            'routeIs' => 'home',
+        ],
+
+        /* [
             'type' => 'dropdown',
             'name' => 'Oportunidad',
             'iconTrailing' => 'chevron-down',
@@ -45,7 +51,7 @@
                     'routeIs' => 'home',
                 ],
             ],
-        ],
+        ], */
         [
             'type' => 'route',
             'name' => 'Oficina',
@@ -94,11 +100,8 @@
                         <flux:navmenu>
                             @foreach ($item['items'] as $subItem)
                                 @if ($subItem['type'] === 'route')
-                                    <flux:navmenu.item 
-                                        icon="{{ $subItem['icon'] }}" 
-                                        :href="route($subItem['route'])"
-                                        :current="request()->routeIs($subItem['routeIs'])"
-                                        wire:navigate>
+                                    <flux:navmenu.item icon="{{ $subItem['icon'] }}" :href="route($subItem['route'])"
+                                        :current="request()->routeIs($subItem['routeIs'])" wire:navigate>
                                         {{ __($subItem['name']) }}
                                     </flux:navmenu.item>
                                 @elseif ($subItem['type'] === 'anchor')
@@ -118,7 +121,7 @@
                 <flux:navbar.item icon="inbox" href="{{ route('admin.index') }}">Admin</flux:navbar.item>
             @endcan
         </flux:navbar>
-        
+
         <flux:spacer />
 
         <!-- Desktop User Menu -->
@@ -164,10 +167,10 @@
                     </form>
                 </flux:menu>
             @else
-                <flux:link class="flex text-primary" href="{{ route('login') }}" wire:navigate> 
+                <flux:link class="flex text-primary" href="{{ route('login') }}" wire:navigate>
                     <span class="flex items-center">
-                        Login <flux:icon.arrow-right-start-on-rectangle class="ml-0" /> 
-                    </span> 
+                        Login <flux:icon.arrow-right-start-on-rectangle class="ml-0" />
+                    </span>
                 </flux:link>
             @endauth
         </flux:dropdown>
@@ -203,11 +206,8 @@
                         <flux:navlist.group expandable :heading="$item['name']">
                             @foreach ($item['items'] as $subItem)
                                 @if ($subItem['type'] === 'route')
-                                    <flux:navlist.item 
-                                        icon="{{ $subItem['icon'] }}" 
-                                        :href="route($subItem['route'])"
-                                        :current="request()->routeIs($subItem['routeIs'])" 
-                                        wire:navigate>
+                                    <flux:navlist.item icon="{{ $subItem['icon'] }}" :href="route($subItem['route'])"
+                                        :current="request()->routeIs($subItem['routeIs'])" wire:navigate>
                                         {{ __($subItem['name']) }}
                                     </flux:navlist.item>
                                 @elseif ($subItem['type'] === 'anchor')
@@ -259,21 +259,35 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-6">Enlaces rápidos</h3>
                     <ul class="space-y-3">
-                        <li><a href="{{ route('home') }}" class="text-neutral-200 hover:text-white transition">Inicio</a></li>
-                        <li><a href="{{ route('products.index') }}" class="text-neutral-200 hover:text-white transition">Tienda</a></li>
-                        <li><a href="{{ route('dashboard') }}" class="text-neutral-200 hover:text-white transition">Oficina</a></li>
-                        <li><a href="{{ route('home') }}#contacto" class="text-neutral-200 hover:text-white transition">Contacto</a></li>
+                        <li><a href="{{ route('home') }}"
+                                class="text-neutral-200 hover:text-white transition">Inicio</a></li>
+                        <li><a href="{{ route('products.index') }}"
+                                class="text-neutral-200 hover:text-white transition">Tienda</a></li>
+                        <li><a href="{{ route('dashboard') }}"
+                                class="text-neutral-200 hover:text-white transition">Oficina</a></li>
+                        <li><a href="{{ route('home') }}#contacto"
+                                class="text-neutral-200 hover:text-white transition">Contacto</a></li>
+                        <li><a href="{{ route('pdf-plan-de-pagos') }}" target="_blank"
+                                class="text-neutral-200 hover:text-white transition">
+                                Plan de pagos
+                            </a></li>
+
                     </ul>
                 </div>
 
                 <div>
                     <h3 class="text-lg font-semibold mb-6">Soporte</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Preguntas frecuentes</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Términos y condiciones</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Política de privacidad</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Envíos y devoluciones</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Centro de ayuda</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Preguntas
+                                frecuentes</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Términos y
+                                condiciones</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Política de
+                                privacidad</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Envíos y
+                                devoluciones</a></li>
+                        <li><a href="#" class="text-neutral-400 hover:text-white transition">Centro de ayuda</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -293,11 +307,17 @@
             </div>
             <div class="border-t border-gray-800 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
-                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 fornuvi. Todos los derechos reservados.</p>
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2025 fornuvi. Todos los derechos reservados.
+                    </p>
                     <div class="flex space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Términos y condiciones</a>
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Política de privacidad</a>
-                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Aviso legal</a>
+                        <a href="#"
+                            class="text-gray-400 hover:text-white text-sm transition duration-300">Términos y
+                            condiciones</a>
+                        <a href="#"
+                            class="text-gray-400 hover:text-white text-sm transition duration-300">Política de
+                            privacidad</a>
+                        <a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300">Aviso
+                            legal</a>
                     </div>
                 </div>
             </div>

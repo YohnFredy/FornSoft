@@ -555,6 +555,13 @@
         </div>
     </div>
 
+    <!-- Back to top button -->
+    <button id="backToTop"
+        class="fixed cursor-pointer bottom-6 right-6 bg-secondary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md shadow-ink  hover:bg-primary transition duration-300"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- Estilos CSS integrados -->
     <style>
         /* Estilos personalizados para mejorar la paginación */
@@ -620,5 +627,22 @@
             background: #94a3b8;
         }
     </style>
+
+    <script>
+        // Mostrar/ocultar botón de volver arriba
+        window.addEventListener('scroll', function() {
+            var backToTopButton = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        // Iniciar con el botón oculto
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('backToTop').style.display = 'none';
+        });
+    </script>
 </div>
 <?php /**PATH C:\Users\Fredy\Herd\fornuvi\resources\views/livewire/allied-companies.blade.php ENDPATH**/ ?>

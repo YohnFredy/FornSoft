@@ -8,13 +8,23 @@
                         <i class="fas fa-user text-primary"></i>
                     </div>
                     @if ($node['username'] == 'master')
-                        <h4 class=" text-base sm:text-xl font-bold capitalize text-primary">
-                            Alejandra
-                        </h4>
+                        <div>
+                            <h4 class=" text-base sm:text-xl font-bold capitalize text-primary">
+                                Alejandra
+
+                            </h4>
+                            <h1 class=" text-sm text-ink"> <strong class=" text-primary">PP:
+                                </strong>{{ $node['PtsPersonal'] ?: 0.0 }}</h1>
+                        </div>
                     @else
-                        <h4 class=" text-base sm:text-xl font-bold capitalize text-primary">
-                            {{ $node['username'] }}
-                        </h4>
+                        <div>
+                            <h4 class=" text-base sm:text-xl font-bold capitalize text-primary">
+                                {{ $node['username'] }}
+
+                            </h4>
+                            <h1 class=" text-sm text-ink"> <strong class=" text-primary">PP:
+                                </strong>{{ $node['PtsPersonal'] ?: 0.0 }}</h1>
+                        </div>
                     @endif
                 </div>
 
@@ -70,9 +80,14 @@
                     <div class="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center mr-2">
                         <i class="fas fa-user text-primary"></i>
                     </div>
-                    <h4 class="text-sm sm:text-lg font-bold capitalize text-primary">
-                        {{ $node['username'] }}
-                    </h4>
+                    <div>
+                        <h4 class=" text-base sm:text-xl font-bold capitalize text-primary">
+                            {{ $node['username'] }}
+
+                        </h4>
+                        <h1 class=" text-sm text-ink"> <strong class=" text-primary">PP:
+                            </strong>{{ $node['PtsPersonal'] ?: 0.0 }}</h1>
+                    </div>
                 </div>
 
                 <h5 class="text-danger font-bold text-xs sm:text-sm text-center">

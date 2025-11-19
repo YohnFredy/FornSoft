@@ -76,8 +76,8 @@ class AddInvoice extends Component
             return;
         }
 
-        $this->company_name = $merchant->name;
-        $this->nit =  $merchant->nit ?: $this->company_name;
+        /* $this->company_name = $merchant->name;
+        $this->nit =  $merchant->nit ?: $this->company_name; */
         $this->search = "{$merchant->name} ({$merchant->nit})";
         $branches = BusinessData::where('business_id', $merchantId)->get();
         $this->merchantCities = $branches->pluck('city')->unique()->values();
@@ -148,7 +148,7 @@ class AddInvoice extends Component
 
         // Validar combinación única de nit + invoice_number
         $exists = \App\Models\Invoice::where('invoice_number', $this->invoice_number)
-            ->where('nit', $this->nit)
+            ->where('business_data_id', $this->selectedBranchId)
             ->exists();
 
         if ($exists) {
@@ -183,8 +183,6 @@ class AddInvoice extends Component
         Invoice::create([
             'user_id' => Auth::id(),
             'business_data_id' => $this->selectedBranchId,
-            'company_name' => $this->company_name,
-            'nit' => $this->nit,
             'invoice_number' => $this->invoice_number,
             'total_amount' => $this->total_amount,
             'invoice_date' => $this->invoice_date,

@@ -1,6 +1,12 @@
 <div class="">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+        <flux:breadcrumbs class=" mb-3">
+            <flux:breadcrumbs.item href="{{ route('home') }}" icon="home" />
+            <flux:breadcrumbs.item href="{{ route('companies.index') }}">Aliados</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>{{ $businessData->business->name }}</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+
         <!-- Header con información básica -->
         <div class="bg-white rounded-2xl border-2 shadow-md shadow-ink mb-10">
             <div class="bg-gradient-to-r from-black/3 via-white to-black/3 overflow-hidden">
@@ -58,7 +64,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Galería de imágenes de la empresa -->
         @php
@@ -592,6 +597,30 @@
         </a>
     </div>
 
+    <!-- Back to top button -->
+    <button id="backToTop"
+        class="fixed cursor-pointer bottom-6 right-6 bg-secondary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md shadow-ink  hover:bg-primary transition duration-300"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
 
     <script async src="//www.instagram.com/embed.js"></script>
+
+    <script>
+        // Mostrar/ocultar botón de volver arriba
+        window.addEventListener('scroll', function() {
+            var backToTopButton = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'flex';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        // Iniciar con el botón oculto
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('backToTop').style.display = 'none';
+        });
+    </script>
 </div>

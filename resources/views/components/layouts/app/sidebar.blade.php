@@ -27,6 +27,18 @@
                 'icon' => 'clipboard-document-list',
                 'route' => 'add-invoice',
             ],
+
+            [
+                'name' => 'soporte Factura',
+                'icon' => 'arrow-left-start-on-rectangle',
+                'route' => 'invoice.show',
+            ],
+
+            [
+                'name' => 'Mis Empresas',
+                'icon' => 'building-office-2',
+                'route' => 'my-companies',
+            ],
         ],
 
         'Tienda' => [

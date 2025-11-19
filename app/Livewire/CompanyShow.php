@@ -7,19 +7,20 @@ use Livewire\Component;
 
 class CompanyShow extends Component
 {
-    public $businessData;
+    public BusinessData $businessData;
 
-    public function mount($id)
-{
-    $this->businessData = BusinessData::with([
-        'business.images' => function ($query) {
-            $query->where('type', 'image');
-        },
-        'country',
-        'department',
-        'cityRelation'
-    ])->findOrFail($id);
-}
+    public function mount(BusinessData $businessData)
+    {
+        // Cargar relaciones necesarias
+        $this->businessData = $businessData->load([
+            'business.images' => function ($query) {
+                $query->where('type', 'image');
+            },
+            'country',
+            'department',
+            'cityRelation'
+        ]);
+    }
 
     public function render()
     {

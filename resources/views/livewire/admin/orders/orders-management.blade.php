@@ -121,7 +121,7 @@
                                             <flux:navmenu.item href="{{ route('orders.show', $order) }}"
                                                 icon="eye">Ver</flux:navmenu.item>
 
-                                            <flux:navmenu.item href="{{ route('admin.invoice.show', $order) }}"
+                                            <flux:navmenu.item href=""
                                                 icon="eye">Factura</flux:navmenu.item>
                                         </flux:menu>
                                     </flux:dropdown>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -14,9 +15,8 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Limpiar la caché de roles y permisos
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $superadmin = Role::create(['name' => 'Superadmin']);
         $admin = Role::create(['name' => 'Admin']);
@@ -29,6 +29,9 @@ class RoleSeeder extends Seeder
         $this->createBrandPermissions([$superadmin, $admin]);
         $this->createProductsPermissions([$superadmin, $admin]);
         $this->createBusinessPermissions([$superadmin, $admin]);
+        $this->createPubManangerPermissions([$superadmin, $admin]);
+        $this->createInvoicePermissions([$superadmin, $admin]);
+        $this->createBusinessReportPermissions([$superadmin, $admin]);
         $this->createRolesPermissions([$superadmin]);
     }
 
@@ -49,6 +52,16 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.categories.edit',    'description' => 'Editar Categoría'])->syncRoles($roles);
         Permission::create(['name' => 'admin.categories.destroy', 'description' => 'Eliminar Categoría'])->syncRoles($roles);
     }
+
+    private function createPubManangerPermissions($roles)
+    {
+        Permission::create(['name' => 'admin.pub-mananger.index',   'description' => 'Ver lista de  publicidad'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.pub-mananger.create',  'description' => 'Crear publicidad'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.pub-mananger.show',    'description' => 'Mostrar publicidad'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.pub-mananger.edit',    'description' => 'Editar publicidad'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.pub-mananger.destroy', 'description' => 'Eliminar publicidad'])->syncRoles($roles);
+    }
+
 
     private function createBrandPermissions($roles)
     {
@@ -75,6 +88,25 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.businesses.show',    'description' => 'Mostrar Negocio'])->syncRoles($roles);
         Permission::create(['name' => 'admin.businesses.edit',    'description' => 'Editar Negocio'])->syncRoles($roles);
         Permission::create(['name' => 'admin.businesses.destroy', 'description' => 'Eliminar Negocio'])->syncRoles($roles);
+    }
+
+
+    private function createInvoicePermissions($roles)
+    {
+        Permission::create(['name' => 'admin.invoices.index',   'description' => 'Ver lista de Factura Usuario'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.invoices.create',  'description' => 'Crea Factura Usuario'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.invoices.show',    'description' => 'Mostra Factura Usuario'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.invoices.edit',    'description' => 'Edita Factura Usuario'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.invoices.destroy', 'description' => 'Elimina Factura Usuario'])->syncRoles($roles);
+    }
+
+    private function createBusinessReportPermissions($roles)
+    {
+        Permission::create(['name' => 'admin.businessReports.index',   'description' => 'Ver lista de Factura Negocio'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.businessReports.create',  'description' => 'Crea Factura Negocio'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.businessReports.show',    'description' => 'Mostra Factura Negocio'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.businessReports.edit',    'description' => 'Edita Factura Negocio'])->syncRoles($roles);
+        Permission::create(['name' => 'admin.businessReports.destroy', 'description' => 'Elimina Factura Negocio'])->syncRoles($roles);
     }
 
     private function createRolesPermissions($roles)

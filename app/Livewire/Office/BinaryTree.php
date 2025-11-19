@@ -15,7 +15,7 @@ class BinaryTree extends Component
     public int $secondaryUserId;
     public int $primaryUserId;
     public int $activo = 0;
-    public $sponsor, $totalAffiliates = 0, $ptsLeft = 0, $ptsRight = 0;
+    public $sponsor, $totalAffiliates = 0, $PtsPersonal = 0, $ptsLeft = 0, $ptsRight = 0;
     public $leftPercentage = 0, $rightPercentage = 0;
     public $levels = 3, $selectedLevels = '';
 
@@ -30,7 +30,7 @@ class BinaryTree extends Component
         $this->dispatch('recalculate-tree-height');
     }
 
-     public function resetTree(): void
+    public function resetTree(): void
     {
         $user = Auth::user();
         $this->currentUser = $user;
@@ -81,8 +81,9 @@ class BinaryTree extends Component
         ];
 
         $PtsBinary = [
+            'personal'  => $user->binaryPts?->personal ?? 0,
             'left' => $user->binaryPts?->left_points ?? 0,
-            'right' => $user->binaryPts?->right_points ?? 0
+            'right' => $user->binaryPts?->right_points ?? 0,
         ];
 
         $branch = [
@@ -93,6 +94,7 @@ class BinaryTree extends Component
             'position' => $user->binary?->side ?? 'right',
             'left' => $totalBinary['left'],
             'right' => $totalBinary['right'],
+            'PtsPersonal' =>  $PtsBinary['personal'],
             'ptsLeft' => $PtsBinary['left'],
             'ptsRight' => $PtsBinary['right'],
         ];
@@ -129,7 +131,7 @@ class BinaryTree extends Component
         $this->secondaryUserId = $this->currentUser->id;
 
         $this->setSponsor();
-        
+
         // Disparamos el evento AQUÍ también
         $this->dispatch('recalculate-tree-height');
     }

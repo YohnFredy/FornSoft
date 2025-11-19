@@ -99,17 +99,20 @@
                     autocomplete="off" placeholder="Dirección" />
             </div>
 
-            <!-- sponsor -->
-            <div class="col-span-2 sm:col-span-1">
-                <x-input wire:model="sponsor" id="sponsor" disabled label="Auspiciador:" type="text" for="sponsor"
-                    placeholder="sponsor" required />
-            </div>
+            @if ($side == 'lr')
+            @else
+                <!-- sponsor -->
+                <div class="col-span-2 sm:col-span-1">
+                    <x-input wire:model="sponsor" id="sponsor" disabled label="Auspiciador:" type="text"
+                        for="sponsor" placeholder="sponsor" required />
+                </div>
 
-            <!-- sponsor -->
-            <div class="col-span-2 sm:col-span-1">
-                <x-input wire:model="side" id="side" disabled label="Posición:" type="text" for="side"
-                    placeholder="sider" required />
-            </div>
+                <!-- sponsor -->
+                <div class="col-span-2 sm:col-span-1">
+                    <x-input wire:model="side" id="side" disabled label="Posición:" type="text"
+                        for="side" placeholder="sider" required />
+                </div>
+            @endif
 
             <!-- Password -->
             <div class=" col-span-2">

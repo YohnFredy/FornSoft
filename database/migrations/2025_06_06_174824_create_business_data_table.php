@@ -16,7 +16,9 @@ return new class extends Migration
     {
         Schema::create('business_data', function (Blueprint $table) {
             $table->id();
+            $table->boolean('is_active')->default(true);
             $table->foreignId('business_id')->constrained()->onDelete('cascade');
+            $table->string('slug')->unique();
 
             // Información general
             $table->string('phone')->nullable();
@@ -55,6 +57,7 @@ return new class extends Migration
 
             // Índices para mejorar rendimiento en búsquedas y filtros
 
+            $table->index('is_active');
             $table->index(['latitude', 'longitude']);
             $table->index('country_id');
             $table->index('department_id');
@@ -63,7 +66,7 @@ return new class extends Migration
             $table->index('address');
         });
     }
-   
+
     /**
      * Reverse the migrations.
      */

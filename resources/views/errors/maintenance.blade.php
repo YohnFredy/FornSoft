@@ -154,7 +154,7 @@
         <h1 class="title">Una plataforma en constante evolución.</h1>
         
         <p class="subtitle">
-            Estamos desplegando una actualización importante para mejorar la funcionalidad y seguridad de nuestros servicios. El sistema volverá a estar operativo muy pronto.
+            Estamos desplegando una actualización importante para mejorar la funcionalidad y seguridad de nuestros servicios. El sistema volverá a estar operativo en 10 minutos.
         </p>
 
         <div class="progress-bar-container">
